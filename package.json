@@ -4,12 +4,12 @@
   "private": true,
   "description": "PRAXIS - Student Club Ecosystem for Sree Dattha Institute of Engineering & Science",
   "scripts": {
-    "install:all": "npm --prefix client install && npm --prefix server install",
-    "dev:client": "npm --prefix client run dev",
-    "dev:server": "npm --prefix server run dev",
-    "build:client": "npm --prefix client run build",
-    "start": "npm --prefix server start",
-    "seed": "npm --prefix server run seed"
+    "install:all": "npm --prefix frontend install && npm --prefix backend install",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "seed": "npm --prefix backend run seed"
   },
   "keywords": [
     "sdes",

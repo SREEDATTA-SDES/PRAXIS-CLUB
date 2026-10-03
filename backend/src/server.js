@@ -54,15 +54,15 @@ app.use('/api/leadership', leadershipRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Optional: Serve client build if running in single-service mode
-const clientBuildPath = path.resolve(__dirname, '../../client/dist');
-app.use(express.static(clientBuildPath));
+// Optional: Serve frontend build if running in single-service mode
+const frontendBuildPath = path.resolve(__dirname, '../../frontend/dist');
+app.use(express.static(frontendBuildPath));
 
 app.get('*', (req, res, next) => {
   if (req.originalUrl.startsWith('/api')) {
     return next();
   }
-  res.sendFile(path.join(clientBuildPath, 'index.html'), (err) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
     if (err) {
       res.status(200).send(`
         <!DOCTYPE html>

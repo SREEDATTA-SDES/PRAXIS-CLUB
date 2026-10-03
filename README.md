@@ -69,7 +69,7 @@ Built following the provided dark cinematic UI reference:
 
 ## 🚀 Full-Stack Architecture
 
-### Frontend (`client/`)
+### Frontend (`frontend/`)
 - **React + Vite** with Tailwind CSS
 - **React Router v7** for deep SPA routing
 - **Lucide Icons** & custom SVG Social Icons (Instagram, Facebook, WhatsApp)
@@ -79,7 +79,7 @@ Built following the provided dark cinematic UI reference:
 - **Interactive Global Search** (Ctrl/Cmd + K) across clubs, events, gallery, and circulars
 - **High-Resolution Lightbox Modal** for photo gallery inspection
 
-### Backend (`server/`)
+### Backend (`backend/`)
 - **Node.js + Express** (ES Modules)
 - **MongoDB Atlas** with Mongoose models
 - **Resilient Fallback Mode:** Automatically runs in memory if `MONGODB_URI` is not provided, allowing zero-friction evaluation
@@ -107,8 +107,7 @@ Access route: `/admin/login` *(Subtly accessible via the footer "Portal" link)*
 
 ## 💻 Local Development Setup
 
-### Prerequisites
-- Node.js v18+ and npm installed
+Refer to [OPERATE.md](file:///d:/projects/PRAXIS-CLUD/OPERATE.md) for detailed commands.
 
 ### 1. Install Dependencies
 ```bash
@@ -117,18 +116,18 @@ npm run install:all
 
 ### 2. Start Backend Server
 ```bash
-npm run dev:server
+npm run dev:backend
 # Server starts on http://localhost:5000
 ```
 
 ### 3. Start Frontend Client
 ```bash
-npm run dev:client
+npm run dev:frontend
 # Client starts on http://localhost:5173
 ```
 
 ### 4. (Optional) Seed MongoDB Atlas
-If using a live MongoDB cluster, create `server/.env` with:
+If using a live MongoDB cluster, create `backend/.env` with:
 ```env
 PORT=5000
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/praxis_db?retryWrites=true&w=majority
@@ -146,7 +145,7 @@ npm run seed
 ### Frontend Deployment (Vercel)
 1. Push this repository to GitHub: `https://github.com/SREEDATTA-SDES/PRAXIS-CLUB.git`.
 2. Connect the repository on **Vercel**.
-3. Set **Root Directory** to `client`.
+3. Set **Root Directory** to `frontend`.
 4. Build command: `npm run build`.
 5. Output directory: `dist`.
 6. Environment Variables:
@@ -155,13 +154,19 @@ npm run seed
 ### Backend Deployment (Render)
 1. In **Render**, create a **New Web Service**.
 2. Connect this GitHub repository.
-3. Set **Root Directory** to `server`.
+3. Set **Root Directory** to `backend`.
 4. Build command: `npm install`.
 5. Start command: `npm start`.
 6. Environment Variables:
    - `PORT`: `5000` (or leave default)
    - `MONGODB_URI`: Your MongoDB Atlas connection string.
    - `JWT_SECRET`: A secure random secret string.
+
+---
+
+## 📄 Documentation Files
+- **[STRUCTURE.md](file:///d:/projects/PRAXIS-CLUD/STRUCTURE.md):** Complete project file and folder tree breakdown.
+- **[OPERATE.md](file:///d:/projects/PRAXIS-CLUD/OPERATE.md):** Operations manual, run commands, ports, and GitHub PAT push guide.
 
 ---
 

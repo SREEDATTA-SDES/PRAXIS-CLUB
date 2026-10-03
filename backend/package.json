@@ -1,5 +1,5 @@
 {
-  "name": "praxis-server",
+  "name": "praxis-backend",
   "version": "1.0.0",
   "description": "Backend API for PRAXIS - Sree Dattha Institute of Engineering & Science Club Ecosystem",
   "main": "src/server.js",
