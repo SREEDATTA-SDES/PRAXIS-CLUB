@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07090D;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1B2635;
+  border-radius: 4px;
+  border: 1px solid #263447;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2876B8;
+}
+
+/* Subtle Film Grain Overlay */
+.cinematic-grain {
+  position: relative;
+}
+
+.cinematic-grain::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Glassmorphism surfaces */
+.glass-panel {
+  background: rgba(20, 29, 43, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(38, 52, 71, 0.7);
+}
+
+.glass-panel-elevated {
+  background: rgba(27, 38, 53, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(40, 118, 184, 0.25);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(20, 29, 43, 0.8) 0%, rgba(11, 20, 34, 0.6) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(38, 52, 71, 0.6);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(40, 118, 184, 0.55);
+  box-shadow: 0 12px 35px -8px rgba(40, 118, 184, 0.22);
+}
+
+/* Atmospheric rim glow and vignettes */
+.cinematic-vignette {
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(7, 9, 13, 0.85) 100%);
+}
+
+.cinematic-glow-top {
+  background: radial-gradient(circle at 50% 0%, rgba(40, 118, 184, 0.22) 0%, transparent 60%);
+}
+
+.cinematic-glow-cyan {
+  background: radial-gradient(circle at 75% 20%, rgba(32, 217, 255, 0.12) 0%, transparent 50%);
+}
+
+.cinematic-glow-amber {
+  background: radial-gradient(circle at 20% 80%, rgba(255, 157, 36, 0.1) 0%, transparent 50%);
+}
+
+/* Typography Enhancements */
+.display-title {
+  font-family: 'Bebas Neue', 'Syne', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cinematic-label {
+  font-family: 'Syne', sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* 3D Coin Flip for logo transitions */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes coinRotate {
+  0% {
+    transform: rotateY(0deg) scale(0.92);
+  }
+  50% {
+    transform: rotateY(180deg) scale(1.05);
+  }
+  100% {
+    transform: rotateY(360deg) scale(1);
+  }
+}
+
+.animate-coin {
+  animation: coinRotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
