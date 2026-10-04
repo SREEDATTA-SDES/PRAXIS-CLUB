@@ -6,7 +6,7 @@ import { useData } from '../context/DataContext';
 export const ClubsPage = () => {
   const { clubs } = useData();
   const [filter, setFilter] = useState('ALL');
-  
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -22,26 +22,26 @@ export const ClubsPage = () => {
 
   return (
     <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
-      
+
       {/* Dynamic Ambient Background */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
         <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
-        <motion.div 
+        <motion.div
           className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full blur-[100px] mix-blend-screen opacity-20 bg-praxis-cyan/50"
           style={{ y: useTransform(scrollYProgress, [0, 1], [0, 200]) }}
         />
-        <motion.div 
+        <motion.div
           className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-praxis-accent/50"
           style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
         />
       </div>
 
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
-        
+
 
 
         {/* Filter Tabs - Liquid UI */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative z-20 flex justify-center"
@@ -51,11 +51,10 @@ export const ClubsPage = () => {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${
-                  filter === tab
+                className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${filter === tab
                     ? 'text-praxis-bg'
                     : 'text-white/50 hover:text-white'
-                }`}
+                  }`}
               >
                 {filter === tab && (
                   <motion.div
@@ -64,7 +63,7 @@ export const ClubsPage = () => {
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                   />
                 )}
-                {tab === 'ALL' ? 'All 6 Clubs' : tab}
+                {tab === 'ALL' ? 'All 8 Clubs' : tab}
               </button>
             ))}
           </div>
