@@ -4,132 +4,111 @@ import { COLLEGE_BRAND } from '../data/initialData';
 export const IntroSequence = ({ onComplete }) => {
   const [step, setStep] = useState(1);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Timeline sequence lasting ~4.5 seconds
-    const t1 = setTimeout(() => setStep(2), 500);  // Step 2: College logo reveals
-    const t2 = setTimeout(() => setStep(3), 1100); // Step 3: College name appears
-    const t3 = setTimeout(() => setStep(4), 1800); // Step 4: College branding lingers
-    const t4 = setTimeout(() => setStep(5), 2300); // Step 5: Transition to PRAXIS
-    const t5 = setTimeout(() => setStep(6), 2800); // Step 6: PRAXIS logo appears with glow
-    const t6 = setTimeout(() => setStep(7), 3300); // Step 7: Refined rotating/coin flip
-    const t7 = setTimeout(() => {
+    // High-quality loading bar progress simulation
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + (Math.random() * 5 + 1);
+      });
+    }, 150);
+
+    // Sequence Timing
+    // 1. Initial State: Deep Blue
+    // 2. Show College Logo & Name (0.5s)
+    const t1 = setTimeout(() => setStep(2), 500);  
+    // 3. Hide College details, prepare for PRAXIS (2.5s)
+    const t2 = setTimeout(() => setStep(3), 2500); 
+    // 4. Reveal PRAXIS logo & text (3.0s)
+    const t3 = setTimeout(() => setStep(4), 3000); 
+    
+    // 5. Loading completes, fade out sequence (5.0s)
+    const t4 = setTimeout(() => {
+      setProgress(100);
       setIsFadingOut(true);
       setTimeout(() => {
         onComplete();
-      }, 700); // Step 8: Reveal homepage
-    }, 4200);
+      }, 800); 
+    }, 5000);
 
     return () => {
+      clearInterval(interval);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
       clearTimeout(t4);
-      clearTimeout(t5);
-      clearTimeout(t6);
-      clearTimeout(t7);
     };
   }, [onComplete]);
 
-  const handleSkip = () => {
-    setIsFadingOut(true);
-    setTimeout(onComplete, 400);
-  };
-
   return (
     <div 
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#07090D] transition-opacity duration-700 ease-out select-none ${
-        isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-praxis-bg transition-opacity duration-1000 ease-in-out select-none overflow-hidden perspective-1000 ${
+        isFadingOut ? 'opacity-0 pointer-events-none scale-105' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Cinematic moody background illumination */}
-      <div className="absolute inset-0 bg-radial-glow opacity-80" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#07090D] via-transparent to-[#07090D]" />
+      {/* Background Atmosphere */}
+      <div className="absolute inset-0 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-20 mix-blend-overlay pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-praxis-glow/10 blur-[150px] rounded-full pointer-events-none" />
 
-      {/* Skip button */}
-      <button
-        onClick={handleSkip}
-        className="absolute top-8 right-8 z-50 text-xs cinematic-label text-praxis-secondary/70 hover:text-white border border-praxis-border/60 hover:border-praxis-cyan/60 px-4 py-2 rounded-full backdrop-blur-md bg-praxis-card/40 transition-all duration-300"
-      >
-        SKIP INTRO &rarr;
-      </button>
-
-      {/* Content wrapper */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 max-w-2xl mx-auto">
+      {/* Main Content Area */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-64 w-full">
         
-        {/* PHASE 1: College Identity (Steps 1 to 4) */}
-        {step < 5 && (
-          <div className="flex flex-col items-center justify-center transition-all duration-700">
-            {/* Step 2: College Logo */}
-            <div 
-              className={`transition-all duration-800 transform ${
-                step >= 2 ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
-              }`}
-            >
-              <img
-                src={COLLEGE_BRAND.logoUrl}
-                alt="Sree Dattha Institute of Engineering & Science"
-                className="h-24 md:h-28 w-auto object-contain filter drop-shadow-[0_0_25px_rgba(40,118,184,0.4)]"
-              />
-            </div>
+        {/* Step 2: College Identity */}
+        <div 
+          className={`absolute flex flex-col items-center justify-center text-center transition-all duration-700 transform ${
+            step === 2 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-10 scale-95 pointer-events-none'
+          }`}
+        >
+          <img
+            src={COLLEGE_BRAND.logoUrl}
+            alt="SDES"
+            className="h-28 md:h-32 w-auto object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] mb-6"
+          />
+          <h2 className="text-[#E52329] font-sans uppercase tracking-widest text-sm md:text-lg font-black leading-tight drop-shadow-md">
+            SREE DATTHA INSTITUTE
+          </h2>
+          <h2 className="text-[#E52329] font-sans uppercase tracking-widest text-sm md:text-lg font-black leading-tight drop-shadow-md">
+            OF ENGINEERING & SCIENCE
+          </h2>
+        </div>
 
-            {/* Step 3 & 4: College Name */}
-            <div 
-              className={`mt-6 transition-all duration-800 delay-100 transform ${
-                step >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-              }`}
-            >
-              <span className="text-xs uppercase tracking-[0.3em] text-praxis-cyan font-medium block mb-2">
-                ESTABLISHED INSTITUTION OF EXCELLENCE
-              </span>
-              <h2 className="text-xl md:text-2xl font-bold tracking-wider text-praxis-text uppercase font-display max-w-lg leading-snug">
-                {COLLEGE_BRAND.name}
-              </h2>
-              <p className="mt-2 text-xs md:text-sm text-praxis-secondary tracking-widest uppercase">
-                Department of Computer Science & Engineering (Allied Branches)
-              </p>
-            </div>
+        {/* Step 4: PRAXIS Reveal */}
+        <div 
+          className={`absolute flex flex-col items-center justify-center transition-all duration-1000 transform ${
+            step >= 4 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-105 pointer-events-none'
+          }`}
+        >
+          <img
+            src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png"
+            alt="PRAXIS"
+            className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto object-contain drop-shadow-2xl translate-x-4 md:translate-x-8"
+          />
+        </div>
+      </div>
+
+      {/* High Quality Loading Bar */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-64 md:w-96 flex flex-col items-center gap-3">
+        <div className="w-full h-1.5 bg-praxis-surface border border-praxis-border rounded-full overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+          <div 
+            className="h-full bg-gradient-to-r from-praxis-cyan to-praxis-glow transition-all duration-200 ease-out relative"
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          >
+            <div className="absolute top-0 right-0 bottom-0 w-8 bg-white/40 blur-[4px] animate-[pulse_1s_infinite]" />
           </div>
-        )}
-
-        {/* PHASE 2: PRAXIS Transition (Steps 5 to 7) */}
-        {step >= 5 && (
-          <div className="flex flex-col items-center justify-center transition-all duration-700 animate-fade-in">
-            {/* Step 6 & 7: PRAXIS Logo with controlled glow and coin-like flip */}
-            <div className="perspective-1000 my-4">
-              <div 
-                className={`relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center rounded-2xl glass-panel-elevated p-4 shadow-cinematic-blue transition-all duration-1000 ${
-                  step >= 7 ? 'animate-coin' : 'scale-100'
-                }`}
-              >
-                <img
-                  src={COLLEGE_BRAND.praxisLogoUrl}
-                  alt="PRAXIS Ecosystem"
-                  className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(255,157,36,0.35)]"
-                />
-              </div>
-            </div>
-
-            {/* Typography Reveal */}
-            <div className="mt-4">
-              <span className="text-xs uppercase tracking-[0.35em] text-praxis-accent font-semibold block mb-1">
-                STUDENT CLUB PLATFORM
-              </span>
-              <h1 className="text-4xl md:text-5xl font-black tracking-widest text-white display-title">
-                PRAXIS
-              </h1>
-              <p className="mt-3 text-xs md:text-sm text-praxis-secondary tracking-wider max-w-md italic">
-                "{COLLEGE_BRAND.praxisStatement}"
-              </p>
-            </div>
-
-            {/* Subtle progress indicator */}
-            <div className="mt-8 w-36 h-[2px] bg-praxis-border rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-praxis-cyan to-praxis-accent animate-pulse" />
-            </div>
-          </div>
-        )}
-
+        </div>
+        <div className="flex justify-between w-full px-1">
+          <span className="text-[9px] uppercase tracking-[0.3em] text-praxis-muted font-cinematic font-bold">
+            {step < 4 ? 'Authenticating...' : 'Initializing Ecosystem...'}
+          </span>
+          <span className="text-[9px] text-praxis-cyan font-bold tracking-widest">
+            {Math.floor(Math.min(progress, 100))}%
+          </span>
+        </div>
       </div>
     </div>
   );

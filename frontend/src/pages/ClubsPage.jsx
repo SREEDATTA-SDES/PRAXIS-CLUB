@@ -1,57 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ClubCard } from '../components/ClubCard';
 import { useData } from '../context/DataContext';
 
 export const ClubsPage = () => {
   const { clubs } = useData();
   const [filter, setFilter] = useState('ALL');
+  
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const headerY = useTransform(scrollYProgress, [0, 0.3], [0, 150]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   const filteredClubs = filter === 'ALL'
     ? clubs
     : clubs.filter(c => c.category === filter);
 
   return (
-    <div className="pt-28 pb-20 space-y-12">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
       
-      {/* Page Header */}
-      <section className="relative text-center max-w-4xl mx-auto px-4 space-y-4">
-        <span className="text-xs uppercase font-bold tracking-[0.35em] text-praxis-cyan">
-          Official Student Bodies
-        </span>
-        <h1 className="text-4xl sm:text-6xl font-black uppercase text-white font-display tracking-wider">
-          OUR CLUBS
-        </h1>
-        <p className="text-xs sm:text-sm text-praxis-secondary max-w-2xl mx-auto leading-relaxed">
-          Six specialized chapters driving innovation, technical competence, oratory excellence, cinematography, and student civic welfare across SDES CSE-Allied.
-        </p>
+      {/* Dynamic Ambient Background */}
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
+        <motion.div 
+          className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full blur-[100px] mix-blend-screen opacity-20 bg-praxis-cyan/50"
+          style={{ y: useTransform(scrollYProgress, [0, 1], [0, 200]) }}
+        />
+        <motion.div 
+          className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-praxis-accent/50"
+          style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
+        />
+      </div>
 
-        {/* Filter Tabs */}
-        <div className="pt-6 flex items-center justify-center gap-2">
-          {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`px-5 py-2 rounded-lg text-xs uppercase font-bold tracking-[0.2em] transition-all ${
-                filter === tab
-                  ? 'bg-praxis-glow text-white shadow-cinematic-blue'
-                  : 'glass-panel text-praxis-secondary hover:text-white border-praxis-border'
-              }`}
-            >
-              {tab === 'ALL' ? 'All 6 Clubs' : tab}
-            </button>
-          ))}
-        </div>
-      </section>
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
+        
 
-      {/* Clubs Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredClubs.map(club => (
-            <ClubCard key={club.slug} club={club} />
-          ))}
-        </div>
-      </section>
 
+        {/* Filter Tabs - Liquid UI */}
+        <motion.section 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-20 flex justify-center"
+        >
+          <div className="liquid-glass-elevated p-2 rounded-full flex items-center border-white/20 overflow-hidden">
+            {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${
+                  filter === tab
+                    ? 'text-praxis-bg'
+                    : 'text-white/50 hover:text-white'
+                }`}
+              >
+                {filter === tab && (
+                  <motion.div
+                    layoutId="active-tab"
+                    className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] z-[-1]"
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                )}
+                {tab === 'ALL' ? 'All 6 Clubs' : tab}
+              </button>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Clubs Grid */}
+        <section className="relative z-20">
+          <AnimatePresence mode="popLayout">
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredClubs.map((club, i) => (
+                <motion.div
+                  key={club.slug}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25, delay: i * 0.1 }}
+                >
+                  <ClubCard club={club} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </section>
+
+      </div>
     </div>
   );
 };

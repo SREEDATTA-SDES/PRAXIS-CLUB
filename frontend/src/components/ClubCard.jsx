@@ -1,75 +1,88 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Layers } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 export const ClubCard = ({ club }) => {
-  // Determine dynamic subtle accent styles based on club
-  const accentBorder = {
-    genesis: 'hover:border-purple-500/60 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.25)]',
-    'tech-vertex': 'hover:border-cyan-400/60 group-hover:shadow-[0_0_25px_rgba(0,242,254,0.25)]',
-    innovex: 'hover:border-red-500/60 group-hover:shadow-[0_0_25px_rgba(239,68,68,0.25)]',
-    'd-talks': 'hover:border-pink-500/60 group-hover:shadow-[0_0_25px_rgba(236,72,153,0.25)]',
-    'visual-vibes': 'hover:border-purple-400/60 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.25)]',
-    lakshya: 'hover:border-amber-400/60 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.25)]'
-  }[club.slug] || 'hover:border-praxis-cyan/50';
-
-  const categoryColor = club.category === 'TECHNICAL' ? 'text-praxis-cyan border-praxis-cyan/30' : 'text-praxis-accent border-praxis-accent/30';
+  const isTech = club.category === 'TECHNICAL';
 
   return (
-    <div 
-      className={`group relative rounded-xl bg-gradient-to-b from-praxis-card to-praxis-surface border border-praxis-border p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 ${accentBorder}`}
-    >
-      {/* Top row: Category badge & logo */}
-      <div>
-        <div className="flex items-center justify-between gap-4 mb-5">
-          <span className={`text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded bg-praxis-elevated border ${categoryColor}`}>
-            {club.category}
-          </span>
-          <span className="text-[10px] text-praxis-muted tracking-widest uppercase">
-            SDES PRAXIS
-          </span>
-        </div>
+    <Link to={`/clubs/${club.slug}`} className="block w-full h-[400px]">
+      <motion.div
+        whileHover="hover"
+        initial="initial"
+        className="relative w-full h-full liquid-glass-card rounded-[2.5rem] overflow-hidden group cursor-pointer"
+      >
+        {/* Animated Gradient Aura */}
+        <motion.div 
+          className="absolute -inset-20 opacity-0 blur-[60px] transition-opacity duration-700 group-hover:opacity-100"
+          style={{
+            background: `radial-gradient(circle at center, ${club.accentPrimary}40, transparent 60%)`
+          }}
+          variants={{
+            hover: { scale: 1.2, rotate: 90 },
+            initial: { scale: 1, rotate: 0 }
+          }}
+          transition={{ duration: 10, ease: "linear", repeat: Infinity }}
+        />
 
-        {/* Master Club Logo (Exact official ImageKit URL) */}
-        <div className="h-28 w-full flex items-center justify-center py-2 px-4 rounded-lg bg-black/30 border border-praxis-border/40 mb-5 group-hover:border-praxis-border transition-colors">
-          <img
+        {/* Floating Logo */}
+        <div className="absolute top-1/4 left-0 right-0 flex justify-center items-center h-28 pointer-events-none z-20">
+          <motion.img
             src={club.logoUrl}
-            alt={`${club.name} Official Logo`}
-            className="max-h-20 max-w-full object-contain filter drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            alt={`${club.name} Logo`}
+            className="h-full w-auto object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
+            variants={{
+              hover: { y: -15, scale: 1.1, filter: `drop-shadow(0 20px 30px ${club.accentPrimary}40)` },
+              initial: { y: 0, scale: 1, filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
         </div>
 
-        {/* Club Name & Tagline */}
-        <h3 className="text-xl font-bold text-white tracking-wide font-display uppercase group-hover:text-praxis-cyan transition-colors">
-          {club.name}
-        </h3>
-
-        {club.tagline && (
-          <p className="text-xs text-praxis-secondary italic mt-1 mb-2">
-            "{club.tagline}"
-          </p>
-        )}
-
-        {/* Short description */}
-        <p className="text-xs text-praxis-muted leading-relaxed line-clamp-3 mt-2">
-          {club.description}
-        </p>
-      </div>
-
-      {/* Card footer: Explore interaction */}
-      <div className="mt-6 pt-4 border-t border-praxis-border/50 flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-praxis-secondary group-hover:text-white transition-colors">
-          Explore Chapter
-        </span>
-        <Link
-          to={`/clubs/${club.slug}`}
-          className="w-8 h-8 rounded-full bg-praxis-elevated flex items-center justify-center text-praxis-secondary group-hover:text-praxis-cyan group-hover:bg-praxis-cyan/10 transition-all duration-300 group-hover:translate-x-1"
-          aria-label={`View details for ${club.name}`}
-        >
-          <ArrowRight size={14} />
-        </Link>
-      </div>
-    </div>
+        {/* Typography & Details Layer */}
+        <div className="absolute inset-0 p-8 flex flex-col justify-between z-10">
+          <div className="flex justify-between items-start">
+             <span className={`text-[9px] uppercase font-bold tracking-[0.3em] font-cinematic ${isTech ? 'text-praxis-cyan' : 'text-praxis-accent'}`}>
+               {club.category}
+             </span>
+             <span className="text-[9px] text-white/30 tracking-widest uppercase">0{club.order}</span>
+          </div>
+          
+          <div className="mt-auto relative">
+             <div className="overflow-hidden mb-2">
+                <motion.h3 
+                  className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/40 tracking-widest font-display uppercase"
+                  variants={{ hover: { x: 10, color: '#fff' }, initial: { x: 0 } }}
+                >
+                  {club.name}
+                </motion.h3>
+             </div>
+             
+             <motion.p 
+               className="text-xs text-white/50 font-cinematic line-clamp-2"
+               variants={{
+                 hover: { opacity: 1, y: 0 },
+                 initial: { opacity: 0, y: 20 }
+               }}
+               transition={{ delay: 0.1 }}
+             >
+                {club.tagline}
+             </motion.p>
+             
+             {/* Read More Indicator */}
+             <motion.div 
+               className="absolute right-0 bottom-0 flex items-center justify-center w-10 h-10 border border-white/10 rounded-full"
+               variants={{
+                 hover: { opacity: 1, rotate: 0, backgroundColor: 'rgba(255,255,255,0.1)' },
+                 initial: { opacity: 0, rotate: -45, backgroundColor: 'transparent' }
+               }}
+             >
+                <ArrowRight size={14} className="text-white" />
+             </motion.div>
+          </div>
+        </div>
+      </motion.div>
+    </Link>
   );
 };

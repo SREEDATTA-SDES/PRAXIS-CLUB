@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useData } from '../context/DataContext';
-import { Image as ImageIcon, Filter, Layers, Maximize2 } from 'lucide-react';
+import { Maximize2, Filter } from 'lucide-react';
 
 export const GalleryPage = ({ onOpenLightbox }) => {
   const { gallery, clubs } = useData();
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [clubFilter, setClubFilter] = useState('ALL');
+
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const headerY = useTransform(scrollYProgress, [0, 0.3], [0, 150]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   const filteredGallery = gallery.filter(item => {
     if (categoryFilter !== 'ALL' && item.category !== categoryFilter) return false;
@@ -14,130 +24,148 @@ export const GalleryPage = ({ onOpenLightbox }) => {
   });
 
   return (
-    <div className="pt-28 pb-20 space-y-12">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
       
-      {/* Header */}
-      <section className="text-center max-w-4xl mx-auto px-4 space-y-4">
-        <span className="text-xs uppercase font-bold tracking-[0.35em] text-praxis-cyan">
-          Visual Archive
-        </span>
-        <h1 className="text-4xl sm:text-6xl font-black uppercase text-white font-display tracking-wider">
-          GALLERY & MEDIA
-        </h1>
-        <p className="text-xs sm:text-sm text-praxis-secondary max-w-2xl mx-auto leading-relaxed">
-          Documenting hackathon sprints, technical symposiums, leadership debates, and campus moments across the PRAXIS ecosystem.
-        </p>
+      {/* Dynamic Ambient Background */}
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
+        <motion.div 
+          className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-praxis-cyan/50"
+          style={{ y: useTransform(scrollYProgress, [0, 1], [0, 200]) }}
+        />
+        <motion.div 
+          className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-praxis-accent/50"
+          style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
+        />
+      </div>
 
-        {/* Filter Controls */}
-        <div className="pt-6 space-y-3">
-          
-          {/* Category Tabs */}
-          <div className="flex items-center justify-center gap-2">
-            {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map(cat => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`px-4 py-2 rounded-lg text-xs uppercase font-bold tracking-wider transition-all ${
-                  categoryFilter === cat
-                    ? 'bg-praxis-glow text-white shadow-cinematic-blue'
-                    : 'glass-panel text-praxis-secondary hover:text-white border-praxis-border'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
+        
 
-          {/* Club Filter Chips */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
-            <button
-              onClick={() => setClubFilter('ALL')}
-              className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-semibold transition-all ${
-                clubFilter === 'ALL'
-                  ? 'bg-praxis-cyan text-praxis-bg font-bold'
-                  : 'bg-praxis-card text-praxis-muted hover:text-white border border-praxis-border'
-              }`}
-            >
-              All Clubs
-            </button>
-            {clubs.map(c => (
-              <button
-                key={c.slug}
-                onClick={() => setClubFilter(c.slug)}
-                className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-semibold transition-all ${
-                  clubFilter === c.slug
-                    ? 'bg-praxis-cyan text-praxis-bg font-bold'
-                    : 'bg-praxis-card text-praxis-muted hover:text-white border border-praxis-border'
-                }`}
-              >
-                {c.name}
-              </button>
-            ))}
-          </div>
 
-        </div>
-      </section>
-
-      {/* Gallery Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {filteredGallery.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGallery.map(item => (
-              <div
-                key={item.id}
-                onClick={() => onOpenLightbox && onOpenLightbox(item)}
-                className="group relative rounded-xl overflow-hidden border border-praxis-border bg-praxis-card cursor-pointer hover:border-praxis-cyan/50 hover:shadow-cinematic-blue transition-all duration-300"
-              >
-                {/* Image */}
-                <div className="h-64 w-full overflow-hidden bg-black/40">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                </div>
-
-                {/* Overlay Content */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-5 flex flex-col justify-end opacity-90 group-hover:opacity-100 transition-opacity">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-praxis-cyan px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-praxis-cyan/30">
-                      {item.albumName || item.category}
-                    </span>
-                    <span className="text-[10px] text-praxis-muted uppercase tracking-wider">
-                      {item.clubSlug}
-                    </span>
-                  </div>
-
-                  <h3 className="text-base font-bold text-white group-hover:text-praxis-cyan transition-colors">
-                    {item.title}
-                  </h3>
-
-                  {item.caption && (
-                    <p className="text-xs text-praxis-secondary line-clamp-2 mt-1">
-                      {item.caption}
-                    </p>
+        {/* Filter Controls - Liquid UI */}
+        <motion.section 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-20"
+        >
+          <div className="liquid-glass-elevated p-8 rounded-[2.5rem] flex flex-col items-center gap-8 border-white/20 max-w-4xl mx-auto">
+            
+            {/* Category Tabs */}
+            <div className="flex items-center p-1 liquid-glass rounded-full border border-white/10 overflow-hidden">
+              {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setCategoryFilter(cat)}
+                  className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${
+                    categoryFilter === cat
+                      ? 'text-praxis-bg'
+                      : 'text-white/50 hover:text-white'
+                  }`}
+                >
+                  {categoryFilter === cat && (
+                    <motion.div
+                      layoutId="cat-tab"
+                      className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] z-[-1]"
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
                   )}
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-                  <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-praxis-muted">
-                    <span>{item.date}</span>
-                    <span className="flex items-center gap-1 text-praxis-secondary group-hover:text-white">
-                      <Maximize2 size={12} /> Expand
-                    </span>
-                  </div>
-                </div>
+            {/* Club Filter Chips */}
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => setClubFilter('ALL')}
+                className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-semibold transition-all ${
+                  clubFilter === 'ALL'
+                    ? 'bg-praxis-cyan text-praxis-bg shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'liquid-glass border-white/10 text-white/40 hover:text-white'
+                }`}
+              >
+                All Clubs
+              </button>
+              {clubs.map(c => (
+                <button
+                  key={c.slug}
+                  onClick={() => setClubFilter(c.slug)}
+                  className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-semibold transition-all ${
+                    clubFilter === c.slug
+                      ? 'bg-praxis-cyan text-praxis-bg shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                      : 'liquid-glass border-white/10 text-white/40 hover:text-white'
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
 
-              </div>
-            ))}
           </div>
-        ) : (
-          <div className="py-16 text-center rounded-2xl glass-panel border border-praxis-border space-y-2">
-            <p className="text-white font-bold">No gallery photographs found for this filter.</p>
-            <p className="text-xs text-praxis-muted">Try selecting 'All Clubs' or another category.</p>
-          </div>
-        )}
-      </section>
+        </motion.section>
 
+        {/* Gallery Grid - Liquid Tiles */}
+        <section className="relative z-20">
+          <AnimatePresence mode="popLayout">
+            {filteredGallery.length > 0 ? (
+              <motion.div layout className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+                {filteredGallery.map((item, i) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25, delay: (i % 3) * 0.05 }}
+                    onClick={() => onOpenLightbox && onOpenLightbox(item)}
+                    className="relative overflow-hidden rounded-[2rem] cursor-pointer liquid-glass-card group break-inside-avoid"
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-8 flex flex-col justify-end">
+                      <div className="flex items-center justify-between mb-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-praxis-cyan px-3 py-1 rounded-full liquid-glass border-white/20">
+                          {item.albumName || item.category}
+                        </span>
+                        <span className="text-[10px] text-white/50 uppercase tracking-widest">
+                          {item.clubSlug}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-black text-white font-display uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                        {item.title}
+                      </h3>
+                      {item.caption && (
+                        <p className="text-xs text-white/70 font-cinematic mt-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 line-clamp-2">
+                          {item.caption}
+                        </p>
+                      )}
+                      <div className="absolute top-6 right-6 w-10 h-10 rounded-full liquid-glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <Maximize2 size={16} className="text-white" />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                className="py-24 text-center rounded-[3rem] liquid-glass-elevated border-white/10"
+              >
+                <p className="text-2xl text-white font-cinematic uppercase tracking-widest">No visual archives found.</p>
+                <p className="text-sm text-white/40 mt-4 tracking-widest uppercase">Try adjusting your filters.</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+
+      </div>
     </div>
   );
 };

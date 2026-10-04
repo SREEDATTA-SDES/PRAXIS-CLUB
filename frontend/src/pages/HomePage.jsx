@@ -1,289 +1,283 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Compass, Calendar, Image as ImageIcon, Award, Shield, CheckCircle } from 'lucide-react';
-import { Hero } from '../components/Hero';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, CheckCircle, Compass, Shield, Award } from 'lucide-react';
+import { SpatialHero } from '../components/SpatialHero';
 import { ClubCard } from '../components/ClubCard';
 import { EventCard } from '../components/EventCard';
 import { AnnouncementsSection } from '../components/AnnouncementsSection';
 import { useData } from '../context/DataContext';
 
 export const HomePage = ({ onOpenLightbox }) => {
-  const { clubs, events, gallery, settings } = useData();
+  const { clubs, events, gallery } = useData();
+  const containerRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
 
   const technicalClubs = clubs.filter(c => c.category === 'TECHNICAL');
   const nonTechnicalClubs = clubs.filter(c => c.category === 'NON-TECHNICAL');
   const upcomingEvents = events.filter(e => e.status === 'UPCOMING').slice(0, 3);
   const previewGallery = gallery.slice(0, 6);
 
+  // Parallax Values
+  const yManifesto = useTransform(scrollYProgress, [0, 0.2], [100, 0]);
+  const opacityManifesto = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
+
+  const xClubsLeft = useTransform(scrollYProgress, [0.1, 0.4], [-100, 0]);
+  const xClubsRight = useTransform(scrollYProgress, [0.1, 0.4], [100, 0]);
+
   return (
-    <div className="space-y-24">
+    <div ref={containerRef} className="space-y-0 w-full overflow-hidden bg-transparent">
+
       {/* 1. Cinematic Hero */}
-      <Hero />
+      <SpatialHero />
 
-      {/* 2. Praxis Introduction / Manifesto */}
-      <section className="relative py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-2xl glass-panel-elevated p-8 sm:p-12 border border-praxis-border/80 overflow-hidden">
-            {/* Subtle atmospheric glow */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-praxis-glow/15 blur-[120px] pointer-events-none" />
+      {/* 2. Praxis Introduction / Manifesto - Liquid Glass Redesign */}
+      <motion.section
+        style={{ y: yManifesto, opacity: opacityManifesto }}
+        className="relative flex items-center py-12 z-10"
+      >
+        <div className="max-w-[1600px] w-full mx-auto px-6 md:px-12 relative">
+          <div className="liquid-glass-elevated rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-praxis-accent/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-8 space-y-4">
-                <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan block">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center relative z-10">
+              <div className="lg:col-span-6 space-y-6">
+                <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
                   The CSE-Allied Catalyst
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold uppercase text-white font-display tracking-wide">
-                  Where Pure Engineering Meets Student Expression
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 font-display leading-[1.1] tracking-wider">
+                  Where <span className="text-praxis-cyan">Engineering</span> Meets Expression
                 </h2>
-                <p className="text-sm sm:text-base text-praxis-secondary leading-relaxed">
-                  PRAXIS is the unifying student club ecosystem of <strong className="text-white">Sree Dattha Institute of Engineering & Science</strong> (CSE-Allied). 
+              </div>
+
+              <div className="lg:col-span-6 space-y-8">
+                <p className="text-sm md:text-base lg:text-xl text-white/70 leading-relaxed font-cinematic tracking-wide">
+                  PRAXIS is the unifying student club ecosystem of <strong className="text-white">Sree Dattha Institute of Engineering & Science</strong>.
                   It provides an open runway for ambitious students to transition beyond classroom theory into competitive coding, systems engineering, hardware invention, parliamentary debate, cinematography, and civic leadership.
                 </p>
-                <div className="pt-2 flex flex-wrap gap-4 text-xs text-praxis-muted">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-praxis-cyan" />
-                    <span>Peer-to-Peer Technical Guilds</span>
+
+                <div className="flex flex-col sm:flex-row gap-6 text-[10px] md:text-xs text-white/50 uppercase tracking-[0.2em] font-bold">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border border-praxis-cyan flex items-center justify-center text-praxis-cyan shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                      <CheckCircle size={12} />
+                    </div>
+                    <span>Technical Guilds</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-praxis-accent" />
-                    <span>State & National Level Competitions</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-emerald-400" />
-                    <span>Interdisciplinary Maker Culture</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border border-praxis-accent flex items-center justify-center text-praxis-accent shadow-[0_0_15px_rgba(236,72,153,0.5)]">
+                      <CheckCircle size={12} />
+                    </div>
+                    <span>Maker Culture</span>
                   </div>
                 </div>
-              </div>
 
-              <div className="lg:col-span-4 flex flex-col justify-center items-center lg:items-end">
-                <Link
-                  to="/about"
-                  className="px-6 py-3 rounded-lg border border-praxis-cyan/50 hover:bg-praxis-cyan/10 text-praxis-cyan text-xs uppercase font-bold tracking-[0.2em] transition-all flex items-center gap-2"
-                >
-                  <span>Read Manifesto</span>
-                  <ArrowRight size={14} />
-                </Link>
+                <div className="pt-8">
+                  <Link
+                    to="/about"
+                    className="group inline-flex items-center gap-4 px-8 py-4 liquid-glass rounded-full text-xs font-bold uppercase tracking-[0.3em] text-white hover:bg-white/10 transition-colors"
+                  >
+                    <span>Read Manifesto</span>
+                    <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* 3. Clubs Section (Split into TECHNICAL and NON-TECHNICAL) */}
-      <section className="relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          
-          {/* Main section header */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs uppercase font-bold tracking-[0.35em] text-praxis-cyan">
-              Autonomous Chapters
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-extrabold uppercase text-white font-display tracking-wide">
-              OUR CLUBS
-            </h2>
-            <p className="text-xs sm:text-sm text-praxis-secondary tracking-wider">
-              Six specialized student bodies engineering excellence across algorithmic problem solving, cloud systems, IoT hardware, debating, cinematography, and social leadership.
-            </p>
-          </div>
+      {/* 3. Clubs Section - Liquid Glass Layout */}
+      <section className="relative py-12 overflow-hidden z-10">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12">
 
-          {/* Sub-group 1: TECHNICAL CLUBS */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-praxis-border pb-3">
-              <div className="flex items-center gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-praxis-cyan" />
-                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
-                  TECHNICAL CLUBS
-                </h3>
-              </div>
-              <span className="text-xs uppercase tracking-widest text-praxis-muted">
-                Software &bull; Cloud &bull; Embedded Systems
+          <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-12 border-b border-white/10 pb-8">
+            <div className="max-w-3xl space-y-4">
+              <span className="text-[10px] uppercase font-bold tracking-[0.5em] text-praxis-cyan font-cinematic">
+                Autonomous Chapters
               </span>
+              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+                Our Ecosystem
+              </h2>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {technicalClubs.map(club => (
-                <ClubCard key={club.slug} club={club} />
-              ))}
+            <div className="max-w-md">
+              <p className="text-xs text-white/50 tracking-widest font-cinematic leading-loose uppercase">
+                Six specialized student bodies engineering excellence across algorithms, cloud, IoT, debating, media, and leadership.
+              </p>
             </div>
           </div>
 
-          {/* Sub-group 2: NON-TECHNICAL CLUBS */}
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center justify-between border-b border-praxis-border pb-3">
-              <div className="flex items-center gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-praxis-accent" />
-                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
-                  NON-TECHNICAL CLUBS
+          <div className="space-y-12">
+            {/* TECHNICAL CLUBS */}
+            <motion.div style={{ x: xClubsLeft }}>
+              <div className="flex items-center gap-6 mb-8">
+                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
+                  Technical Layer
                 </h3>
+                <div className="h-[1px] flex-grow bg-white/10 relative">
+                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-cyan to-transparent" />
+                </div>
               </div>
-              <span className="text-xs uppercase tracking-widest text-praxis-muted">
-                Debating &bull; Media &bull; Social Responsibility
-              </span>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {technicalClubs.map(club => (
+                  <ClubCard key={club.slug} club={club} />
+                ))}
+              </div>
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {nonTechnicalClubs.map(club => (
-                <ClubCard key={club.slug} club={club} />
-              ))}
-            </div>
+            {/* NON-TECHNICAL CLUBS */}
+            <motion.div style={{ x: xClubsRight }}>
+              <div className="flex items-center gap-6 mb-8">
+                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
+                  Creative Layer
+                </h3>
+                <div className="h-[1px] flex-grow bg-white/10 relative">
+                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-accent to-transparent" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {nonTechnicalClubs.map(club => (
+                  <ClubCard key={club.slug} club={club} />
+                ))}
+              </div>
+            </motion.div>
           </div>
-
         </div>
       </section>
 
-      {/* 4. Upcoming Events */}
-      <section className="relative py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-praxis-border pb-4">
-            <div>
-              <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-accent">
-                Calendar & Timetable
+      {/* 4. Upcoming Events - Liquid Design */}
+      <section className="relative py-12 z-10">
+        <div className="absolute inset-0 bg-white/5 skew-y-[-3deg] transform-origin-top-left pointer-events-none" />
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
+
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+            <div className="space-y-4">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-accent font-cinematic">
+                Calendar & Action
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold uppercase text-white font-display tracking-wide mt-1">
-                Upcoming Events & Hackathons
+              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+                Operations
               </h2>
             </div>
             <Link
               to="/events"
-              className="text-xs uppercase tracking-[0.2em] text-praxis-cyan hover:underline font-bold flex items-center gap-1.5"
+              className="group flex items-center gap-4 px-6 py-3 liquid-glass rounded-full text-[10px] uppercase tracking-[0.3em] font-bold text-white hover:bg-white/10 transition-colors"
             >
               <span>View All Events</span>
-              <ArrowRight size={14} />
+              <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
           {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {upcomingEvents.map(event => (
-                <EventCard key={event.id || event.slug} event={event} />
+                <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <EventCard key={event.id || event.slug} event={event} />
+                </motion.div>
               ))}
             </div>
           ) : (
-            <div className="py-12 text-center rounded-xl glass-panel border border-praxis-border">
-              <p className="text-praxis-secondary">New event registrations will open shortly.</p>
+            <div className="liquid-glass-elevated rounded-[2.5rem] py-24 text-center">
+              <p className="text-white/50 tracking-widest uppercase text-sm font-cinematic">New event registrations will open shortly.</p>
             </div>
           )}
-
         </div>
       </section>
 
-      {/* 5. Activities & Achievements Showcase */}
-      <section className="relative py-10 bg-praxis-navy/40 border-y border-praxis-border/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-praxis-cyan/10 text-praxis-cyan flex items-center justify-center">
-                <Award size={22} />
-              </div>
-              <h4 className="text-lg font-bold uppercase text-white font-display">
-                Competitive Hackathons
-              </h4>
-              <p className="text-xs text-praxis-secondary leading-relaxed">
-                Over 12 annual hackathons, code sprints, and robotics maker challenges conducted with industry mentors.
-              </p>
-            </div>
+      {/* 6. Gallery Preview - Liquid Tiles */}
+      <section className="relative py-12 z-10">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12">
 
-            <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-praxis-accent/10 text-praxis-accent flex items-center justify-center">
-                <Compass size={22} />
-              </div>
-              <h4 className="text-lg font-bold uppercase text-white font-display">
-                Interdisciplinary Synergy
-              </h4>
-              <p className="text-xs text-praxis-secondary leading-relaxed">
-                Seamless collaboration between software coders, embedded hardware makers, and creative media cinematographers.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-                <Shield size={22} />
-              </div>
-              <h4 className="text-lg font-bold uppercase text-white font-display">
-                Institutional Backing
-              </h4>
-              <p className="text-xs text-praxis-secondary leading-relaxed">
-                Fully recognized and governed by the Sree Dattha Institute of Engineering & Science CSE-Allied Department.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Gallery Preview */}
-      <section className="relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-praxis-border pb-4">
-            <div>
-              <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+            <div className="space-y-4">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
                 Visual Archives
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold uppercase text-white font-display tracking-wide mt-1">
-                Campus Moments & Highlights
+              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+                Highlights
               </h2>
             </div>
             <Link
               to="/gallery"
-              className="text-xs uppercase tracking-[0.2em] text-praxis-cyan hover:underline font-bold flex items-center gap-1.5"
+              className="group flex items-center gap-4 px-6 py-3 liquid-glass rounded-full text-[10px] uppercase tracking-[0.3em] font-bold text-white hover:bg-white/10 transition-colors"
             >
-              <span>Explore Full Gallery</span>
-              <ArrowRight size={14} />
+              <span>Explore Gallery</span>
+              <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {previewGallery.map((item) => (
-              <div
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {previewGallery.map((item, i) => (
+              <motion.div
                 key={item.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (i % 3) * 0.1 }}
                 onClick={() => onOpenLightbox && onOpenLightbox(item)}
-                className="group relative h-48 sm:h-64 rounded-xl overflow-hidden cursor-pointer border border-praxis-border bg-praxis-card"
+                className="group relative h-80 rounded-[2rem] overflow-hidden cursor-pointer liquid-glass-card"
               >
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 scale-100 group-hover:scale-110"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-end">
-                  <span className="text-[10px] uppercase font-bold text-praxis-cyan tracking-widest">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 transition-opacity duration-500" />
+
+                <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <span className="text-[9px] uppercase font-bold text-praxis-cyan tracking-[0.3em] mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                     {item.albumName || item.category}
                   </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-white line-clamp-1">{item.title}</h4>
+                  <h4 className="text-lg md:text-xl font-black text-white font-display tracking-widest uppercase">{item.title}</h4>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* 7. Announcements Bulletin */}
-      <AnnouncementsSection />
+      <div className="relative z-10">
+        <AnnouncementsSection />
+      </div>
 
-      {/* 8. Contact Teaser */}
-      <section className="relative py-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl glass-panel p-8 sm:p-10 border border-praxis-border text-center space-y-4">
-            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-accent">
-              Connect With The Platform
+      {/* 8. Contact Teaser - Liquid Glass Call to Action */}
+      <section className="relative py-16 overflow-hidden z-10">
+        <div className="absolute inset-0 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-[0.05] bg-cover bg-center pointer-events-none" />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto px-6 relative z-10"
+        >
+          <div className="liquid-glass-elevated rounded-[3rem] p-12 md:p-16 text-center space-y-6 relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-praxis-cyan/20 to-praxis-accent/20 blur-[100px] mix-blend-screen pointer-events-none" />
+
+            <span className="text-[10px] uppercase font-bold tracking-[0.5em] text-praxis-cyan font-cinematic relative z-10">
+              Connect
             </span>
-            <h2 className="text-3xl font-extrabold uppercase text-white font-display">
-              Have Questions or Proposal For PRAXIS?
+            <h2 className="text-5xl md:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/40 font-display tracking-widest relative z-10">
+              Join The Ecosystem
             </h2>
-            <p className="text-xs sm:text-sm text-praxis-secondary max-w-xl mx-auto">
-              Get in touch with the faculty coordinators, student club presidents, or visit our campus at Sheriguda, Greater Hyderabad.
+            <p className="text-xs md:text-sm text-white/50 max-w-xl mx-auto font-cinematic tracking-widest uppercase leading-loose pb-8 relative z-10">
+              Get in touch with faculty coordinators, student club presidents, or visit our campus.
             </p>
-            <div className="pt-4">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-gradient-to-r from-praxis-glow to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-white text-xs uppercase font-bold tracking-[0.25em] shadow-cinematic-blue transition-all"
-              >
-                <span>VISIT CONTACT PAGE</span>
-                <ArrowRight size={14} />
-              </Link>
-            </div>
+
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-4 px-12 py-5 liquid-glass rounded-full text-white text-[10px] uppercase font-bold tracking-[0.4em] hover:bg-white/10 transition-colors duration-500 group relative z-10"
+            >
+              <span>Initiate Contact</span>
+              <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform duration-300" />
+            </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
 
     </div>

@@ -8,6 +8,7 @@ import { Footer } from './components/Footer';
 import { SearchModal } from './components/SearchModal';
 import { LightboxModal } from './components/LightboxModal';
 import { ScrollToTop } from './components/ScrollToTop';
+import { PageTransitionLoader } from './components/PageTransitionLoader';
 
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
@@ -51,7 +52,7 @@ export function App() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <div className="relative min-h-screen bg-[#07090D] text-praxis-text cinematic-grain selection:bg-praxis-glow selection:text-white">
+    <div className="relative min-h-screen text-praxis-text cinematic-grain selection:bg-praxis-glow selection:text-white">
       <ScrollToTop />
 
       {/* 1. Cinematic Opening Intro Sequence (Skippable & stored in session) */}
@@ -60,7 +61,8 @@ export function App() {
       {/* 2. Global Atmospheric Canvas Background */}
       <AtmosphericBackground />
 
-      {/* 3. Global Modals */}
+      {/* 3. Global Modals & Transitions */}
+      <PageTransitionLoader />
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       <LightboxModal item={activeLightboxItem} onClose={() => setActiveLightboxItem(null)} />
 

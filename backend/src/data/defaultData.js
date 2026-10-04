@@ -23,7 +23,7 @@ export const DEFAULT_CLUBS = [
     slug: "genesis",
     name: "Genesis",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/GENOSIS%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117774/GENESIS_LOGO.png",
     tagline: "Coding the Foundation, Engineering the Future",
     description: "The core software, algorithms, artificial intelligence, and competitive coding engine of PRAXIS.",
     purpose: "To foster deep programmatic thinking, robust algorithm design, and modern machine learning application skills among students.",
@@ -39,9 +39,9 @@ export const DEFAULT_CLUBS = [
     slug: "tech-vertex",
     name: "Tech Vertex",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/TECH%20VORTEX%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117784/Tech_Vortex_LOGO.png",
     tagline: "Bridging Ideas into Scalable Digital Realities",
-    description: "Full-stack web architecture, cloud computational systems, DevOps, and decentralized technologies hub.",
+    description: "Full-stack web architecture, cloud computational systems, DevOps, and modern computational frameworks hub.",
     purpose: "To equip students with modern production-ready software engineering, microservices, and cloud deployment capabilities.",
     vision: "Cultivating elite developers and system architects capable of designing and maintaining mission-critical digital platforms.",
     mission: "Host hands-on full-stack hackathons, DevOps deployment masterclasses, open-source contributor clinics, and architectural teardowns.",
@@ -55,7 +55,7 @@ export const DEFAULT_CLUBS = [
     slug: "innovex",
     name: "Innovex",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/INNOVEX%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117771/INNOVEX_LOGO.png",
     tagline: "Invention, Hardware Prototyping & Maker Culture",
     description: "The hardware engineering, embedded systems, Internet of Things (IoT), and robotics laboratory of PRAXIS.",
     purpose: "To empower students to transition theoretical electrical and computer engineering into tangible physical devices.",
@@ -67,11 +67,27 @@ export const DEFAULT_CLUBS = [
     order: 3
   },
   {
+    id: "ai-club",
+    slug: "ai-club",
+    name: "AI Club",
+    category: "TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117775/AI_CLUB_LOGO.png",
+    tagline: "Intelligence that Adapts and Learns",
+    description: "The dedicated hub for Artificial Intelligence, Machine Learning, and Data Science.",
+    purpose: "To delve deep into neural networks, natural language processing, and predictive modeling.",
+    vision: "Empowering students to build smart, data-driven applications for the real world.",
+    mission: "Conduct research, build AI models, and compete in global data science challenges.",
+    accentPrimary: "#10B981",
+    accentSecondary: "#34D399", 
+    status: "active",
+    order: 4
+  },
+  {
     id: "d-talks",
     slug: "d-talks",
     name: "D-Talks",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/D-TALKS%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117770/D-TALKS_LOGO.png",
     tagline: "Voices That Inspire, Perspectives That Transform",
     description: "The premier oratory, parliamentary debating, discourse, and professional public speaking forum.",
     purpose: "To eliminate the fear of public speaking and refine students into persuasive, articulate, and thoughtful leaders.",
@@ -80,14 +96,14 @@ export const DEFAULT_CLUBS = [
     accentPrimary: "#EC4899",
     accentSecondary: "#06B6D4",
     status: "active",
-    order: 4
+    order: 5
   },
   {
     id: "visual-vibes",
     slug: "visual-vibes",
     name: "Visual Vibes",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/VISUAL%20VIBES%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
     tagline: "The Visual Pulse of Campus Culture",
     description: "The cinematography, digital media production, graphic design, and artistic narrative wing of PRAXIS.",
     purpose: "To document, amplify, and stylize student achievements and campus events through high-caliber visual aesthetics.",
@@ -96,14 +112,14 @@ export const DEFAULT_CLUBS = [
     accentPrimary: "#A855F7",
     accentSecondary: "#22D3EE",
     status: "active",
-    order: 5
+    order: 6
   },
   {
     id: "lakshya",
     slug: "lakshya",
     name: "Lakshya",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/LAKSHYA%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117771/LAKSHYA_LOGO.png",
     tagline: "Purpose, Social Upliftment & Cultural Harmony",
     description: "The community engagement, social responsibility, campus vitality, and leadership development club.",
     purpose: "To inculcate social empathy, civic responsibility, and holistic leadership ethics in engineering students.",
@@ -112,7 +128,23 @@ export const DEFAULT_CLUBS = [
     accentPrimary: "#3B82F6",
     accentSecondary: "#F59E0B",
     status: "active",
-    order: 6
+    order: 7
+  },
+  {
+    id: "creative-art",
+    slug: "creative-art",
+    name: "Creative Art",
+    category: "NON-TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117776/Creative_Arts_LOGO.png",
+    tagline: "Unleashing Imagination Through Canvas and Craft",
+    description: "The fine arts, painting, digital sketching, and creative crafting division of PRAXIS.",
+    purpose: "To provide a canvas for students to express their inner creativity and destress through art.",
+    vision: "To beautify the campus and cultivate a deep appreciation for the fine arts among engineers.",
+    mission: "Host art exhibitions, painting workshops, and collaborative mural projects.",
+    accentPrimary: "#F43F5E",
+    accentSecondary: "#FB923C", 
+    status: "active",
+    order: 8
   }
 ];
 

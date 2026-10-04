@@ -1,117 +1,119 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Play, Shield } from 'lucide-react';
+import { ExternalLink, Play, Shield, ArrowUpRight } from 'lucide-react';
 import { InstagramIcon, FacebookIcon, WhatsAppIcon } from './SocialIcons';
 import { useData } from '../context/DataContext';
+import { CollegeBrand } from './CollegeBrand';
 
 export const Footer = ({ onReplayIntro }) => {
   const { settings } = useData();
 
-  return (
-    <footer className="relative bg-[#07090D] border-t border-praxis-border/80 pt-16 pb-12 overflow-hidden text-praxis-secondary text-sm">
-      {/* Background glow highlights */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-praxis-glow/10 blur-[100px] pointer-events-none" />
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+  return (
+    <footer className="relative bg-praxis-bg border-t border-praxis-border-light/30 pt-32 pb-12 overflow-hidden text-praxis-secondary text-sm font-cinematic">
+      {/* Deep Spatial Lighting */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-48 bg-praxis-glow/10 blur-[150px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
+        
+        {/* Massive Editorial Closing */}
+        <div className="mb-32 flex flex-col items-center text-center">
+          <span className="text-xs uppercase tracking-[0.5em] text-praxis-cyan font-bold mb-6">
+            Explore. Learn. Build. Together.
+          </span>
+          <h2 
+            className="text-[12vw] sm:text-[10vw] md:text-[8vw] font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-praxis-muted font-display leading-[0.8] tracking-widest cursor-pointer hover:to-white transition-colors duration-700"
+            onClick={scrollToTop}
+            title="Back to Top"
+          >
+            PRAXIS
+          </h2>
+          <div className="flex items-center gap-6 mt-6">
+             <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-praxis-border-light" />
+             <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-praxis-secondary font-bold">
+               SDES CSE-ALLIED
+             </span>
+             <div className="w-16 h-[1px] bg-gradient-to-l from-transparent to-praxis-border-light" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-16 border-t border-praxis-border-light/30 pt-16">
           
           {/* Col 1: Institutional & Ecosystem Brand */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <img
-                src={settings.collegeLogoUrl}
-                alt="SDES College Logo"
-                className="h-10 w-auto object-contain"
-              />
-              <div className="h-6 w-[1px] bg-praxis-border" />
-              <img
-                src={settings.praxisLogoUrl}
-                alt="PRAXIS Logo"
-                className="h-9 w-auto object-contain"
-              />
-            </div>
-
-            <h4 className="text-white font-bold text-sm tracking-wide uppercase">
-              {settings.collegeName}
-            </h4>
-            <p className="text-xs text-praxis-muted leading-relaxed">
-              PRAXIS is the student club platform of CSE-Allied, fostering a collaborative ecosystem of engineering creativity, technology, and leadership.
+          <div className="col-span-1 md:col-span-5 lg:col-span-4 space-y-8">
+            <CollegeBrand />
+            
+            <p className="text-[11px] md:text-xs text-praxis-muted leading-loose max-w-sm tracking-widest uppercase font-medium">
+              A collaborative spatial ecosystem of engineering creativity, technology, and leadership.
             </p>
 
             <a
               href={settings.collegeWebsiteUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-praxis-cyan hover:underline tracking-wider uppercase font-semibold"
+              className="group inline-flex items-center gap-3 text-[10px] text-white uppercase tracking-[0.3em] font-bold border border-praxis-border hover:border-praxis-glow px-6 py-3 transition-colors"
             >
-              Official College Website <ExternalLink size={12} />
+              <span>Official College Website</span>
+              <ArrowUpRight size={12} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
             </a>
           </div>
 
+          {/* Spacer */}
+          <div className="hidden lg:block lg:col-span-1" />
+
           {/* Col 2: Navigation */}
-          <div>
-            <h5 className="text-xs uppercase tracking-[0.25em] text-white font-bold mb-4">
+          <div className="col-span-1 md:col-span-3 lg:col-span-2">
+            <h5 className="text-[10px] uppercase tracking-[0.4em] text-white font-bold mb-8">
               Explore
             </h5>
-            <ul className="space-y-2.5 text-xs uppercase tracking-wider">
-              <li>
-                <Link to="/" className="hover:text-praxis-cyan transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-praxis-cyan transition-colors">About PRAXIS</Link>
-              </li>
-              <li>
-                <Link to="/clubs" className="hover:text-praxis-cyan transition-colors">All Clubs</Link>
-              </li>
-              <li>
-                <Link to="/events" className="hover:text-praxis-cyan transition-colors">Events & Schedules</Link>
-              </li>
-              <li>
-                <Link to="/gallery" className="hover:text-praxis-cyan transition-colors">Media Gallery</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-praxis-cyan transition-colors">Contact Campus</Link>
-              </li>
+            <ul className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
+              <li><Link to="/" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Home</Link></li>
+              <li><Link to="/about" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Manifesto</Link></li>
+              <li><Link to="/clubs" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Chapters</Link></li>
+              <li><Link to="/events" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Operations</Link></li>
+              <li><Link to="/gallery" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Visuals</Link></li>
+              <li><Link to="/contact" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Connect</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Clubs Ecosystem */}
-          <div>
-            <h5 className="text-xs uppercase tracking-[0.25em] text-white font-bold mb-4">
-              Official Clubs
+          <div className="col-span-1 md:col-span-4 lg:col-span-3">
+            <h5 className="text-[10px] uppercase tracking-[0.4em] text-white font-bold mb-8">
+              Chapters
             </h5>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="space-y-2">
-                <span className="text-[10px] text-praxis-muted tracking-widest uppercase block font-semibold">Technical</span>
-                <Link to="/clubs/genesis" className="block hover:text-white transition-colors">Genesis</Link>
-                <Link to="/clubs/tech-vertex" className="block hover:text-white transition-colors">Tech Vertex</Link>
-                <Link to="/clubs/innovex" className="block hover:text-white transition-colors">Innovex</Link>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
+                <span className="text-[9px] text-praxis-cyan tracking-[0.4em] block mb-2">Technical</span>
+                <Link to="/clubs/genesis" className="block text-praxis-secondary hover:text-white transition-colors">Genesis</Link>
+                <Link to="/clubs/tech-vertex" className="block text-praxis-secondary hover:text-white transition-colors">Tech Vertex</Link>
+                <Link to="/clubs/innovex" className="block text-praxis-secondary hover:text-white transition-colors">Innovex</Link>
               </div>
-              <div className="space-y-2">
-                <span className="text-[10px] text-praxis-muted tracking-widest uppercase block font-semibold">Non-Technical</span>
-                <Link to="/clubs/d-talks" className="block hover:text-white transition-colors">D-Talks</Link>
-                <Link to="/clubs/visual-vibes" className="block hover:text-white transition-colors">Visual Vibes</Link>
-                <Link to="/clubs/lakshya" className="block hover:text-white transition-colors">Lakshya</Link>
+              <div className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
+                <span className="text-[9px] text-praxis-accent tracking-[0.4em] block mb-2">Creative</span>
+                <Link to="/clubs/d-talks" className="block text-praxis-secondary hover:text-white transition-colors">D-Talks</Link>
+                <Link to="/clubs/visual-vibes" className="block text-praxis-secondary hover:text-white transition-colors">Visual Vibes</Link>
+                <Link to="/clubs/lakshya" className="block text-praxis-secondary hover:text-white transition-colors">Lakshya</Link>
               </div>
             </div>
           </div>
 
           {/* Col 4: Campus & Social Media */}
-          <div>
-            <h5 className="text-xs uppercase tracking-[0.25em] text-white font-bold mb-4">
-              Connect
+          <div className="col-span-1 md:col-span-12 lg:col-span-2">
+            <h5 className="text-[10px] uppercase tracking-[0.4em] text-white font-bold mb-8">
+              Network
             </h5>
-            <p className="text-xs text-praxis-muted mb-4 leading-relaxed">
-              Sheriguda, Ibrahimpatnam, Greater Hyderabad, Telangana - 501510
-            </p>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-row lg:flex-col gap-4">
               {settings.instagramUrl && (
                 <a
                   href={settings.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-praxis-secondary hover:text-praxis-accent hover:border-praxis-accent/50 transition-all"
+                  className="w-12 h-12 rounded-full border border-praxis-border hover:border-praxis-accent flex items-center justify-center text-praxis-secondary hover:text-praxis-accent hover:bg-praxis-accent/10 transition-all"
                 >
                   <InstagramIcon size={16} />
                 </a>
@@ -122,7 +124,7 @@ export const Footer = ({ onReplayIntro }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-praxis-secondary hover:text-praxis-cyan hover:border-praxis-cyan/50 transition-all"
+                  className="w-12 h-12 rounded-full border border-praxis-border hover:border-praxis-cyan flex items-center justify-center text-praxis-secondary hover:text-praxis-cyan hover:bg-praxis-cyan/10 transition-all"
                 >
                   <FacebookIcon size={16} />
                 </a>
@@ -133,7 +135,7 @@ export const Footer = ({ onReplayIntro }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
-                  className="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-praxis-secondary hover:text-emerald-400 hover:border-emerald-400/50 transition-all"
+                  className="w-12 h-12 rounded-full border border-praxis-border hover:border-emerald-400 flex items-center justify-center text-praxis-secondary hover:text-emerald-400 hover:bg-emerald-400/10 transition-all"
                 >
                   <WhatsAppIcon size={16} />
                 </a>
@@ -144,27 +146,28 @@ export const Footer = ({ onReplayIntro }) => {
             {onReplayIntro && (
               <button
                 onClick={onReplayIntro}
-                className="mt-6 flex items-center gap-2 text-xs text-praxis-muted hover:text-praxis-cyan transition-colors tracking-wider uppercase font-medium"
+                className="mt-8 flex items-center gap-3 text-[9px] uppercase tracking-[0.3em] font-bold text-praxis-muted hover:text-white transition-colors"
               >
-                <Play size={12} /> Replay Cinematic Intro
+                <div className="w-8 h-8 rounded-full border border-praxis-border flex items-center justify-center">
+                  <Play size={10} className="ml-0.5" /> 
+                </div>
+                Replay Intro
               </button>
             )}
           </div>
-
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-praxis-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-praxis-muted">
-          <div>
-            &copy; {new Date().getFullYear()} PRAXIS &bull; SREE DATTHA INSTITUTE OF ENGINEERING & SCIENCE. All rights reserved.
+        <div className="pt-8 border-t border-praxis-border-light/30 flex flex-col sm:flex-row items-center justify-between gap-6 text-[9px] uppercase tracking-[0.3em] font-bold text-praxis-muted">
+          <div className="text-center sm:text-left">
+            &copy; {new Date().getFullYear()} PRAXIS &bull; SREE DATTHA INSTITUTE OF ENGINEERING & SCIENCE.
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-[11px] tracking-wider uppercase">CSE-ALLIED STUDENT ECOSYSTEM</span>
+          <div className="flex items-center gap-6">
+            <span className="hidden md:inline">CSE-ALLIED ECOSYSTEM</span>
             <Link
               to="/admin/login"
-              className="text-praxis-muted/60 hover:text-praxis-secondary flex items-center gap-1 transition-colors"
-              title="Staff & Admin Portal"
+              className="hover:text-white flex items-center gap-2 transition-colors border-l border-praxis-border-light pl-6"
             >
               <Shield size={12} />
               <span>Portal</span>

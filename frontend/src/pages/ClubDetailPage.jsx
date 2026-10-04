@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Target, Eye, Compass, Calendar, Image as ImageIcon, Mail, ExternalLink, Award } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowLeft, Target, Eye, Compass, Calendar, Image as ImageIcon, Mail } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { EventCard } from '../components/EventCard';
 import { LeadershipSection } from '../components/LeadershipSection';
 
 export const ClubDetailPage = ({ onOpenLightbox }) => {
   const { clubSlug } = useParams();
-  const { clubs, events, gallery, settings } = useData();
+  const { clubs, events, gallery } = useData();
+  const containerRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
 
   const club = clubs.find(c => c.slug === clubSlug);
 
@@ -15,7 +22,6 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
     return (
       <div className="pt-36 pb-20 text-center space-y-4">
         <h2 className="text-3xl font-bold uppercase text-white font-display">Club Not Found</h2>
-        <p className="text-sm text-praxis-secondary">The requested club chapter does not exist in PRAXIS.</p>
         <Link to="/clubs" className="inline-block mt-4 text-xs uppercase tracking-widest text-praxis-cyan underline">
           &larr; Back to all clubs
         </Link>
@@ -23,253 +29,223 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
     );
   }
 
-  // Club-specific visual accents
-  const clubThemes = {
-    genesis: {
-      accentColor: '#8B5CF6',
-      accentSecondary: '#06B6D4',
-      glowStyle: 'rgba(139, 92, 246, 0.2)',
-      borderClass: 'border-purple-500/40',
-      textAccent: 'text-purple-400',
-      badgeClass: 'bg-purple-950/60 text-purple-300 border-purple-800/60'
-    },
-    'tech-vertex': {
-      accentColor: '#00F2FE',
-      accentSecondary: '#4FACFE',
-      glowStyle: 'rgba(0, 242, 254, 0.2)',
-      borderClass: 'border-cyan-400/40',
-      textAccent: 'text-cyan-400',
-      badgeClass: 'bg-cyan-950/60 text-cyan-300 border-cyan-800/60'
-    },
-    innovex: {
-      accentColor: '#EF4444',
-      accentSecondary: '#F87171',
-      glowStyle: 'rgba(239, 68, 68, 0.2)',
-      borderClass: 'border-red-500/40',
-      textAccent: 'text-red-400',
-      badgeClass: 'bg-red-950/60 text-red-300 border-red-800/60'
-    },
-    'd-talks': {
-      accentColor: '#EC4899',
-      accentSecondary: '#06B6D4',
-      glowStyle: 'rgba(236, 72, 153, 0.2)',
-      borderClass: 'border-pink-500/40',
-      textAccent: 'text-pink-400',
-      badgeClass: 'bg-pink-950/60 text-pink-300 border-pink-800/60'
-    },
-    'visual-vibes': {
-      accentColor: '#A855F7',
-      accentSecondary: '#22D3EE',
-      glowStyle: 'rgba(168, 85, 247, 0.2)',
-      borderClass: 'border-purple-400/40',
-      textAccent: 'text-purple-300',
-      badgeClass: 'bg-purple-950/60 text-purple-300 border-purple-800/60'
-    },
-    lakshya: {
-      accentColor: '#3B82F6',
-      accentSecondary: '#F59E0B',
-      glowStyle: 'rgba(245, 158, 11, 0.2)',
-      borderClass: 'border-amber-400/40',
-      textAccent: 'text-amber-400',
-      badgeClass: 'bg-amber-950/60 text-amber-300 border-amber-800/60'
-    }
-  };
-
-  const theme = clubThemes[club.slug] || {
-    accentColor: '#2876B8',
-    glowStyle: 'rgba(40, 118, 184, 0.2)',
-    borderClass: 'border-praxis-cyan/40',
-    textAccent: 'text-praxis-cyan',
-    badgeClass: 'bg-praxis-elevated text-praxis-cyan border-praxis-border'
-  };
-
-  // Club events and gallery items
   const clubEvents = events.filter(e => e.clubSlug === club.slug);
   const clubGallery = gallery.filter(g => g.clubSlug === club.slug);
 
-  return (
-    <div className="pt-28 pb-20 space-y-20 relative">
-      
-      {/* Club Ambient Background Aura */}
-      <div 
-        className="absolute top-16 left-1/2 -translate-x-1/2 w-3/4 h-[350px] blur-[150px] pointer-events-none rounded-full"
-        style={{ backgroundColor: theme.glowStyle }}
-      />
+  // Parallax effects
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const leftSlide = useTransform(scrollYProgress, [0, 0.5], ["0%", "-10%"]);
+  const rightSlide = useTransform(scrollYProgress, [0, 0.5], ["0%", "10%"]);
+  const glassOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
 
-      {/* Breadcrumb & Navigation */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link
-          to="/clubs"
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-praxis-secondary hover:text-white transition-colors"
-        >
-          <ArrowLeft size={14} /> Back to all clubs
-        </Link>
+  return (
+    <div ref={containerRef} className="relative w-full min-h-screen overflow-x-hidden pt-16 bg-transparent pb-20">
+      
+      {/* Dynamic Liquid Background Layer */}
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
+        <motion.div 
+          className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full blur-[120px] mix-blend-screen opacity-40"
+          style={{ 
+            background: `radial-gradient(circle, ${club.accentPrimary}, transparent 70%)`,
+            y: useTransform(scrollYProgress, [0, 1], [0, -300]),
+            x: useTransform(scrollYProgress, [0, 1], [0, 100])
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full blur-[100px] mix-blend-screen opacity-30"
+          style={{ 
+            background: `radial-gradient(circle, ${club.accentSecondary}, transparent 70%)`,
+            y: useTransform(scrollYProgress, [0, 1], [0, 300])
+          }}
+        />
       </div>
 
-      {/* Hero Banner for Individual Club */}
-      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`p-8 sm:p-12 rounded-2xl glass-panel-elevated border ${theme.borderClass} relative overflow-hidden shadow-2xl`}>
-          
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-            
-            {/* Master Club Logo (Exact Supplied ImageKit Asset, Never recolored) */}
-            <div className="w-36 h-36 sm:w-44 sm:h-44 p-4 rounded-2xl bg-black/50 border border-praxis-border flex items-center justify-center shrink-0 shadow-lg">
-              <img
-                src={club.logoUrl}
-                alt={`${club.name} Official Logo`}
-                className="max-h-full max-w-full object-contain filter drop-shadow-md"
-              />
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
+        
+        {/* Navigation */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-8 inline-block"
+        >
+          <Link to="/clubs" className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors">
+            <ArrowLeft size={14} /> Ecosystem Map
+          </Link>
+        </motion.div>
+
+        {/* Hero Section - Centered & Massive */}
+        <motion.section 
+          style={{ y: heroY }}
+          className="relative min-h-[50vh] flex flex-col justify-center items-center text-center mt-8 mb-20"
+        >
+          <motion.div style={{ opacity: textOpacity }} className="space-y-8 z-10 max-w-5xl flex flex-col items-center">
+            <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full liquid-glass border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+              <span className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ backgroundColor: club.accentPrimary, boxShadow: `0 0 10px ${club.accentPrimary}` }} />
+              <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.5em] text-white/80">{club.category} LAYER</span>
             </div>
-
-            {/* Club Identity Text */}
-            <div className="space-y-4 text-center md:text-left flex-1">
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded border ${theme.badgeClass}`}>
-                  {club.category} CHAPTER
+            
+            <h1 className="text-6xl sm:text-8xl md:text-9xl font-black uppercase text-transparent bg-clip-text font-display tracking-widest drop-shadow-2xl" 
+                style={{ backgroundImage: `linear-gradient(to bottom right, #ffffff, ${club.accentPrimary})` }}>
+              {club.name}
+            </h1>
+            
+            <p className="text-xl md:text-3xl font-cinematic italic text-white/70 max-w-3xl leading-relaxed">
+              "{club.tagline}"
+            </p>
+            
+            <div className="pt-8 flex items-center justify-center gap-6 text-sm font-cinematic text-white/50 uppercase tracking-[0.3em]">
+              <span>EST. 2026</span>
+              <span className="w-1.5 h-1.5 bg-white/30 rounded-full" />
+              {club.contactEmail && (
+                <span className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer">
+                  <Mail size={16} /> {club.contactEmail}
                 </span>
-                <span className="text-xs uppercase tracking-widest text-praxis-muted">
-                  SDES PRAXIS ECOSYSTEM
-                </span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl font-black uppercase text-white font-display tracking-wide">
-                {club.name}
-              </h1>
-
-              {club.tagline && (
-                <p className={`text-sm sm:text-base font-medium italic ${theme.textAccent}`}>
-                  "{club.tagline}"
-                </p>
               )}
+            </div>
+          </motion.div>
+        </motion.section>
 
-              <p className="text-xs sm:text-sm text-praxis-secondary leading-relaxed max-w-2xl">
+        {/* Liquid Glass Info Panels */}
+        <section className="relative mt-12 z-20 space-y-16">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            <motion.div 
+              style={{ x: leftSlide }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="liquid-glass-elevated p-12 md:p-16 rounded-[3rem] border-white/20 relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1" style={{ background: `linear-gradient(90deg, ${club.accentPrimary}, ${club.accentSecondary})` }} />
+              <h2 className="text-sm font-bold uppercase tracking-[0.5em] text-white/50 mb-8 flex items-center gap-4">
+                <Compass size={18} /> Architecture & Purpose
+              </h2>
+              <p className="text-2xl md:text-3xl font-cinematic leading-relaxed text-white/90">
                 {club.description}
               </p>
+              <p className="mt-8 text-lg text-white/60 leading-loose">
+                {club.purpose}
+              </p>
+            </motion.div>
 
-              <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-praxis-muted">
-                <span>Official Chapter &bull; CSE-Allied Department</span>
-                {club.contactEmail && (
-                  <span className="flex items-center gap-1 text-praxis-cyan">
-                    <Mail size={12} /> {club.contactEmail}
-                  </span>
-                )}
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* Purpose, Vision, and Mission Grid */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-praxis-elevated flex items-center justify-center text-praxis-cyan">
-              <Compass size={18} />
-            </div>
-            <h3 className="text-lg font-bold uppercase text-white font-display">
-              Our Purpose
-            </h3>
-            <p className="text-xs text-praxis-secondary leading-relaxed">
-              {club.purpose || 'Fostering deep competencies and collaborative engagement among students.'}
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-praxis-elevated flex items-center justify-center text-praxis-accent">
-              <Eye size={18} />
-            </div>
-            <h3 className="text-lg font-bold uppercase text-white font-display">
-              Our Vision
-            </h3>
-            <p className="text-xs text-praxis-secondary leading-relaxed">
-              {club.vision || 'To achieve recognized excellence and cultivate visionary talent.'}
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl glass-panel border border-praxis-border space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-praxis-elevated flex items-center justify-center text-emerald-400">
-              <Target size={18} />
-            </div>
-            <h3 className="text-lg font-bold uppercase text-white font-display">
-              Our Mission
-            </h3>
-            <p className="text-xs text-praxis-secondary leading-relaxed">
-              {club.mission || 'Conducting workshops, competitive sprints, and mentorship initiatives.'}
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Club Leadership: Main Leader & Coordinators */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <LeadershipSection filterClubSlug={club.slug} />
-      </section>
-
-      {/* Club Events */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-center justify-between border-b border-praxis-border pb-3">
-          <div className="flex items-center gap-2">
-            <Calendar size={18} className={theme.textAccent} />
-            <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display">
-              {club.name} Events & Activities
-            </h3>
-          </div>
-          <span className="text-xs uppercase tracking-widest text-praxis-muted">
-            {clubEvents.length} Recorded
-          </span>
-        </div>
-
-        {clubEvents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clubEvents.map(evt => (
-              <EventCard key={evt.id || evt.slug} event={evt} />
-            ))}
-          </div>
-        ) : (
-          <div className="p-8 rounded-xl glass-panel text-center text-xs text-praxis-muted">
-            No events scheduled currently for {club.name}. Check back soon!
-          </div>
-        )}
-      </section>
-
-      {/* Club Gallery Archive */}
-      {clubGallery.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-praxis-border pb-3">
-            <div className="flex items-center gap-2">
-              <ImageIcon size={18} className={theme.textAccent} />
-              <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display">
-                {club.name} Photo Archives
-              </h3>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {clubGallery.map(img => (
-              <div
-                key={img.id}
-                onClick={() => onOpenLightbox && onOpenLightbox(img)}
-                className="h-40 rounded-xl overflow-hidden cursor-pointer border border-praxis-border bg-praxis-card group relative"
+            <div className="space-y-12">
+              <motion.div 
+                style={{ x: rightSlide }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                className="liquid-glass p-10 rounded-[2.5rem] border-white/10"
               >
-                <img
-                  src={img.imageUrl}
-                  alt={img.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
-                  <p className="text-xs font-bold text-white truncate">{img.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+                <h2 className="text-xs font-bold uppercase tracking-[0.4em] text-white/50 mb-4 flex items-center gap-3">
+                  <Eye size={16} /> Vision
+                </h2>
+                <p className="text-lg text-white/80 leading-relaxed font-cinematic">{club.vision}</p>
+              </motion.div>
 
+              <motion.div 
+                style={{ x: rightSlide }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: 0.1 }}
+                className="liquid-glass p-10 rounded-[2.5rem] border-white/10"
+              >
+                <h2 className="text-xs font-bold uppercase tracking-[0.4em] text-white/50 mb-4 flex items-center gap-3">
+                  <Target size={16} /> Mission
+                </h2>
+                <p className="text-lg text-white/80 leading-relaxed font-cinematic">{club.mission}</p>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Leadership Section integration with liquid styles */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="pt-16 border-t border-white/5"
+          >
+            <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest mb-12 text-center">
+              Core <span style={{ color: club.accentPrimary }}>Command</span>
+            </h2>
+            <LeadershipSection filterClubSlug={club.slug} />
+          </motion.div>
+
+          {/* Events */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="pt-16 border-t border-white/5"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+              <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest text-center md:text-left">
+                Operations
+              </h2>
+              <div className="liquid-glass px-6 py-2 rounded-full border-white/10 flex items-center gap-3">
+                <Calendar size={16} className="text-white/50" />
+                <span className="text-xs font-bold uppercase tracking-[0.3em] text-white/70">{clubEvents.length} Recorded</span>
+              </div>
+            </div>
+
+            {clubEvents.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {clubEvents.map(evt => (
+                  <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                    <EventCard key={evt.id || evt.slug} event={evt} />
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="liquid-glass p-16 rounded-[3rem] text-center border-white/10">
+                <p className="text-lg text-white/50 font-cinematic uppercase tracking-widest">Awaiting deployment of new operations.</p>
+              </div>
+            )}
+          </motion.div>
+
+          {/* Gallery Liquid Tiles */}
+          {clubGallery.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="pt-16 border-t border-white/5"
+            >
+              <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest mb-12 text-center">
+                Visual <span style={{ color: club.accentSecondary }}>Archives</span>
+              </h2>
+
+              <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                {clubGallery.map((img, i) => (
+                  <motion.div
+                    key={img.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: (i % 3) * 0.1 }}
+                    onClick={() => onOpenLightbox && onOpenLightbox(img)}
+                    className="relative overflow-hidden rounded-[2rem] cursor-pointer liquid-glass group break-inside-avoid"
+                  >
+                    <img
+                      src={img.imageUrl}
+                      alt={img.title}
+                      className="w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-8 flex flex-col justify-end">
+                      <p className="text-sm font-bold uppercase tracking-widest text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{img.title}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+        </section>
+      </div>
     </div>
   );
 };

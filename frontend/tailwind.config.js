@@ -9,19 +9,19 @@ export default {
     extend: {
       colors: {
         praxis: {
-          bg: '#07090D',
-          navy: '#0B1422',
-          surface: '#101A2A',
-          card: '#141D2B',
-          elevated: '#1B2635',
-          border: '#263447',
-          'border-light': '#32455e',
-          text: '#F5F7FA',
-          secondary: '#A7B0BE',
-          muted: '#707B8B',
-          glow: '#2876B8',
-          accent: '#FF9D24',
-          cyan: '#20D9FF'
+          bg: '#06111F',
+          navy: '#08182A',
+          surface: '#0B2036',
+          card: '#0B2036',
+          elevated: '#08182A',
+          border: '#1E3550',
+          'border-light': '#2A4A6E',
+          text: '#F1F3F5',
+          secondary: '#B8C2CC',
+          muted: '#7E8B98',
+          glow: '#0EA5E9',
+          accent: '#38BDF8',
+          cyan: '#38BDF8'
         },
         club: {
           genesis: '#8B5CF6',

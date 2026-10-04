@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Menu, X, Sparkles } from 'lucide-react';
-import { COLLEGE_BRAND } from '../data/initialData';
+import { Search, Menu, X } from 'lucide-react';
+import { CollegeBrand } from './CollegeBrand';
 
 export const Navbar = ({ onOpenSearch }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -10,24 +10,22 @@ export const Navbar = ({ onOpenSearch }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on page transition
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Clubs', path: '/clubs' },
-    { name: 'Events', path: '/events' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'HOME', path: '/' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'CLUBS', path: '/clubs' },
+    { name: 'EVENTS', path: '/events' },
+    { name: 'CONTACT', path: '/contact' }
   ];
 
   const isActive = (path) => {
@@ -38,84 +36,71 @@ export const Navbar = ({ onOpenSearch }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ease-in-out ${
           scrolled
-            ? 'bg-praxis-bg/85 backdrop-blur-xl border-b border-praxis-border/70 py-3 shadow-glass-card'
-            : 'bg-transparent py-5'
+            ? 'bg-praxis-bg/60 backdrop-blur-xl border-b border-praxis-border/50 py-4'
+            : 'bg-transparent py-6'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between">
             
-            {/* College & PRAXIS Brand Lockup */}
-            <Link to="/" className="flex items-center gap-3 sm:gap-4 group">
-              {/* College Logo */}
-              <img
-                src={COLLEGE_BRAND.logoUrl}
-                alt="SDES College Logo"
-                className="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              />
+            <CollegeBrand />
 
-              {/* Vertical divider */}
-              <div className="h-7 w-[1px] bg-praxis-border" />
+            {/* Desktop Navigation */}
+            <div className="hidden xl:flex items-center space-x-8">
+              <nav className="flex items-center space-x-6">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`relative text-xs tracking-[0.25em] font-medium transition-all duration-300 font-cinematic ${
+                      isActive(link.path)
+                        ? 'text-white'
+                        : 'text-praxis-secondary hover:text-white'
+                    }`}
+                  >
+                    {link.name}
+                    {isActive(link.path) && (
+                      <span className="absolute -bottom-2 left-0 right-0 h-[1px] bg-praxis-glow shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
+                    )}
+                  </Link>
+                ))}
+              </nav>
 
-              {/* PRAXIS Logo */}
-              <img
-                src={COLLEGE_BRAND.praxisLogoUrl}
-                alt="PRAXIS"
-                className="h-8 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:rotate-6"
-              />
+              <div className="w-[1px] h-6 bg-praxis-border" />
 
-              {/* Typography lockup */}
-              <div className="hidden lg:flex flex-col text-left">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-praxis-secondary leading-tight">
-                  Sree Dattha Inst. of Eng & Sci
-                </span>
-                <span className="text-sm font-extrabold tracking-wider text-white font-cinematic uppercase">
-                  PRAXIS <span className="text-praxis-cyan font-normal text-xs">/ CSE-ALLIED</span>
-                </span>
-              </div>
-            </Link>
-
-            {/* Desktop Minimal Navigation */}
-            <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`relative px-3.5 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 ${
-                    isActive(link.path)
-                      ? 'text-white'
-                      : 'text-praxis-secondary hover:text-white'
-                  }`}
+              <div className="flex items-center space-x-6">
+                <button
+                  onClick={onOpenSearch}
+                  className="text-praxis-secondary hover:text-white transition-colors"
+                  aria-label="Search"
                 >
-                  {link.name}
-                  {isActive(link.path) && (
-                    <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-gradient-to-r from-praxis-cyan to-praxis-accent shadow-[0_0_8px_rgba(32,217,255,0.8)]" />
-                  )}
-                </Link>
-              ))}
-            </nav>
+                  <Search size={18} />
+                </button>
 
-            {/* Action Area: Search button & Mobile Toggle */}
-            <div className="flex items-center gap-3">
-              {/* Search Trigger */}
+                <Link
+                  to="/contact" // Assuming join redirects to contact for now
+                  className="px-6 py-2 border border-praxis-border hover:border-praxis-glow rounded-full text-xs font-bold tracking-[0.2em] uppercase text-white transition-all hover:bg-praxis-glow/10 hover:shadow-cinematic-cyan flex items-center gap-2"
+                >
+                  JOIN PRAXIS <span className="text-praxis-glow">&rarr;</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile / Tablet Toggle & Search */}
+            <div className="flex xl:hidden items-center gap-4">
               <button
                 onClick={onOpenSearch}
-                aria-label="Search clubs and events"
-                className="p-2 text-praxis-secondary hover:text-white hover:bg-praxis-elevated/60 rounded-full border border-transparent hover:border-praxis-border transition-all duration-200"
-                title="Search (Ctrl + K)"
+                className="text-praxis-secondary hover:text-white transition-colors"
               >
-                <Search size={18} />
+                <Search size={20} />
               </button>
-
-              {/* Mobile menu button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 text-praxis-secondary hover:text-white hover:bg-praxis-elevated/60 rounded-lg border border-praxis-border/50"
-                aria-label="Toggle navigation menu"
+                className="text-praxis-secondary hover:text-white transition-colors relative z-50"
               >
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
               </button>
             </div>
 
@@ -123,36 +108,47 @@ export const Navbar = ({ onOpenSearch }) => {
         </div>
       </header>
 
-      {/* Cinematic Mobile Menu Drawer */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-30 md:hidden bg-praxis-bg/95 backdrop-blur-2xl flex flex-col justify-between pt-24 pb-8 px-6 transition-all duration-300">
-          <div className="flex flex-col space-y-4">
-            <span className="text-[11px] uppercase tracking-[0.25em] text-praxis-muted border-b border-praxis-border pb-2">
-              Navigation
-            </span>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-lg uppercase tracking-[0.2em] font-semibold py-2 transition-colors ${
-                  isActive(link.path) ? 'text-praxis-cyan' : 'text-praxis-text hover:text-white'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+      {/* Cinematic Full-screen Mobile Menu */}
+      <div 
+        className={`fixed inset-0 z-30 bg-praxis-bg/95 backdrop-blur-2xl flex flex-col justify-center items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Decorative elements */}
+        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-praxis-glow/20 blur-[150px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-praxis-navy/50 blur-[150px] rounded-full" />
+        
+        <nav className="flex flex-col items-center space-y-6 relative z-10">
+          {navLinks.map((link, index) => (
+            <Link
+              key={link.name}
+              to={link.path}
+              style={{ transitionDelay: `${index * 50}ms` }}
+              className={`text-3xl md:text-5xl uppercase tracking-[0.3em] font-cinematic transition-all duration-500 transform ${
+                mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              } ${
+                isActive(link.path) ? 'text-praxis-cyan drop-shadow-[0_0_15px_rgba(14,165,233,0.5)]' : 'text-praxis-text hover:text-white'
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+          
+          <div 
+            style={{ transitionDelay: '300ms' }}
+            className={`mt-12 transition-all duration-500 transform ${
+              mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}
+          >
+            <Link
+              to="/contact"
+              className="px-8 py-3 border border-praxis-cyan text-praxis-cyan hover:bg-praxis-cyan hover:text-praxis-bg text-sm uppercase tracking-[0.3em] transition-all flex items-center gap-2"
+            >
+              JOIN PRAXIS
+            </Link>
           </div>
-
-          <div className="pt-6 border-t border-praxis-border/60">
-            <p className="text-xs text-praxis-muted uppercase tracking-wider">
-              {COLLEGE_BRAND.name}
-            </p>
-            <p className="text-[11px] text-praxis-secondary mt-1">
-              SDES CSE-Allied Student Platform
-            </p>
-          </div>
-        </div>
-      )}
+        </nav>
+      </div>
     </>
   );
 };

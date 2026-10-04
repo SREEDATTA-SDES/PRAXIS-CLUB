@@ -65,12 +65,7 @@ export const AtmosphericBackground = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {/* Deep navy vignette & atmospheric lighting */}
-      <div className="absolute inset-0 bg-[#07090D]" />
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-overlay"
-        style={{ backgroundImage: `url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')` }}
-      />
+      {/* Atmospheric lighting */}
       <div className="absolute inset-0 cinematic-glow-top opacity-70" />
       <div className="absolute inset-0 cinematic-glow-cyan opacity-40" />
       <div className="absolute inset-0 cinematic-glow-amber opacity-30" />

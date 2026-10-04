@@ -6,6 +6,14 @@
   color-scheme: dark;
 }
 
+body {
+  background-image: url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-color: #07090D;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -44,32 +52,43 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Glassmorphism surfaces */
-.glass-panel {
-  background: rgba(20, 29, 43, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(38, 52, 71, 0.7);
+/* Glassmorphism & Liquid Glass surfaces */
+.liquid-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.glass-panel-elevated {
-  background: rgba(27, 38, 53, 0.85);
+.liquid-glass-elevated {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 16px 40px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.liquid-glass-card {
+  background: linear-gradient(135deg, rgba(20, 29, 43, 0.4) 0%, rgba(11, 20, 34, 0.2) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(40, 118, 184, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card {
-  background: linear-gradient(135deg, rgba(20, 29, 43, 0.8) 0%, rgba(11, 20, 34, 0.6) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(38, 52, 71, 0.6);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card:hover {
-  border-color: rgba(40, 118, 184, 0.55);
-  box-shadow: 0 12px 35px -8px rgba(40, 118, 184, 0.22);
+.liquid-glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 20px 50px -10px rgba(40, 118, 184, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
 }
 
 /* Atmospheric rim glow and vignettes */

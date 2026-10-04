@@ -24,7 +24,7 @@ export const INITIAL_CLUBS = [
     slug: "genesis",
     name: "Genesis",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/GENOSIS%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117774/GENESIS_LOGO.png",
     tagline: "Coding the Foundation, Engineering the Future",
     description: "The core software, algorithms, artificial intelligence, and competitive coding engine of PRAXIS.",
     purpose: "To foster deep programmatic thinking, robust algorithm design, and modern machine learning application skills among students.",
@@ -42,7 +42,7 @@ export const INITIAL_CLUBS = [
     slug: "tech-vertex",
     name: "Tech Vertex",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/TECH%20VORTEX%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117784/Tech_Vortex_LOGO.png",
     tagline: "Bridging Ideas into Scalable Digital Realities",
     description: "Full-stack web architecture, cloud computational systems, DevOps, and modern computational frameworks hub.",
     purpose: "To equip students with modern production-ready software engineering, microservices, and cloud deployment capabilities.",
@@ -60,7 +60,7 @@ export const INITIAL_CLUBS = [
     slug: "innovex",
     name: "Innovex",
     category: "TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/INNOVEX%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117771/INNOVEX_LOGO.png",
     tagline: "Invention, Hardware Prototyping & Maker Culture",
     description: "The hardware engineering, embedded systems, Internet of Things (IoT), and robotics laboratory of PRAXIS.",
     purpose: "To empower students to transition theoretical electrical and computer engineering into tangible physical devices.",
@@ -74,11 +74,29 @@ export const INITIAL_CLUBS = [
     order: 3
   },
   {
+    id: "ai-club",
+    slug: "ai-club",
+    name: "AI Club",
+    category: "TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117775/AI_CLUB_LOGO.png",
+    tagline: "Intelligence that Adapts and Learns",
+    description: "The dedicated hub for Artificial Intelligence, Machine Learning, and Data Science.",
+    purpose: "To delve deep into neural networks, natural language processing, and predictive modeling.",
+    vision: "Empowering students to build smart, data-driven applications for the real world.",
+    mission: "Conduct research, build AI models, and compete in global data science challenges.",
+    accentPrimary: "#10B981", // emerald
+    accentSecondary: "#34D399", 
+    glowClass: "from-emerald-500/20 to-teal-500/10",
+    borderClass: "hover:border-emerald-500/50",
+    badgeClass: "bg-emerald-950/60 text-emerald-300 border-emerald-800/50",
+    order: 4
+  },
+  {
     id: "d-talks",
     slug: "d-talks",
     name: "D-Talks",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/D-TALKS%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117770/D-TALKS_LOGO.png",
     tagline: "Voices That Inspire, Perspectives That Transform",
     description: "The premier oratory, parliamentary debating, discourse, and professional public speaking forum.",
     purpose: "To eliminate the fear of public speaking and refine students into persuasive, articulate, and thoughtful leaders.",
@@ -89,14 +107,14 @@ export const INITIAL_CLUBS = [
     glowClass: "from-pink-500/20 to-cyan-500/10",
     borderClass: "hover:border-pink-500/50",
     badgeClass: "bg-pink-950/60 text-pink-300 border-pink-800/50",
-    order: 4
+    order: 5
   },
   {
     id: "visual-vibes",
     slug: "visual-vibes",
     name: "Visual Vibes",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/VISUAL%20VIBES%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
     tagline: "The Visual Pulse of Campus Culture",
     description: "The cinematography, digital media production, graphic design, and artistic narrative wing of PRAXIS.",
     purpose: "To document, amplify, and stylize student achievements and campus events through high-caliber visual aesthetics.",
@@ -107,14 +125,14 @@ export const INITIAL_CLUBS = [
     glowClass: "from-purple-500/20 to-sky-500/10",
     borderClass: "hover:border-purple-500/50",
     badgeClass: "bg-purple-950/60 text-purple-300 border-purple-800/50",
-    order: 5
+    order: 6
   },
   {
     id: "lakshya",
     slug: "lakshya",
     name: "Lakshya",
     category: "NON-TECHNICAL",
-    logoUrl: "https://ik.imagekit.io/SDES/LOGOS/LAKSHYA%20Logo.png",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117771/LAKSHYA_LOGO.png",
     tagline: "Purpose, Social Upliftment & Cultural Harmony",
     description: "The community engagement, social responsibility, campus vitality, and leadership development club.",
     purpose: "To inculcate social empathy, civic responsibility, and holistic leadership ethics in engineering students.",
@@ -125,7 +143,25 @@ export const INITIAL_CLUBS = [
     glowClass: "from-blue-500/20 to-amber-500/10",
     borderClass: "hover:border-amber-500/50",
     badgeClass: "bg-amber-950/60 text-amber-300 border-amber-800/50",
-    order: 6
+    order: 7
+  },
+  {
+    id: "creative-art",
+    slug: "creative-art",
+    name: "Creative Art",
+    category: "NON-TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117776/Creative_Arts_LOGO.png",
+    tagline: "Unleashing Imagination Through Canvas and Craft",
+    description: "The fine arts, painting, digital sketching, and creative crafting division of PRAXIS.",
+    purpose: "To provide a canvas for students to express their inner creativity and destress through art.",
+    vision: "To beautify the campus and cultivate a deep appreciation for the fine arts among engineers.",
+    mission: "Host art exhibitions, painting workshops, and collaborative mural projects.",
+    accentPrimary: "#F43F5E", // rose
+    accentSecondary: "#FB923C", 
+    glowClass: "from-rose-500/20 to-orange-500/10",
+    borderClass: "hover:border-rose-500/50",
+    badgeClass: "bg-rose-950/60 text-rose-300 border-rose-800/50",
+    order: 8
   }
 ];
 

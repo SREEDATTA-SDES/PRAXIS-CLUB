@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, User, Key, ShieldCheck, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { COLLEGE_BRAND } from '../../data/initialData';
 
 export const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +19,8 @@ export const AdminLogin = () => {
     setError('');
     setLoading(true);
 
-    const res = await login(username, password);
+    // Trim trailing/leading spaces from password to avoid accidental errors
+    const res = await login(username.trim(), password.trim());
     setLoading(false);
 
     if (res.success) {
@@ -28,10 +30,7 @@ export const AdminLogin = () => {
     }
   };
 
-  const setDemoCredentials = (u, p) => {
-    setUsername(u);
-    setPassword(p);
-  };
+
 
   return (
     <div className="min-h-screen bg-[#07090D] flex flex-col justify-center items-center p-4 relative">
@@ -62,7 +61,7 @@ export const AdminLogin = () => {
             PRAXIS Admin Portal
           </h1>
           <p className="text-xs text-praxis-secondary">
-            Role-Based Management for Super Admins, Faculty & Club Leads
+            Secure Console for Ecosystem Administrators
           </p>
         </div>
 
@@ -86,7 +85,7 @@ export const AdminLogin = () => {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="superadmin / facultyadmin"
+                  placeholder="admin username"
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-praxis-surface border border-praxis-border text-white placeholder-praxis-muted focus:outline-none focus:border-praxis-cyan text-xs"
                 />
               </div>
@@ -99,13 +98,20 @@ export const AdminLogin = () => {
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-praxis-muted" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secret password"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-praxis-surface border border-praxis-border text-white placeholder-praxis-muted focus:outline-none focus:border-praxis-cyan text-xs"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg bg-praxis-surface border border-praxis-border text-white placeholder-praxis-muted focus:outline-none focus:border-praxis-cyan text-xs"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-praxis-muted hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
               </div>
             </div>
 
@@ -119,41 +125,7 @@ export const AdminLogin = () => {
             </button>
           </form>
 
-          {/* Quick Demo Access Bar for effortless testing */}
-          <div className="mt-6 pt-5 border-t border-praxis-border/60">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-praxis-muted block mb-2 text-center">
-              Quick Test Credentials (Pre-configured)
-            </span>
-            <div className="grid grid-cols-3 gap-1.5 text-[10px]">
-              <button
-                type="button"
-                onClick={() => setDemoCredentials('superadmin', 'password')}
-                className="p-1.5 rounded bg-praxis-elevated hover:bg-praxis-cyan/20 border border-praxis-border text-praxis-secondary hover:text-white transition-all text-center truncate"
-                title="Super Admin: Full ecosystem access"
-              >
-                Super Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemoCredentials('facultyadmin', 'password')}
-                className="p-1.5 rounded bg-praxis-elevated hover:bg-praxis-cyan/20 border border-praxis-border text-praxis-secondary hover:text-white transition-all text-center truncate"
-                title="Faculty Admin: Event & Club coordinator"
-              >
-                Faculty Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemoCredentials('genesisadmin', 'password')}
-                className="p-1.5 rounded bg-praxis-elevated hover:bg-praxis-cyan/20 border border-praxis-border text-praxis-secondary hover:text-white transition-all text-center truncate"
-                title="Club Admin: Genesis Chapter only"
-              >
-                Club Admin
-              </button>
-            </div>
-            <p className="text-[10px] text-praxis-muted text-center mt-2">
-              Default password for all roles: <code className="text-praxis-cyan">password</code>
-            </p>
-          </div>
+
 
         </div>
 

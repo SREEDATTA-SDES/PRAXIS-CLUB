@@ -1,129 +1,162 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { COLLEGE_BRAND } from '../data/initialData';
 import { LeadershipSection } from '../components/LeadershipSection';
-import { Compass, Cpu, Target, Award, Building, Sparkles } from 'lucide-react';
 
 export const AboutPage = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const headerY = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+
   return (
-    <div className="pt-28 pb-20 space-y-20">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-32 pb-16 overflow-hidden">
       
-      {/* Header */}
-      <section className="relative">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <span className="text-xs uppercase font-bold tracking-[0.35em] text-praxis-cyan">
-            Institutional Pedigree & Ecosystem
+      {/* Background Atmosphere */}
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
+        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full blur-[100px] mix-blend-screen opacity-20 bg-praxis-cyan/40" />
+        <div className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] rounded-full blur-[120px] mix-blend-screen opacity-10 bg-praxis-accent/40" />
+      </div>
+
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-24">
+        
+        {/* Page Header */}
+        <motion.div 
+          style={{ y: headerY, opacity: headerOpacity }}
+          className="text-center space-y-6 max-w-4xl mx-auto"
+        >
+          <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.5em] text-praxis-cyan font-cinematic block">
+            The Manifesto
           </span>
-          <h1 className="text-4xl sm:text-6xl font-black uppercase text-white font-display tracking-wider">
-            ABOUT PRAXIS
+          <h1 className="text-5xl md:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 font-display tracking-widest">
+            Identity & Origins
           </h1>
-          <p className="text-sm sm:text-base text-praxis-secondary max-w-3xl mx-auto leading-relaxed">
-            The collaborative student canopy of the Department of Computer Science & Engineering (Allied Branches) at Sree Dattha Institute of Engineering & Science.
+          <p className="text-sm md:text-base text-white/50 leading-loose font-cinematic uppercase tracking-widest max-w-2xl mx-auto">
+            Understanding the architecture of the Sree Dattha Institute's premier CSE-Allied ecosystem.
           </p>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* Institutional Overview & Praxis Genesis */}
-      <section className="relative">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        {/* Institutional Foundation */}
+        <section className="relative z-20 liquid-glass-elevated rounded-[3rem] p-12 md:p-24 border-white/20 overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/10 blur-[100px] mix-blend-screen pointer-events-none" />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 bg-praxis-cyan/20 blur-2xl rounded-full" />
+                <img 
+                  src={COLLEGE_BRAND.logoUrl} 
+                  alt="SDES Logo" 
+                  className="relative z-10 w-48 md:w-64 h-auto object-contain filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
+                />
+              </div>
+            </div>
             
-            {/* College Overview */}
-            <div className="p-8 rounded-2xl glass-panel-elevated border border-praxis-border flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <img src={COLLEGE_BRAND.logoUrl} alt="SDES Logo" className="h-10 w-auto object-contain" />
-                  <span className="text-xs uppercase font-bold tracking-widest text-praxis-cyan">
-                    The Institution
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold uppercase text-white font-display tracking-wide">
-                  Sree Dattha Institute of Engineering & Science
-                </h3>
-                <p className="text-xs sm:text-sm text-praxis-secondary leading-relaxed">
-                  Established with a commitment to engineering distinction and academic rigor, Sree Dattha Institute of Engineering & Science (SDES) in Greater Hyderabad is renowned for cultivating tech-ready graduates equipped to solve real-world industrial and societal problems.
+            <div className="lg:col-span-7 space-y-8">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
+                Institutional Foundation
+              </span>
+              <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest leading-tight">
+                Sree Dattha Institute of Engineering & Science
+              </h2>
+              <div className="space-y-6 text-white/70 font-cinematic leading-relaxed text-lg">
+                <p>
+                  Established with a profound commitment to engineering distinction and academic rigor, Sree Dattha Institute of Engineering & Science (SDES) stands as a premier autonomous institution in Greater Hyderabad.
                 </p>
-                <p className="text-xs text-praxis-muted leading-relaxed">
-                  With world-class laboratories, an advanced computing center, and dedicated faculty, SDES fosters a high-impact learning culture that champions technical curiosity and multidisciplinary exploration.
+                <p>
+                  We are driven by a singular mission: cultivating tech-ready graduates equipped to solve real-world industrial and societal problems. With advanced computing centers, world-class laboratories, and a high-impact learning culture, SDES champions technical curiosity and multidisciplinary exploration across all domains of engineering.
                 </p>
               </div>
-
-              <div className="pt-4 border-t border-praxis-border/60 text-xs text-praxis-muted">
-                Affiliated & Approved &bull; Sheriguda, Ibrahimpatnam, Greater Hyderabad
+              
+              <div className="flex flex-wrap gap-4 pt-6 text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">
+                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Approved by AICTE</span>
+                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Affiliated to JNTUH</span>
+                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Accredited by NAAC</span>
               </div>
-            </div>
-
-            {/* Praxis Mission */}
-            <div className="p-8 rounded-2xl glass-panel border border-praxis-border flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <img src={COLLEGE_BRAND.praxisLogoUrl} alt="PRAXIS Logo" className="h-10 w-auto object-contain" />
-                  <span className="text-xs uppercase font-bold tracking-widest text-praxis-accent">
-                    The Ecosystem
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold uppercase text-white font-display tracking-wide">
-                  The CSE-Allied Student Platform
-                </h3>
-                <p className="text-xs sm:text-sm text-praxis-secondary leading-relaxed">
-                  PRAXIS emerged from a strategic realization: true engineering excellence demands hands-on practice, peer collaboration, public communication, and creative confidence alongside academic curricula.
-                </p>
-                <p className="text-xs text-praxis-muted leading-relaxed">
-                  By structuring both technical chapters (Genesis, Tech Vertex, Innovex) and non-technical chapters (D-Talks, Visual Vibes, Lakshya), PRAXIS provides an all-inclusive platform for student builders, innovators, speakers, and leaders.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-praxis-border/60 text-xs text-praxis-cyan uppercase tracking-widest font-semibold">
-                Autonomous Student Chapters &bull; Unified Institutional Governance
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Core Ecosystem Pillars */}
-      <section className="relative py-8 bg-praxis-navy/30 border-y border-praxis-border/60">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-5 rounded-xl glass-panel border border-praxis-border/60 space-y-2">
-              <span className="text-xl sm:text-2xl font-black text-white font-display">CREATIVITY</span>
-              <p className="text-xs text-praxis-muted">Visual arts, storytelling, and digital cinematography.</p>
-            </div>
-            <div className="p-5 rounded-xl glass-panel border border-praxis-border/60 space-y-2">
-              <span className="text-xl sm:text-2xl font-black text-praxis-cyan font-display">TECHNOLOGY</span>
-              <p className="text-xs text-praxis-muted">Algorithms, modern cloud stacks, AI, and embedded hardware.</p>
-            </div>
-            <div className="p-5 rounded-xl glass-panel border border-praxis-border/60 space-y-2">
-              <span className="text-xl sm:text-2xl font-black text-praxis-accent font-display">COMMUNITY</span>
-              <p className="text-xs text-praxis-muted">Peer mentorship, social outreach, and debate discourse.</p>
-            </div>
-            <div className="p-5 rounded-xl glass-panel border border-praxis-border/60 space-y-2">
-              <span className="text-xl sm:text-2xl font-black text-emerald-400 font-display">INNOVATION</span>
-              <p className="text-xs text-praxis-muted">Patentable prototypes and competitive hackathon projects.</p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Leadership & Governance Section */}
-      <section className="relative">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan">
+        {/* The PRAXIS Vision */}
+        <section className="relative z-20 liquid-glass rounded-[3rem] p-12 md:p-24 border-white/10 overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-praxis-accent/10 blur-[100px] mix-blend-screen pointer-events-none" />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+            <div className="lg:col-span-7 space-y-8 order-2 lg:order-1">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-accent font-cinematic">
+                The Ecosystem
+              </span>
+              <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest leading-tight">
+                PRAXIS CSE-Allied Platform
+              </h2>
+              <div className="space-y-6 text-white/70 font-cinematic leading-relaxed text-lg">
+                <p>
+                  PRAXIS emerged from a strategic realization: true engineering excellence demands more than classroom theory. It requires hands-on practice, peer collaboration, public communication, and creative confidence.
+                </p>
+                <p>
+                  Acting as the unifying student club ecosystem for SDES, PRAXIS provides an open runway for ambitious students. By structuring both Technical Guilds (Algorithms, AI, Cloud) and Creative Guilds (Media, Debate, Arts), we provide an all-inclusive platform for student builders, innovators, and leaders to operate autonomously while sharing a unified vision of excellence.
+                </p>
+              </div>
+            </div>
+            
+            <div className="lg:col-span-5 flex justify-center order-1 lg:order-2">
+              <img 
+                src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png" 
+                alt="PRAXIS Master Typography" 
+                className="w-full max-w-sm object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] translate-x-4" 
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Core Pillars */}
+        <section className="relative z-20">
+          <div className="text-center mb-16">
+            <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-white/50 font-cinematic">
+              Guiding Principles
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { title: "CREATIVITY", desc: "Visual arts, storytelling, and digital cinematography.", color: "text-white" },
+              { title: "TECHNOLOGY", desc: "Algorithms, modern cloud stacks, AI, and embedded hardware.", color: "text-praxis-cyan" },
+              { title: "COMMUNITY", desc: "Peer mentorship, social outreach, and debate discourse.", color: "text-praxis-accent" },
+              { title: "INNOVATION", desc: "Patentable prototypes and competitive hackathon projects.", color: "text-emerald-400" }
+            ].map((pillar, idx) => (
+              <div 
+                key={idx}
+                className="liquid-glass-card p-12 rounded-[2rem] text-center space-y-6 hover:-translate-y-2 transition-transform duration-500"
+              >
+                <h3 className={`text-xl md:text-2xl font-black font-display tracking-widest ${pillar.color}`}>{pillar.title}</h3>
+                <p className="text-sm text-white/60 font-cinematic leading-relaxed">{pillar.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Leadership & Governance */}
+        <section className="relative z-20 pt-20 border-t border-white/5">
+          <div className="text-center max-w-3xl mx-auto space-y-6 mb-20">
+            <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
               Ecosystem Governance
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black uppercase text-white font-display">
-              Leadership & Coordination
+            <h2 className="text-4xl md:text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 font-display tracking-widest">
+              Core Command
             </h2>
-            <p className="text-xs sm:text-sm text-praxis-secondary">
+            <p className="text-sm md:text-lg text-white/50 font-cinematic tracking-widest leading-loose">
               Experienced faculty steering combined with energetic student chapter presidents and operational coordinators.
             </p>
           </div>
 
           <LeadershipSection />
-        </div>
-      </section>
+        </section>
 
+      </div>
     </div>
   );
 };
