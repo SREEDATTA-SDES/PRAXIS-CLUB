@@ -87,10 +87,11 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
               <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.5em] text-white/80">{club.category} LAYER</span>
             </div>
             
-            <h1 className="text-6xl sm:text-8xl md:text-9xl font-black uppercase text-transparent bg-clip-text font-display tracking-widest drop-shadow-2xl" 
-                style={{ backgroundImage: `linear-gradient(to bottom right, #ffffff, ${club.accentPrimary})` }}>
-              {club.name}
-            </h1>
+            <img 
+              src={club.logoUrl} 
+              alt={club.name} 
+              className="w-full max-w-lg md:max-w-2xl h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] mb-4"
+            />
             
             <p className="text-xl md:text-3xl font-cinematic italic text-white/70 max-w-3xl leading-relaxed">
               "{club.tagline}"

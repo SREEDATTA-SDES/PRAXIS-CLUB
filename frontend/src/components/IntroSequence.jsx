@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { COLLEGE_BRAND } from '../data/initialData';
+import { CollegeBrand } from './CollegeBrand';
 
 export const IntroSequence = ({ onComplete }) => {
   const [step, setStep] = useState(1);
@@ -52,29 +53,21 @@ export const IntroSequence = ({ onComplete }) => {
       }`}
     >
       {/* Background Atmosphere */}
-      <div className="absolute inset-0 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-20 mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('https://res.cloudinary.com/mb7zqdf5/image/upload/v1791138156/Midnight_Blue_Textured_Stone_Surface.png')] opacity-20 mix-blend-overlay pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-praxis-glow/10 blur-[150px] rounded-full pointer-events-none" />
 
       {/* Main Content Area */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-64 w-full">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[380px] md:min-h-[420px] w-full px-4">
         
         {/* Step 2: College Identity */}
         <div 
-          className={`absolute flex flex-col items-center justify-center text-center transition-all duration-700 transform ${
+          className={`absolute flex items-center justify-center transition-all duration-700 transform ${
             step === 2 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-10 scale-95 pointer-events-none'
           }`}
         >
-          <img
-            src={COLLEGE_BRAND.logoUrl}
-            alt="SDES"
-            className="h-28 md:h-32 w-auto object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] mb-6"
-          />
-          <h2 className="text-[#E52329] font-sans uppercase tracking-widest text-sm md:text-lg font-black leading-tight drop-shadow-md">
-            SREE DATTHA INSTITUTE
-          </h2>
-          <h2 className="text-[#E52329] font-sans uppercase tracking-widest text-sm md:text-lg font-black leading-tight drop-shadow-md">
-            OF ENGINEERING & SCIENCE
-          </h2>
+          <div className="scale-100 sm:scale-105 md:scale-115 origin-center drop-shadow-2xl">
+            <CollegeBrand layout="vertical" />
+          </div>
         </div>
 
         {/* Step 4: PRAXIS Reveal */}

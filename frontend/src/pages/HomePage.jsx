@@ -17,6 +17,14 @@ export const HomePage = ({ onOpenLightbox }) => {
     offset: ["start start", "end end"]
   });
 
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const technicalClubs = clubs.filter(c => c.category === 'TECHNICAL');
   const nonTechnicalClubs = clubs.filter(c => c.category === 'NON-TECHNICAL');
   const upcomingEvents = events.filter(e => e.status === 'UPCOMING').slice(0, 3);
@@ -113,7 +121,7 @@ export const HomePage = ({ onOpenLightbox }) => {
 
           <div className="space-y-12">
             {/* TECHNICAL CLUBS */}
-            <motion.div style={{ x: xClubsLeft }}>
+            <motion.div style={{ x: isMobile ? 0 : xClubsLeft }}>
               <div className="flex items-center gap-6 mb-8">
                 <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
                   Technical Layer
@@ -130,7 +138,7 @@ export const HomePage = ({ onOpenLightbox }) => {
             </motion.div>
 
             {/* NON-TECHNICAL CLUBS */}
-            <motion.div style={{ x: xClubsRight }}>
+            <motion.div style={{ x: isMobile ? 0 : xClubsRight }}>
               <div className="flex items-center gap-6 mb-8">
                 <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
                   Creative Layer
@@ -248,7 +256,7 @@ export const HomePage = ({ onOpenLightbox }) => {
 
       {/* 8. Contact Teaser - Liquid Glass Call to Action */}
       <section className="relative py-16 overflow-hidden z-10">
-        <div className="absolute inset-0 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-[0.05] bg-cover bg-center pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('https://res.cloudinary.com/mb7zqdf5/image/upload/v1791138156/Midnight_Blue_Textured_Stone_Surface.png')] opacity-[0.05] bg-cover bg-center pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}

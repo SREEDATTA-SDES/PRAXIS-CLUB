@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 
 import { Club } from './models/Club.js';
+import { User } from './models/User.js';
+import bcrypt from 'bcryptjs';
 
 // We can't import frontend files easily due to babel/vite but we can just copy the INITIAL_CLUBS payload.
 const INITIAL_CLUBS = [
@@ -164,7 +166,30 @@ const seedData = async () => {
     // Insert new clubs
     await Club.insertMany(INITIAL_CLUBS);
     
-    console.log('Successfully seeded database with updated logos and clubs!');
+    // Seed Admin User
+    const adminUsername = process.env.ADMIN_USERNAME || 'praxis_admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'praxis_secure_password';
+    
+    // Check if admin exists
+    let adminUser = await User.findOne({ username: adminUsername });
+    if (!adminUser) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(adminPassword, salt);
+      
+      adminUser = new User({
+        username: adminUsername,
+        email: `${adminUsername}@praxis.sdes.ac.in`,
+        passwordHash,
+        role: 'SUPER_ADMIN',
+        fullName: 'System Administrator'
+      });
+      await adminUser.save();
+      console.log(`Successfully seeded admin user: ${adminUsername}`);
+    } else {
+      console.log(`Admin user ${adminUsername} already exists.`);
+    }
+    
+    console.log('Successfully seeded database with updated logos, clubs, and admin!');
     process.exit(0);
   } catch (err) {
     console.error('Error seeding data:', err);

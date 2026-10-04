@@ -28,6 +28,19 @@ const memoryStore = {
   admins: JSON.parse(JSON.stringify(DEFAULT_ADMINS))
 };
 
+// Inject env admin to memory store if present
+if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
+  memoryStore.admins.push({
+    id: "admin-env",
+    username: process.env.ADMIN_USERNAME,
+    email: process.env.ADMIN_USERNAME + "@praxis.sdes.ac.in",
+    password: process.env.ADMIN_PASSWORD, // Storing plain text for fallback matching
+    role: "SUPER_ADMIN",
+    assignedClubId: null,
+    fullName: "System Administrator"
+  });
+}
+
 const isMongooseReady = () => mongoose.connection.readyState === 1;
 
 export const dataService = {
@@ -290,20 +303,22 @@ export const dataService = {
   // === USERS / AUTH ===
   async findUserByUsernameOrEmail(identifier) {
     if (isMongooseReady()) {
-      return await User.findOne({
+      const user = await User.findOne({
         $or: [{ username: identifier }, { email: identifier }]
       });
+      if (user) return user;
     }
     return memoryStore.admins.find(u => u.username === identifier || u.email === identifier);
   },
 
   async findUserById(id) {
     if (isMongooseReady()) {
-      return await User.findById(id).select('-passwordHash');
+      const user = await User.findById(id).select('-passwordHash');
+      if (user) return user;
     }
     const user = memoryStore.admins.find(u => u.id === id);
     if (user) {
-      const { passwordHash, ...rest } = user;
+      const { passwordHash, password, ...rest } = user;
       return rest;
     }
     return null;

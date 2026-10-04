@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export const SpatialHero = () => {
   return (
-    <section className="relative w-full bg-transparent overflow-hidden pt-24 pb-12 flex flex-col items-center justify-center">
+    <section className="relative w-full bg-transparent overflow-hidden pt-36 pb-12 flex flex-col items-center justify-center">
       {/* Layer 1: Deep Atmosphere & Lighting */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-praxis-glow/10 blur-[120px] rounded-full mix-blend-screen" />
@@ -18,7 +18,7 @@ export const SpatialHero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="w-full flex justify-center mb-10"
+          className="w-full flex justify-center mb-16"
         >
           <img 
             src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png"

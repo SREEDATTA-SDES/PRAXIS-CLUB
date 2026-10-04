@@ -48,27 +48,30 @@ export const AdminLogin = () => {
       <div className="w-full max-w-md relative z-10 space-y-6">
         
         {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <img src={COLLEGE_BRAND.logoUrl} alt="SDES Logo" className="h-10 w-auto object-contain" />
-            <div className="h-6 w-[1px] bg-praxis-border" />
-            <img src={COLLEGE_BRAND.praxisLogoUrl} alt="PRAXIS Logo" className="h-9 w-auto object-contain" />
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img src={COLLEGE_BRAND.logoUrl} alt="SDES Logo" className="h-12 w-auto object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
+            <div className="h-8 w-[1px] bg-praxis-border/50" />
+            <img src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png" alt="PRAXIS Logo" className="h-12 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] translate-x-2" />
           </div>
-          <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-praxis-cyan block">
+          <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan block bg-praxis-cyan/10 py-1.5 px-4 rounded-full inline-block border border-praxis-cyan/20">
             SDES CSE-ALLIED &bull; SECURE CONSOLE
           </span>
-          <h1 className="text-2xl font-bold uppercase text-white font-display tracking-wider">
+          <h1 className="text-3xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 font-display tracking-widest drop-shadow-lg">
             PRAXIS Admin Portal
           </h1>
-          <p className="text-xs text-praxis-secondary">
-            Secure Console for Ecosystem Administrators
+          <p className="text-xs text-praxis-secondary uppercase tracking-[0.2em]">
+            Restricted Access
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="p-8 rounded-xl bg-praxis-card border border-praxis-border shadow-2xl">
+        <div className="p-8 md:p-10 rounded-[2rem] liquid-glass-elevated border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-praxis-cyan via-praxis-glow to-praxis-accent opacity-70" />
+          
           {error && (
-            <div className="mb-4 p-3 rounded bg-red-950/60 border border-red-500/50 text-red-300 text-xs">
+            <div className="mb-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-xs font-cinematic uppercase tracking-widest text-center flex items-center justify-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
               {error}
             </div>
           )}
@@ -86,7 +89,7 @@ export const AdminLogin = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="admin username"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-lg bg-praxis-surface border border-praxis-border text-white placeholder-praxis-muted focus:outline-none focus:border-praxis-cyan text-xs"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-praxis-muted/50 focus:outline-none focus:border-praxis-cyan focus:bg-black/60 transition-all text-xs font-cinematic tracking-wider"
                 />
               </div>
             </div>
@@ -103,12 +106,12 @@ export const AdminLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secret password"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg bg-praxis-surface border border-praxis-border text-white placeholder-praxis-muted focus:outline-none focus:border-praxis-cyan text-xs"
+                  className="w-full pl-11 pr-10 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-praxis-muted/50 focus:outline-none focus:border-praxis-cyan focus:bg-black/60 transition-all text-xs font-cinematic tracking-wider"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-praxis-muted hover:text-white transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-praxis-muted hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -118,10 +121,10 @@ export const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-praxis-glow to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-white uppercase font-bold tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-cinematic-blue disabled:opacity-50"
+              className="w-full mt-6 py-4 rounded-xl bg-gradient-to-r from-praxis-cyan via-blue-600 to-praxis-accent hover:opacity-90 text-white uppercase font-bold tracking-[0.3em] transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(0,242,254,0.3)] hover:shadow-[0_0_30px_rgba(0,242,254,0.5)] disabled:opacity-50"
             >
-              <span>{loading ? 'Authenticating...' : 'Sign In To Console'}</span>
-              <ArrowRight size={14} />
+              <span>{loading ? 'Authenticating...' : 'Initialize Console'}</span>
+              <ArrowRight size={16} />
             </button>
           </form>
 

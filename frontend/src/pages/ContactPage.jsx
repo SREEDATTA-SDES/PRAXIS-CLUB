@@ -46,7 +46,7 @@ export const ContactPage = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-36 sm:pt-40 md:pt-48 pb-24 overflow-hidden">
       
       {/* Dynamic Ambient Background */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
@@ -63,6 +63,21 @@ export const ContactPage = () => {
 
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
         
+        {/* Page Header */}
+        <motion.div 
+          style={{ y: headerY, opacity: headerOpacity }}
+          className="text-center space-y-4 max-w-4xl mx-auto pt-2 pb-8"
+        >
+          <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.5em] text-praxis-cyan font-cinematic block">
+            Official Nexus
+          </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 font-display tracking-widest">
+            Contact & Connect
+          </h1>
+          <p className="text-xs md:text-sm text-white/50 leading-relaxed font-cinematic uppercase tracking-widest max-w-xl mx-auto">
+            Get in touch with the PRAXIS coordination committee or visit our campus at Sheriguda.
+          </p>
+        </motion.div>
 
 
         {/* Main Grid: Details + Message Form */}
@@ -296,21 +311,41 @@ export const ContactPage = () => {
           </div>
         </section>
 
-        {/* Google Maps Embed / Interactive Location Representation */}
+        {/* Google Maps Embed / Sheriguda Campus Location */}
         <motion.section 
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative z-20 pt-12"
+          className="relative z-20 pt-8"
         >
-          <div className="p-4 rounded-[3rem] liquid-glass-elevated border border-white/20 overflow-hidden">
-            <div className="relative h-[400px] md:h-[600px] w-full rounded-[2.5rem] overflow-hidden bg-black">
+          <div className="p-4 sm:p-6 rounded-[3rem] liquid-glass-elevated border border-white/20 overflow-hidden space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 pt-2 gap-3">
+              <div>
+                <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan block mb-1">
+                  Location Matrix &bull; Sheriguda Campus
+                </span>
+                <h4 className="text-xl sm:text-2xl font-black uppercase text-white font-display tracking-wider">
+                  Campus Navigation Map
+                </h4>
+              </div>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Sree+Dattha+Institute+of+Engineering+and+Science+Sheriguda"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full liquid-glass border border-praxis-cyan/40 text-praxis-cyan hover:bg-praxis-cyan hover:text-praxis-bg text-xs font-bold uppercase tracking-widest transition-all duration-300"
+              >
+                <span>Navigate in Google Maps</span>
+                <ExternalLink size={14} />
+              </a>
+            </div>
+
+            <div className="relative h-[400px] md:h-[550px] w-full rounded-[2.5rem] overflow-hidden bg-black border border-white/10">
               <iframe
-                title="SDES Campus Google Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3810.076639869502!2d78.58611847516147!3d17.214470883645366!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcba00b73b5f001%3A0xa9ffbb1c7201c7a8!2sSree%20Dattha%20Institute%20of%20Engineering%20and%20Science!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                title="SDES Campus Google Map - Sheriguda"
+                src="https://maps.google.com/maps?q=Sree+Dattha+Institute+of+Engineering+and+Science,+Sheriguda,+Ibrahimpatnam&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: 'invert(100%) hue-rotate(180deg) brightness(85%) contrast(110%) opacity(0.8)' }}
+                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(85%) contrast(110%) opacity(0.85)' }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

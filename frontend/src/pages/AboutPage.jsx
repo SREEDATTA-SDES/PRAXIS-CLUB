@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { COLLEGE_BRAND } from '../data/initialData';
 import { LeadershipSection } from '../components/LeadershipSection';
+import { CollegeBrand } from '../components/CollegeBrand';
 
 export const AboutPage = () => {
   const containerRef = useRef(null);
@@ -45,25 +46,15 @@ export const AboutPage = () => {
         <section className="relative z-20 liquid-glass-elevated rounded-[3rem] p-12 md:p-24 border-white/20 overflow-hidden">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/10 blur-[100px] mix-blend-screen pointer-events-none" />
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative">
-                <div className="absolute inset-0 bg-praxis-cyan/20 blur-2xl rounded-full" />
-                <img 
-                  src={COLLEGE_BRAND.logoUrl} 
-                  alt="SDES Logo" 
-                  className="relative z-10 w-48 md:w-64 h-auto object-contain filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
-                />
-              </div>
+          <div className="flex flex-col items-center relative z-10 space-y-16">
+            <div className="flex justify-center scale-110 md:scale-125 lg:scale-[1.6] origin-center drop-shadow-2xl">
+              <CollegeBrand />
             </div>
             
-            <div className="lg:col-span-7 space-y-8">
-              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
+            <div className="space-y-8 max-w-4xl text-center">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic block">
                 Institutional Foundation
               </span>
-              <h2 className="text-3xl md:text-5xl font-black uppercase text-white font-display tracking-widest leading-tight">
-                Sree Dattha Institute of Engineering & Science
-              </h2>
               <div className="space-y-6 text-white/70 font-cinematic leading-relaxed text-lg">
                 <p>
                   Established with a profound commitment to engineering distinction and academic rigor, Sree Dattha Institute of Engineering & Science (SDES) stands as a premier autonomous institution in Greater Hyderabad.
@@ -71,12 +62,6 @@ export const AboutPage = () => {
                 <p>
                   We are driven by a singular mission: cultivating tech-ready graduates equipped to solve real-world industrial and societal problems. With advanced computing centers, world-class laboratories, and a high-impact learning culture, SDES champions technical curiosity and multidisciplinary exploration across all domains of engineering.
                 </p>
-              </div>
-              
-              <div className="flex flex-wrap gap-4 pt-6 text-[10px] uppercase tracking-[0.3em] font-bold text-white/50">
-                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Approved by AICTE</span>
-                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Affiliated to JNTUH</span>
-                <span className="liquid-glass px-4 py-2 border-white/10 rounded-sm">Accredited by NAAC</span>
               </div>
             </div>
           </div>

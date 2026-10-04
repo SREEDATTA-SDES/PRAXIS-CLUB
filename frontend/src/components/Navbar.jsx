@@ -110,41 +110,64 @@ export const Navbar = ({ onOpenSearch }) => {
 
       {/* Cinematic Full-screen Mobile Menu */}
       <div 
-        className={`fixed inset-0 z-30 bg-praxis-bg/95 backdrop-blur-2xl flex flex-col justify-center items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed inset-0 z-30 flex flex-col justify-center items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {/* Decorative elements */}
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-praxis-glow/20 blur-[150px] rounded-full mix-blend-screen" />
-        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-praxis-navy/50 blur-[150px] rounded-full" />
+        <div className="absolute inset-0 bg-[#07090D]/90 backdrop-blur-3xl" />
         
-        <nav className="flex flex-col items-center space-y-6 relative z-10">
-          {navLinks.map((link, index) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              style={{ transitionDelay: `${index * 50}ms` }}
-              className={`text-3xl md:text-5xl uppercase tracking-[0.3em] font-cinematic transition-all duration-500 transform ${
-                mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              } ${
-                isActive(link.path) ? 'text-praxis-cyan drop-shadow-[0_0_15px_rgba(14,165,233,0.5)]' : 'text-praxis-text hover:text-white'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        {/* Dynamic Abstract Shapes */}
+        <div className={`absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-praxis-cyan/10 blur-[120px] rounded-full mix-blend-screen transition-transform duration-[2s] ${mobileMenuOpen ? 'scale-100' : 'scale-50'}`} />
+        <div className={`absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] bg-praxis-accent/10 blur-[120px] rounded-full mix-blend-screen transition-transform duration-[2s] ${mobileMenuOpen ? 'scale-100' : 'scale-50'}`} />
+        
+        {/* Network Grid Overlay */}
+        <div className="absolute inset-0 bg-[url('https://res.cloudinary.com/mb7zqdf5/image/upload/v1791138156/Midnight_Blue_Textured_Stone_Surface.png')] opacity-[0.03] bg-cover mix-blend-overlay" />
+        
+        <nav className="flex flex-col items-center justify-center space-y-8 relative z-10 w-full max-w-sm px-6">
+          <div className={`transition-all duration-1000 transform ${mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <span className="text-[10px] uppercase font-bold tracking-[0.5em] text-praxis-cyan block mb-8 text-center bg-praxis-cyan/10 py-1.5 px-4 rounded-full border border-praxis-cyan/20">
+              Navigation Menu
+            </span>
+          </div>
+
+          <div className="flex flex-col space-y-4 w-full">
+            {navLinks.map((link, index) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                style={{ transitionDelay: `${100 + index * 100}ms` }}
+                className={`group relative liquid-glass-elevated p-6 w-full rounded-3xl transition-all duration-500 transform overflow-hidden ${
+                  mobileMenuOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
+                } ${
+                  isActive(link.path) 
+                    ? 'border-praxis-cyan/50 shadow-[0_0_30px_rgba(0,242,254,0.15)]' 
+                    : 'border-white/5 hover:border-white/20'
+                }`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-r from-praxis-cyan/10 to-transparent transition-opacity duration-300 ${isActive(link.path) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
+                <div className="flex items-center justify-between relative z-10">
+                  <span className={`text-2xl font-display uppercase tracking-widest ${isActive(link.path) ? 'text-praxis-cyan' : 'text-white'}`}>
+                    {link.name}
+                  </span>
+                  <span className={`text-xs font-cinematic uppercase tracking-[0.2em] ${isActive(link.path) ? 'text-praxis-cyan' : 'text-white/30'}`}>
+                    0{index + 1}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
           
           <div 
-            style={{ transitionDelay: '300ms' }}
-            className={`mt-12 transition-all duration-500 transform ${
-              mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            style={{ transitionDelay: `${100 + navLinks.length * 100 + 100}ms` }}
+            className={`mt-10 w-full transition-all duration-700 transform ${
+              mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
             }`}
           >
             <Link
               to="/contact"
-              className="px-8 py-3 border border-praxis-cyan text-praxis-cyan hover:bg-praxis-cyan hover:text-praxis-bg text-sm uppercase tracking-[0.3em] transition-all flex items-center gap-2"
+              className="w-full py-5 liquid-glass rounded-3xl border border-praxis-accent/50 text-praxis-accent hover:bg-praxis-accent hover:text-white text-xs uppercase font-bold tracking-[0.4em] transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(236,72,153,0.2)]"
             >
-              JOIN PRAXIS
+              <span>Join The Ecosystem</span>
             </Link>
           </div>
         </nav>

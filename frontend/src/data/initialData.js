@@ -15,7 +15,7 @@ export const COLLEGE_BRAND = {
   instagramUrl: "https://instagram.com/praxis_sdes",
   facebookUrl: "https://facebook.com/sdespraxis",
   whatsappUrl: "https://chat.whatsapp.com/praxis-sdes",
-  googleMapsUrl: "https://maps.google.com/?q=Sree+Dattha+Institute+of+Engineering+and+Science"
+  googleMapsUrl: "https://maps.google.com/?q=Sree+Dattha+Institute+of+Engineering+and+Science,+Sheriguda,+Ibrahimpatnam"
 };
 
 export const INITIAL_CLUBS = [

@@ -30,17 +30,13 @@ import { AdminUsers } from './pages/admin/AdminUsers';
 import { AdminSettings } from './pages/admin/AdminSettings';
 
 export function App() {
-  const [showIntro, setShowIntro] = useState(() => {
-    // Only show intro once per user session
-    return !sessionStorage.getItem('praxis_intro_seen');
-  });
+  const [showIntro, setShowIntro] = useState(true);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeLightboxItem, setActiveLightboxItem] = useState(null);
   const location = useLocation();
 
   const handleIntroComplete = () => {
-    sessionStorage.setItem('praxis_intro_seen', 'true');
     setShowIntro(false);
   };
 

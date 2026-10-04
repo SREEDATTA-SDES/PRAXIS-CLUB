@@ -16,7 +16,7 @@ export const Footer = ({ onReplayIntro }) => {
     <footer className="relative bg-praxis-bg border-t border-praxis-border-light/30 pt-32 pb-12 overflow-hidden text-praxis-secondary text-sm font-cinematic">
       {/* Deep Spatial Lighting */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-48 bg-praxis-glow/10 blur-[150px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[url('https://ik.imagekit.io/SDES/LOGOS/Deep%20Blue%20Grunge%20Texture%20Background.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[url('https://res.cloudinary.com/mb7zqdf5/image/upload/v1791138156/Midnight_Blue_Textured_Stone_Surface.png')] opacity-10 mix-blend-overlay pointer-events-none" />
 
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
         
@@ -25,13 +25,13 @@ export const Footer = ({ onReplayIntro }) => {
           <span className="text-xs uppercase tracking-[0.5em] text-praxis-cyan font-bold mb-6">
             Explore. Learn. Build. Together.
           </span>
-          <h2 
-            className="text-[12vw] sm:text-[10vw] md:text-[8vw] font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-praxis-muted font-display leading-[0.8] tracking-widest cursor-pointer hover:to-white transition-colors duration-700"
-            onClick={scrollToTop}
-            title="Back to Top"
-          >
-            PRAXIS
-          </h2>
+            <img 
+              src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png" 
+              alt="PRAXIS"
+              className="w-full max-w-[800px] h-auto object-contain cursor-pointer drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-80 hover:opacity-100 transition-opacity duration-700 translate-x-6 md:translate-x-16"
+              onClick={scrollToTop}
+              title="Back to Top"
+            />
           <div className="flex items-center gap-6 mt-6">
              <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-praxis-border-light" />
              <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-praxis-secondary font-bold">
