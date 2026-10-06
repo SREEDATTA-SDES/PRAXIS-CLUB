@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
-import { CollegeBrand } from './CollegeBrand';
+import { COLLEGE_BRAND } from '../data/initialData';
 
 export const Navbar = ({ onOpenSearch }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -45,7 +45,18 @@ export const Navbar = ({ onOpenSearch }) => {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between">
             
-            <CollegeBrand />
+            {/* Official College Banner Logo - Increased size, No hover effect */}
+            <Link to="/" className="flex items-center shrink-0 py-1">
+              <img
+                src={COLLEGE_BRAND.bannerLogoUrl}
+                alt="Sree Dattha Institute of Engineering & Science"
+                className={`w-auto object-contain transition-all duration-300 max-w-[240px] sm:max-w-none ${
+                  scrolled
+                    ? 'h-11 sm:h-13 md:h-14 lg:h-16'
+                    : 'h-13 sm:h-16 md:h-18 lg:h-20'
+                }`}
+              />
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden xl:flex items-center space-x-8">

@@ -6,8 +6,9 @@ export const COLLEGE_BRAND = {
   department: "CSE-Allied",
   tagline: "CSE-Allied Student Club Ecosystem",
   logoUrl: "https://ik.imagekit.io/SDES/LOGOS/CLG%20LOGO.png",
+  bannerLogoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791298517/Sree_Dattha_Institute_Banner_Logo.png",
   websiteUrl: "https://www.sreedattha.ac.in/sdes/",
-  praxisLogoUrl: "https://ik.imagekit.io/SDES/LOGOS/PRAXIS%20Logo.png",
+  praxisLogoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117774/PRAXIS_LOGO.png",
   praxisStatement: "A platform for creativity, technology, community and innovation.",
   address: "Sree Dattha Institute of Engineering & Science, Nagarjuna Sagar Road, Sheriguda, Ibrahimpatnam, Greater Hyderabad, Telangana - 501510",
   officialEmail: "praxis.sdes@sreedattha.ac.in",
@@ -165,12 +166,50 @@ export const INITIAL_CLUBS = [
   }
 ];
 
+export const GOVERNING_BODY = [
+  {
+    id: "gov-chairman",
+    name: "Sri G.Panduranga Reddy",
+    position: "Chairman",
+    designation: "Chairman :",
+    qualifications: "B.Sc., LLB.",
+    department: "Governing Council, SDES",
+    photoUrl: "/chairman.png",
+    roleType: "MANAGEMENT",
+    order: 1
+  },
+  {
+    id: "gov-vice-chairman",
+    name: "Dr. G.N.V. Vibhav Reddy",
+    position: "Vice-Chairman",
+    designation: "Vice-Chairman :",
+    qualifications: "B. Tech., M.Tech., Ph.D.",
+    department: "Governing Council, SDES",
+    photoUrl: "/vice-chairman.png",
+    roleType: "MANAGEMENT",
+    order: 2
+  },
+  {
+    id: "gov-cmd",
+    name: "Sri. G Devendra Vikram Reddy",
+    position: "Chief Managing Director",
+    designation: "Chief Managing Director :",
+    qualifications: "B.Tech, MBA",
+    department: "Governing Council, SDES",
+    photoUrl: "/cmd.png",
+    roleType: "MANAGEMENT",
+    order: 3
+  }
+];
+
 export const INITIAL_LEADERSHIP = [
   {
     id: "lead-hod",
-    name: "Dr. Faculty Head",
+    name: "Dr. K. Srinivas Rao",
     roleType: "FACULTY_HEAD",
     position: "Head of the Department",
+    designation: "Head of Department (HOD) :",
+    qualifications: "M.Tech., Ph.D.",
     department: "CSE & Allied Branches",
     yearClass: "Faculty Leadership",
     clubSlug: null,
@@ -180,9 +219,11 @@ export const INITIAL_LEADERSHIP = [
   },
   {
     id: "lead-faculty-coord",
-    name: "Prof. Faculty Coordinator",
+    name: "Prof. P. Rajesh Kumar",
     roleType: "FACULTY_COORDINATOR",
-    position: "Convener & Faculty In-Charge",
+    position: "Faculty Coordinator",
+    designation: "Faculty Coordinator :",
+    qualifications: "M.Tech., (Ph.D.)",
     department: "CSE-Allied",
     yearClass: "Faculty Coordinator",
     clubSlug: null,
@@ -192,9 +233,11 @@ export const INITIAL_LEADERSHIP = [
   },
   {
     id: "lead-praxis-president",
-    name: "Student President",
+    name: "A. Sravan Reddy",
     roleType: "PRAXIS_LEAD",
     position: "President, PRAXIS",
+    designation: "Student President :",
+    qualifications: "B.Tech IV Year (CSE-AI&ML)",
     department: "CSE (AI & ML)",
     yearClass: "Final Year",
     clubSlug: null,

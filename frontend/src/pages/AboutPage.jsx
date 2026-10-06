@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { COLLEGE_BRAND } from '../data/initialData';
 import { LeadershipSection } from '../components/LeadershipSection';
-import { CollegeBrand } from '../components/CollegeBrand';
 
 export const AboutPage = () => {
   const containerRef = useRef(null);
@@ -47,8 +46,12 @@ export const AboutPage = () => {
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/10 blur-[100px] mix-blend-screen pointer-events-none" />
           
           <div className="flex flex-col items-center relative z-10 space-y-16">
-            <div className="flex justify-center scale-110 md:scale-125 lg:scale-[1.6] origin-center drop-shadow-2xl">
-              <CollegeBrand />
+            <div className="flex justify-center w-full">
+              <img
+                src={COLLEGE_BRAND.bannerLogoUrl}
+                alt="Sree Dattha Institute of Engineering & Science"
+                className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl h-auto object-contain drop-shadow-[0_15px_40px_rgba(255,255,255,0.15)]"
+              />
             </div>
             
             <div className="space-y-8 max-w-4xl text-center">
