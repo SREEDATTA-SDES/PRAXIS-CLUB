@@ -40,34 +40,26 @@ export const ClubsPage = () => {
 
 
 
-        {/* Filter Tabs - Liquid UI - Horizontally Scrollable on Mobile */}
+        {/* Filter Tabs - Liquid UI (Matching EventsPage exact size and styling) */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-20 w-full flex justify-center"
+          className="relative z-20 flex justify-center"
         >
-          <div className="w-full max-w-full overflow-x-auto scrollbar-none px-2 py-1 flex justify-start sm:justify-center">
-            <div className="liquid-glass-elevated p-1.5 sm:p-2 rounded-full flex items-center border-white/20 shrink-0 mx-auto">
-              {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setFilter(tab)}
-                  className={`relative shrink-0 whitespace-nowrap px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.25em] sm:tracking-[0.3em] transition-colors duration-500 z-10 ${filter === tab
-                      ? 'text-praxis-bg'
-                      : 'text-white/50 hover:text-white'
-                    }`}
-                >
-                  {filter === tab && (
-                    <motion.div
-                      layoutId="active-tab"
-                      className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] z-[-1]"
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                    />
-                  )}
-                  {tab === 'ALL' ? 'All 8 Clubs' : tab}
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center p-1 liquid-glass rounded-full border border-white/10">
+            {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all ${
+                  filter === tab
+                    ? 'bg-white text-praxis-bg shadow-[0_0_20px_rgba(255,255,255,0.4)]'
+                    : 'text-white/50 hover:text-white'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </motion.section>
 
