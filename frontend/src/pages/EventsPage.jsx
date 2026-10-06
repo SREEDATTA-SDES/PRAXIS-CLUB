@@ -33,7 +33,7 @@ export const EventsPage = () => {
   });
 
   return (
-    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-36 sm:pt-40 md:pt-44 pb-16 overflow-hidden">
       
       {/* Dynamic Ambient Background */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">

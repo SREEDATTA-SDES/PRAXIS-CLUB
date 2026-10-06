@@ -16,6 +16,14 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
     offset: ["start start", "end end"]
   });
 
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const club = clubs.find(c => c.slug === clubSlug);
 
   if (!club) {
@@ -41,7 +49,7 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
   const glassOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
 
   return (
-    <div ref={containerRef} className="relative w-full min-h-screen overflow-x-hidden pt-16 bg-transparent pb-20">
+    <div ref={containerRef} className="relative w-full min-h-screen overflow-x-hidden pt-28 sm:pt-36 bg-transparent pb-20">
       
       {/* Dynamic Liquid Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
@@ -114,7 +122,7 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <motion.div 
-              style={{ x: leftSlide }}
+              style={{ x: isMobile ? 0 : leftSlide }}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -134,7 +142,7 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
 
             <div className="space-y-12">
               <motion.div 
-                style={{ x: rightSlide }}
+                style={{ x: isMobile ? 0 : rightSlide }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
@@ -147,7 +155,7 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
               </motion.div>
 
               <motion.div 
-                style={{ x: rightSlide }}
+                style={{ x: isMobile ? 0 : rightSlide }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}

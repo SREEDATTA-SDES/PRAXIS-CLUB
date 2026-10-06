@@ -38,22 +38,22 @@ export const Navbar = ({ onOpenSearch }) => {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ease-in-out ${
           scrolled
-            ? 'bg-praxis-bg/60 backdrop-blur-xl border-b border-praxis-border/50 py-4'
-            : 'bg-transparent py-6'
+            ? 'bg-praxis-bg/60 backdrop-blur-xl border-b border-praxis-border/50 py-2.5 sm:py-3.5 md:py-4'
+            : 'bg-transparent py-3 sm:py-4 md:py-6'
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between">
             
-            {/* Official College Banner Logo - Increased size, No hover effect */}
+            {/* Official College Banner Logo - Responsive, No hover effect */}
             <Link to="/" className="flex items-center shrink-0 py-1">
               <img
                 src={COLLEGE_BRAND.bannerLogoUrl}
                 alt="Sree Dattha Institute of Engineering & Science"
-                className={`w-auto object-contain transition-all duration-300 max-w-[240px] sm:max-w-none ${
+                className={`w-auto object-contain transition-all duration-300 max-w-[190px] sm:max-w-none ${
                   scrolled
-                    ? 'h-11 sm:h-13 md:h-14 lg:h-16'
-                    : 'h-13 sm:h-16 md:h-18 lg:h-20'
+                    ? 'h-9 sm:h-12 md:h-14 lg:h-16'
+                    : 'h-11 sm:h-14 md:h-16 lg:h-20'
                 }`}
               />
             </Link>

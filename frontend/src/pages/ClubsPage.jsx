@@ -21,7 +21,7 @@ export const ClubsPage = () => {
     : clubs.filter(c => c.category === filter);
 
   return (
-    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-24 pb-16 overflow-hidden">
+    <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-36 sm:pt-40 md:pt-44 pb-16 overflow-hidden">
 
       {/* Dynamic Ambient Background */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
@@ -40,32 +40,34 @@ export const ClubsPage = () => {
 
 
 
-        {/* Filter Tabs - Liquid UI */}
+        {/* Filter Tabs - Liquid UI - Horizontally Scrollable on Mobile */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-20 flex justify-center"
+          className="relative z-20 w-full flex justify-center"
         >
-          <div className="liquid-glass-elevated p-2 rounded-full flex items-center border-white/20 overflow-hidden">
-            {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setFilter(tab)}
-                className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${filter === tab
-                    ? 'text-praxis-bg'
-                    : 'text-white/50 hover:text-white'
-                  }`}
-              >
-                {filter === tab && (
-                  <motion.div
-                    layoutId="active-tab"
-                    className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] z-[-1]"
-                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  />
-                )}
-                {tab === 'ALL' ? 'All 8 Clubs' : tab}
-              </button>
-            ))}
+          <div className="w-full max-w-full overflow-x-auto scrollbar-none px-2 py-1 flex justify-start sm:justify-center">
+            <div className="liquid-glass-elevated p-1.5 sm:p-2 rounded-full flex items-center border-white/20 shrink-0 mx-auto">
+              {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setFilter(tab)}
+                  className={`relative shrink-0 whitespace-nowrap px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.25em] sm:tracking-[0.3em] transition-colors duration-500 z-10 ${filter === tab
+                      ? 'text-praxis-bg'
+                      : 'text-white/50 hover:text-white'
+                    }`}
+                >
+                  {filter === tab && (
+                    <motion.div
+                      layoutId="active-tab"
+                      className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] z-[-1]"
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                  {tab === 'ALL' ? 'All 8 Clubs' : tab}
+                </button>
+              ))}
+            </div>
           </div>
         </motion.section>
 

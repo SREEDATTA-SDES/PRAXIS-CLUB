@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useData } from '../context/DataContext';
 import { GOVERNING_BODY } from '../data/initialData';
 
@@ -21,16 +21,16 @@ export const GoldPortraitCard = ({ person, index = 0 }) => {
   const fallbackPhoto = DEFAULT_AVATARS[index % DEFAULT_AVATARS.length];
 
   return (
-    <div className="flex flex-col items-center text-center px-6 py-4 shrink-0 w-64 sm:w-72 select-none group">
+    <div className="flex flex-col items-center text-center px-4 py-3 shrink-0 w-60 sm:w-68 select-none group">
       {/* 1. Circular Portrait with Gilded Gold Double-Ring Border */}
-      <div className="relative mb-4 flex items-center justify-center">
+      <div className="relative mb-3 flex items-center justify-center">
         {/* Ambient Gold Glow Behind */}
-        <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#D4AF37]/30 via-[#F59E0B]/20 to-transparent blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-[#D4AF37]/40 via-[#F59E0B]/25 to-transparent blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
         
         {/* Outer Gold Ring */}
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full p-[3px] bg-gradient-to-b from-[#FDE68A] via-[#D4AF37] to-[#854D0E] shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+        <div className="relative w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 rounded-full p-[2.5px] bg-gradient-to-b from-[#FDE68A] via-[#D4AF37] to-[#854D0E] shadow-[0_8px_25px_rgba(0,0,0,0.8)]">
           {/* Inner Dark Gap Ring */}
-          <div className="w-full h-full rounded-full p-[2.5px] bg-[#07090D]">
+          <div className="w-full h-full rounded-full p-[2px] bg-[#07090D]">
             {/* Image Container with Inner Gold Border */}
             <div className="w-full h-full rounded-full overflow-hidden border border-[#D4AF37]/60">
               <img
@@ -73,30 +73,80 @@ export const GoldPortraitCard = ({ person, index = 0 }) => {
 
 /**
  * Auto-Moving Horizontal Scroll Row
- * Automatically scrolls continuously, pauses when cursor is hovered over it,
- * and allows smooth manual touch/drag scrolling.
+ * Smoothly auto-scrolls using requestAnimationFrame, pauses instantly when hovered or touched,
+ * supports natural drag/swipe, and has NO black color shades on edges.
  */
-export const HorizontalAutoScrollRow = ({ items, speedSeconds = 35 }) => {
+export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false }) => {
+  const scrollRef = useRef(null);
+  const isHoveredRef = useRef(false);
+  const isInteractingRef = useRef(false);
+  const [canScroll, setCanScroll] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    // Check if content overflows container
+    const checkOverflow = () => {
+      setCanScroll(el.scrollWidth > el.clientWidth + 5);
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+
+    let animId;
+    let lastTime = performance.now();
+    let scrollPos = el.scrollLeft;
+
+    const tick = (now) => {
+      const dt = Math.min(now - lastTime, 50); // Cap frame delta to prevent jumps
+      lastTime = now;
+
+      if (!isHoveredRef.current && !isInteractingRef.current && el.scrollWidth > el.clientWidth + 5) {
+        scrollPos += (speed * (dt / 16.67));
+
+        if (scrollPos >= el.scrollWidth - el.clientWidth - 1) {
+          scrollPos = 0;
+        }
+
+        el.scrollLeft = scrollPos;
+      } else {
+        scrollPos = el.scrollLeft;
+      }
+
+      animId = requestAnimationFrame(tick);
+    };
+
+    animId = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener('resize', checkOverflow);
+      cancelAnimationFrame(animId);
+    };
+  }, [items, speed]);
+
   if (!items || items.length === 0) return null;
 
-  // Duplicate items to enable seamless, infinite looping
-  // If fewer items, repeat multiple times to comfortably fill and wrap
-  const repeatCount = items.length < 5 ? 4 : 3;
-  const displayItems = Array.from({ length: repeatCount }, () => items).flat();
-
   return (
-    <div className="relative w-full overflow-hidden py-4 group">
-      {/* Left and Right Fade Gradients */}
-      <div className="absolute top-0 bottom-0 left-0 w-8 sm:w-20 bg-gradient-to-r from-praxis-bg via-praxis-bg/80 to-transparent z-10 pointer-events-none" />
-      <div className="absolute top-0 bottom-0 right-0 w-8 sm:w-20 bg-gradient-to-l from-praxis-bg via-praxis-bg/80 to-transparent z-10 pointer-events-none" />
-
-      {/* Horizontally scrollable container with auto-marquee animation */}
-      <div className="overflow-x-auto scrollbar-none flex cursor-grab active:cursor-grabbing">
-        <div 
-          className="flex items-start shrink-0 animate-marquee-infinite"
-          style={{ animationDuration: `${speedSeconds}s` }}
-        >
-          {displayItems.map((person, idx) => (
+    <div 
+      className="relative w-full py-2 group select-none"
+      onMouseEnter={() => { isHoveredRef.current = true; }}
+      onMouseLeave={() => { isHoveredRef.current = false; }}
+      onTouchStart={() => { isInteractingRef.current = true; }}
+      onTouchEnd={() => { 
+        setTimeout(() => { isInteractingRef.current = false; }, 1200); 
+      }}
+    >
+      {/* Scrollable Container - NO black edge shades */}
+      <div 
+        ref={scrollRef}
+        className={`w-full overflow-x-auto scrollbar-none flex items-center py-2 cursor-grab active:cursor-grabbing ${
+          centerIfFits && !canScroll ? 'justify-center' : 'justify-start'
+        }`}
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        <div className="flex items-start shrink-0 space-x-2 sm:space-x-4">
+          {items.map((person, idx) => (
             <GoldPortraitCard 
               key={`${person.id || person._id || idx}-${idx}`} 
               person={person} 
@@ -132,8 +182,8 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
     const clubTeam = [...clubLeads, ...coordinators];
 
     return (
-      <div className="space-y-8">
-        <div>
+      <div className="space-y-6">
+        <div className="text-center sm:text-left">
           <span className="text-xs uppercase font-bold tracking-[0.25em] text-[#D4AF37] block mb-1">
             Chapter Governance
           </span>
@@ -141,11 +191,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             Club Leads & Coordinators
           </h3>
           <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
-            Hover cursor to pause auto-scroll &bull; Drag to inspect
+            Auto-scrolling &bull; Hover cursor to pause &bull; Drag to inspect
           </p>
         </div>
 
-        <HorizontalAutoScrollRow items={clubTeam} speedSeconds={25} />
+        <HorizontalAutoScrollRow items={clubTeam} speed={0.9} />
       </div>
     );
   }
@@ -154,7 +204,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   return (
     <div className="space-y-16">
       
-      {/* 1. Governing Body / Management Dignitaries */}
+      {/* 1. Governing Body / Management Dignitaries - 3 Distinct Leaders, No Duplicates */}
       <div className="space-y-4">
         <div className="text-center">
           <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic">
@@ -166,7 +216,8 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-2" />
         </div>
 
-        <HorizontalAutoScrollRow items={GOVERNING_BODY} speedSeconds={30} />
+        {/* Displays the 3 dignitaries centered on desktop, auto-scrolls on mobile */}
+        <HorizontalAutoScrollRow items={GOVERNING_BODY} speed={0.8} centerIfFits={true} />
       </div>
 
       {/* 2. Head of Department (HOD) & Faculty Coordinators */}
@@ -181,7 +232,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-2" />
         </div>
 
-        <HorizontalAutoScrollRow items={facultyMembers} speedSeconds={30} />
+        <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} centerIfFits={true} />
       </div>
 
       {/* 3. Central Student Council, Club Leads & Student Coordinators */}
@@ -197,7 +248,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-praxis-accent to-transparent mx-auto mt-2" />
           </div>
 
-          <HorizontalAutoScrollRow items={allStudentCoordinators} speedSeconds={45} />
+          <HorizontalAutoScrollRow items={allStudentCoordinators} speed={1.0} />
         </div>
       )}
 

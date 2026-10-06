@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ExternalLink, Play, Shield, ArrowUpRight } from 'lucide-react';
 import { InstagramIcon, FacebookIcon, WhatsAppIcon } from './SocialIcons';
 import { useData } from '../context/DataContext';
-import { CollegeBrand } from './CollegeBrand';
+import { COLLEGE_BRAND } from '../data/initialData';
 
 export const Footer = ({ onReplayIntro }) => {
   const { settings } = useData();
@@ -45,7 +45,13 @@ export const Footer = ({ onReplayIntro }) => {
           
           {/* Col 1: Institutional & Ecosystem Brand */}
           <div className="col-span-1 md:col-span-5 lg:col-span-4 space-y-8">
-            <CollegeBrand />
+            <Link to="/" className="inline-block">
+              <img
+                src={COLLEGE_BRAND.bannerLogoUrl}
+                alt="Sree Dattha Institute of Engineering & Science"
+                className="w-full max-w-sm sm:max-w-md h-auto object-contain drop-shadow-md"
+              />
+            </Link>
             
             <p className="text-[11px] md:text-xs text-praxis-muted leading-loose max-w-sm tracking-widest uppercase font-medium">
               A collaborative spatial ecosystem of engineering creativity, technology, and leadership.
