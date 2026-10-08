@@ -15,7 +15,7 @@ export const AboutPage = () => {
 
   return (
     <div ref={containerRef} className="w-full min-h-screen bg-transparent pt-32 pb-16 overflow-hidden">
-      
+
       {/* Background Atmosphere */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
         <div className="absolute inset-0 bg-praxis-bg/80 backdrop-blur-3xl" />
@@ -24,9 +24,9 @@ export const AboutPage = () => {
       </div>
 
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-24">
-        
+
         {/* Page Header */}
-        <motion.div 
+        <motion.div
           style={{ y: headerY, opacity: headerOpacity }}
           className="text-center space-y-6 max-w-4xl mx-auto"
         >
@@ -44,7 +44,7 @@ export const AboutPage = () => {
         {/* Institutional Foundation */}
         <section className="relative z-20 liquid-glass-elevated rounded-[3rem] p-12 md:p-24 border-white/20 overflow-hidden">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/10 blur-[100px] mix-blend-screen pointer-events-none" />
-          
+
           <div className="flex flex-col items-center relative z-10 space-y-16">
             <div className="flex justify-center w-full">
               <img
@@ -53,17 +53,20 @@ export const AboutPage = () => {
                 className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl h-auto object-contain drop-shadow-[0_15px_40px_rgba(255,255,255,0.15)]"
               />
             </div>
-            
+
             <div className="space-y-8 max-w-4xl text-center">
               <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic block">
                 Institutional Foundation
               </span>
               <div className="space-y-6 text-white/70 font-cinematic leading-relaxed text-lg">
                 <p>
-                  Established with a profound commitment to engineering distinction and academic rigor, Sree Dattha Institute of Engineering & Science (SDES) stands as a premier autonomous institution in Greater Hyderabad.
+                  Sree Dattha Institute of Engineering and Science, SDES was established by Vyjayanthi Educational Society under the leadership of Sri G. Panduranga Reddy in 2001 facilitating and aiming at becoming a pioneer in Technical Education in the private sector. The college is approved by the AICTE - New Delhi, affiliated to Jawaharlal Nehru Technological University Hyderabad, accredited by NAAC "A+", NBA and an "UGC AUTONOMOUS",
                 </p>
                 <p>
-                  We are driven by a singular mission: cultivating tech-ready graduates equipped to solve real-world industrial and societal problems. With advanced computing centers, world-class laboratories, and a high-impact learning culture, SDES champions technical curiosity and multidisciplinary exploration across all domains of engineering.
+                  Sree Dattha Group of Institutions, SDGI was established by  Vyjayanthi Educational Society under the leadership of Sri G. Panduranga Reddy in 2010 facilitating and aiming at becoming a pioneer in Technical Education in the private sector. The college is approved by the AICTE - New Delhi, affiliated to Jawaharlal Nehru Technological University Hyderabad, accredited by NAAC "A+", NBA and an "UGC AUTONOMOUS",
+                </p>
+                <p>
+                  Sree Dattha Institute of Pharmacy, SDIP was established by  Vyjayanthi Educational Society under the leadership of Sri G. Panduranga Reddy in 2005. Approved by Pharmacy Council of India, affiliated to Jawaharlal Nehru Technological University Hyderabad, accredited by NAAC "A+", NBA.
                 </p>
               </div>
             </div>
@@ -73,7 +76,7 @@ export const AboutPage = () => {
         {/* The PRAXIS Vision */}
         <section className="relative z-20 liquid-glass rounded-[3rem] p-12 md:p-24 border-white/10 overflow-hidden">
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-praxis-accent/10 blur-[100px] mix-blend-screen pointer-events-none" />
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
             <div className="lg:col-span-7 space-y-8 order-2 lg:order-1">
               <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-accent font-cinematic">
@@ -91,12 +94,12 @@ export const AboutPage = () => {
                 </p>
               </div>
             </div>
-            
+
             <div className="lg:col-span-5 flex justify-center order-1 lg:order-2">
-              <img 
-                src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png" 
-                alt="PRAXIS Master Typography" 
-                className="w-full max-w-sm object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] translate-x-4" 
+              <img
+                src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png"
+                alt="PRAXIS Master Typography"
+                className="w-full max-w-sm object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] translate-x-4"
               />
             </div>
           </div>
@@ -116,7 +119,7 @@ export const AboutPage = () => {
               { title: "COMMUNITY", desc: "Peer mentorship, social outreach, and debate discourse.", color: "text-praxis-accent" },
               { title: "INNOVATION", desc: "Patentable prototypes and competitive hackathon projects.", color: "text-emerald-400" }
             ].map((pillar, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="liquid-glass-card p-12 rounded-[2rem] text-center space-y-6 hover:-translate-y-2 transition-transform duration-500"
               >

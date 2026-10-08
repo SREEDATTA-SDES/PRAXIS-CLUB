@@ -94,7 +94,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
   return (
     <div 
       onClick={handleClick}
-      className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+      className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer hover:-translate-y-1.5' : 'cursor-default'}`}
     >
       {/* 1. Circular Portrait with Themed Double-Ring Border */}
       <div className="relative mb-3 flex items-center justify-center">
@@ -135,7 +135,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
       {/* 4. Details / Qualifications / Year / Section */}
       <div className="space-y-0.5">
         {person.qualifications && (
-          <span className="text-white/75 text-xs sm:text-sm tracking-wider font-normal block leading-relaxed">
+          <span className="text-white/75 text-xs sm:text-sm tracking-wider font-normal block leading-relaxed font-mono">
             {person.qualifications}
           </span>
         )}
@@ -151,8 +151,22 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
         )}
       </div>
 
-      {person.clubSlug && (
-        <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 mt-1 block">
+      {/* Detail Page CTA Button for the 6 Dignitaries */}
+      {onSelectPerson && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick();
+          }}
+          className="mt-2.5 text-[9px] uppercase font-bold tracking-[0.2em] text-[#D4AF37] hover:text-black bg-[#D4AF37]/10 hover:bg-[#D4AF37] border border-[#D4AF37]/40 px-3 py-1 rounded-full transition-all duration-300 shadow-sm flex items-center gap-1 font-cinematic"
+        >
+          <Sparkles size={10} /> View Profile & Vision
+        </button>
+      )}
+
+      {person.clubSlug && !onSelectPerson && (
+        <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 mt-1 block font-cinematic">
           {person.clubSlug}
         </span>
       )}
@@ -225,9 +239,9 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
     >
       <div 
         ref={scrollRef}
-        className={`w-full overflow-x-auto scrollbar-none flex items-center py-2 cursor-grab active:cursor-grabbing ${
-          centerIfFits && !canScroll ? 'justify-center' : 'justify-start'
-        }`}
+        className={`w-full overflow-x-auto scrollbar-none flex items-center py-2 ${
+          onSelectPerson ? 'cursor-grab active:cursor-grabbing' : ''
+        } ${centerIfFits && !canScroll ? 'justify-center' : 'justify-start'}`}
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className="flex items-start shrink-0 space-x-2 sm:space-x-4">
@@ -251,7 +265,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   const { leadership } = useData();
   const [selectedDignitary, setSelectedDignitary] = useState(null);
 
-  // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators
+  // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators (No modal)
   if (filterClubSlug) {
     const clubFaculty = leadership.filter(
       l => l.clubSlug === filterClubSlug && (l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR')
@@ -279,7 +293,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubFaculty.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" onSelectPerson={setSelectedDignitary} />
+            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -304,7 +318,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubStudents.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" onSelectPerson={setSelectedDignitary} />
+            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -314,20 +328,12 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           )}
         </div>
 
-        {/* Dignitary Profile Modal */}
-        {selectedDignitary && (
-          <DignitaryProfileModal 
-            person={selectedDignitary} 
-            onClose={() => setSelectedDignitary(null)} 
-          />
-        )}
-
       </div>
     );
   }
 
-  // Global Institutional View (About Page) with All Dynamic Hierarchical Tiers
-  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN'].includes(l.roleType));
+  // Global Institutional View (About Page) with the 6 Key Dignitaries Clickable
+  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType));
   const govMembers = liveGovMembers.length > 0 ? liveGovMembers : GOVERNING_BODY;
 
   const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType));
@@ -353,7 +359,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   return (
     <div className="space-y-20">
       
-      {/* Tier 01: Governing Council (Vice-Chairman on Left, Chairman in Center, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME */}
+      {/* Tier 01: Governing Council (Vice-Chairman on Left, Chairman in Center, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
       {govMembers.length > 0 && (
         <div className="space-y-6">
           <div className="text-center">
@@ -363,7 +369,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <h3 className="text-2xl sm:text-4xl font-bold uppercase text-white font-display tracking-wider">
               Governing Council
             </h3>
-            <p className="text-xs text-[#D4AF37]/75 font-cinematic uppercase tracking-widest mt-1">
+            <p className="text-xs text-[#D4AF37]/80 font-cinematic uppercase tracking-widest mt-1">
               Visionary Patrons & Institutional Leadership &bull; Click card to view full visionary address
             </p>
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
@@ -373,7 +379,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         </div>
       )}
 
-      {/* Tier 02: Academic Leadership (Dean, Principal, HOD) - PROMINENT XL/LG SIZE */}
+      {/* Tier 02: Academic Leadership (Dean, Principal, HOD) - PROMINENT XL SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
       {acadMembers.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -383,8 +389,8 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               Dean, Principal & Department Head
             </h3>
-            <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
-              Academic Governance & Institutional Pillars &bull; Click to open profile
+            <p className="text-xs text-[#D4AF37]/80 font-cinematic uppercase tracking-widest mt-1">
+              Academic Governance & Institutional Pillars &bull; Click card to view profile & vision
             </p>
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto mt-3" />
           </div>
@@ -393,7 +399,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         </div>
       )}
 
-      {/* Tier 03: Faculty In-Charges & Coordinators Across All 8 Clubs - EMERALD THEME */}
+      {/* Tier 03: Faculty In-Charges & Coordinators Across All 8 Clubs - EMERALD THEME (DISPLAY ONLY - NO MODAL) */}
       {facultyMembers.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -409,11 +415,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Tier 04: PRAXIS Main Club Student Presidents - PROMINENT LG SIZE & GOLD THEME */}
+      {/* Tier 04: PRAXIS Main Club Student Presidents - PROMINENT LG SIZE & GOLD THEME (DISPLAY ONLY) */}
       {presidents.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -429,11 +435,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Tier 05: PRAXIS Main Club Student Vice Presidents - PROMINENT LG SIZE & CYAN THEME */}
+      {/* Tier 05: PRAXIS Main Club Student Vice Presidents - PROMINENT LG SIZE & CYAN THEME (DISPLAY ONLY) */}
       {vicePresidents.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -449,11 +455,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Tier 06: Overall Technical Domain Leads & Creative/Non-Technical Domain Leads */}
+      {/* Tier 06: Overall Technical Domain Leads & Creative/Non-Technical Domain Leads (DISPLAY ONLY) */}
       {(techDomain.length > 0 || creativeDomain.length > 0) && (
         <div className="space-y-12 pt-10 border-t border-white/10">
           {/* Technical Domain Leads */}
@@ -472,7 +478,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={setSelectedDignitary} />
+              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
             </div>
           )}
 
@@ -492,13 +498,13 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" onSelectPerson={setSelectedDignitary} />
+              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" onSelectPerson={null} />
             </div>
           )}
         </div>
       )}
 
-      {/* Tier 07: Chapter Leads & Student Coordinators */}
+      {/* Tier 07: Chapter Leads & Student Coordinators (DISPLAY ONLY) */}
       {(clubLeads.length > 0 || coordinators.length > 0) && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -514,11 +520,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Dignitary Profile Modal */}
+      {/* Dignitary Profile Modal - Rendered only when a Dignitary is clicked */}
       {selectedDignitary && (
         <DignitaryProfileModal 
           person={selectedDignitary} 
@@ -529,4 +535,5 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
     </div>
   );
 };
+
 

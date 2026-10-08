@@ -14,7 +14,7 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
 
   if (!person) return null;
 
-  const isGoverningCouncil = ['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN'].includes(person.roleType) || 
+  const isGoverningCouncil = ['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(person.roleType) || 
     person.position?.toLowerCase().includes('chairman') || 
     person.position?.toLowerCase().includes('director');
 
@@ -23,14 +23,19 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
     ring: 'from-[#FEF08A] via-[#D4AF37] to-[#854D0E]',
     badgeBg: 'bg-[#D4AF37]/15 border-[#D4AF37]/40 text-[#D4AF37]',
     accentText: 'text-[#D4AF37]',
-    quoteBorder: 'border-[#D4AF37]/40'
+    quoteBorder: 'border-[#D4AF37]/60'
   } : {
     glow: 'from-cyan-400/30 via-blue-500/15 to-transparent',
     ring: 'from-cyan-200 via-sky-400 to-blue-700',
     badgeBg: 'bg-cyan-950/60 border-cyan-500/40 text-praxis-cyan',
     accentText: 'text-praxis-cyan',
-    quoteBorder: 'border-cyan-400/40'
+    quoteBorder: 'border-cyan-400/60'
   };
+
+  // Format bio into paragraphs if it has newlines
+  const bioParagraphs = person.bio 
+    ? person.bio.split('\n').filter(p => p.trim().length > 0)
+    : [];
 
   return (
     <AnimatePresence>
@@ -102,7 +107,7 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
                 </h2>
 
                 {person.qualifications && (
-                  <p className="text-white/80 text-xs sm:text-sm font-medium tracking-wide">
+                  <p className="text-white/80 text-xs sm:text-sm font-medium tracking-wide font-mono">
                     {person.qualifications}
                   </p>
                 )}
@@ -115,26 +120,37 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
             </div>
 
             {/* Visionary Message Quote Card */}
-            {(person.message || person.bio) && (
+            {person.message && (
               <div className={`p-5 rounded-2xl bg-white/[0.03] border-l-4 ${themeColors.quoteBorder} border-y border-r border-white/5 relative overflow-hidden`}>
                 <Quote size={24} className="text-white/10 absolute top-3 right-3" />
                 <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 block mb-2 font-cinematic">
                   Leadership Vision & Mandate
                 </span>
                 <p className="text-sm sm:text-base text-white/90 leading-relaxed font-serif italic">
-                  "{person.message || person.bio}"
+                  "{person.message}"
                 </p>
               </div>
             )}
 
-            {/* Profile Overview & Institutional Context */}
+            {/* Profile Overview & Detailed Matter */}
             <div className="space-y-3">
               <span className="text-xs uppercase font-bold tracking-[0.25em] text-white/50 font-cinematic block">
-                Executive Profile & Oversight
+                Executive Profile & Information
               </span>
-              <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-cinematic tracking-wide">
-                {person.bio || `${person.name} serves as the ${person.position || 'Institutional Leader'} at ${COLLEGE_BRAND.name}, providing strategic guidance, academic mentorship, and infrastructural empowerment to the student body and PRAXIS chapters.`}
-              </p>
+              
+              {bioParagraphs.length > 0 ? (
+                <div className="space-y-3">
+                  {bioParagraphs.map((para, pIdx) => (
+                    <p key={pIdx} className="text-xs sm:text-sm text-white/80 leading-relaxed font-cinematic tracking-wide">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-cinematic tracking-wide">
+                  {person.name} serves as the {person.position || 'Institutional Leader'} at {COLLEGE_BRAND.name}, providing strategic guidance, academic mentorship, and infrastructural empowerment to the student body and PRAXIS chapters.
+                </p>
+              )}
             </div>
 
             {/* Institutional Seal Footnote */}
@@ -155,3 +171,4 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
     </AnimatePresence>
   );
 };
+

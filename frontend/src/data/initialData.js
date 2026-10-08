@@ -256,11 +256,11 @@ export const ACADEMIC_LEADERSHIP = [
 export const PRAXIS_STUDENT_LEADERSHIP = {
   presidents: [
     {
-      id: "lead-pres-male",
-      name: "Student President (Male)",
+      id: "lead-pres-1",
+      name: "Student President",
       position: "President",
       designation: "President, PRAXIS :",
-      gender: "Male",
+      gender: "",
       rollNumber: "23SD1A0501",
       qualifications: "B.Tech IV Year (CSE-AI&ML)",
       department: "CSE (AI & ML)",
@@ -272,11 +272,11 @@ export const PRAXIS_STUDENT_LEADERSHIP = {
       order: 1
     },
     {
-      id: "lead-pres-female",
-      name: "Student President (Female)",
+      id: "lead-pres-2",
+      name: "Student President",
       position: "President",
       designation: "President, PRAXIS :",
-      gender: "Female",
+      gender: "",
       rollNumber: "23SD1A0518",
       qualifications: "B.Tech IV Year (CSE-DS)",
       department: "CSE (Data Science)",
@@ -290,11 +290,11 @@ export const PRAXIS_STUDENT_LEADERSHIP = {
   ],
   vicePresidents: [
     {
-      id: "lead-vp-male",
-      name: "Student Vice President (Male)",
+      id: "lead-vp-1",
+      name: "Student Vice President",
       position: "Vice President",
       designation: "Vice President, PRAXIS :",
-      gender: "Male",
+      gender: "",
       rollNumber: "24SD1A0532",
       qualifications: "B.Tech III Year (CSE-Core)",
       department: "CSE",
@@ -306,11 +306,11 @@ export const PRAXIS_STUDENT_LEADERSHIP = {
       order: 3
     },
     {
-      id: "lead-vp-female",
-      name: "Student Vice President (Female)",
+      id: "lead-vp-2",
+      name: "Student Vice President",
       position: "Vice President",
       designation: "Vice President, PRAXIS :",
-      gender: "Female",
+      gender: "",
       rollNumber: "24SD1A0550",
       qualifications: "B.Tech III Year (CSE-IoT)",
       department: "CSE (IoT)",
