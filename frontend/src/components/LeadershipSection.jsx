@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useData } from '../context/DataContext';
 import { GOVERNING_BODY, ACADEMIC_LEADERSHIP, PRAXIS_STUDENT_LEADERSHIP, PRAXIS_DOMAIN_LEADERSHIP } from '../data/initialData';
-import { Shield, Sparkles, Award, Cpu, Palette } from 'lucide-react';
+import { Shield, Sparkles, Award, Cpu, Palette, ExternalLink } from 'lucide-react';
+import { DignitaryProfileModal } from './DignitaryProfileModal';
 
 // Fallback high-resolution portraits
 const DEFAULT_AVATARS = [
@@ -18,7 +19,7 @@ const DEFAULT_AVATARS = [
 /**
  * Gilded / Themed Circular Portrait Card Matching Institutional & Tier Branding
  */
-export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md' }) => {
+export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md', onSelectPerson }) => {
   const fallbackPhoto = DEFAULT_AVATARS[index % DEFAULT_AVATARS.length];
 
   // Theme styling configurations
@@ -84,8 +85,17 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
   const currentTheme = themeStyles[theme] || themeStyles.gold;
   const currentSize = sizeStyles[size] || sizeStyles.md;
 
+  const handleClick = () => {
+    if (onSelectPerson) {
+      onSelectPerson(person);
+    }
+  };
+
   return (
-    <div className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300`}>
+    <div 
+      onClick={handleClick}
+      className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+    >
       {/* 1. Circular Portrait with Themed Double-Ring Border */}
       <div className="relative mb-3 flex items-center justify-center">
         {/* Ambient Glow Behind */}
@@ -100,6 +110,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
               <img
                 src={person.photoUrl || fallbackPhoto}
                 alt={person.name}
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-110"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -152,7 +163,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
 /**
  * Auto-Moving Horizontal Scroll Row
  */
-export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false, theme = 'gold', size = 'md' }) => {
+export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false, theme = 'gold', size = 'md', onSelectPerson }) => {
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isInteractingRef = useRef(false);
@@ -227,6 +238,7 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
               index={idx}
               theme={theme}
               size={size}
+              onSelectPerson={onSelectPerson}
             />
           ))}
         </div>
@@ -237,6 +249,7 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
 
 export const LeadershipSection = ({ filterClubSlug = null }) => {
   const { leadership } = useData();
+  const [selectedDignitary, setSelectedDignitary] = useState(null);
 
   // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators
   if (filterClubSlug) {
@@ -266,7 +279,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubFaculty.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" />
+            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" onSelectPerson={setSelectedDignitary} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -291,7 +304,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubStudents.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" />
+            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" onSelectPerson={setSelectedDignitary} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -300,6 +313,14 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             </div>
           )}
         </div>
+
+        {/* Dignitary Profile Modal */}
+        {selectedDignitary && (
+          <DignitaryProfileModal 
+            person={selectedDignitary} 
+            onClose={() => setSelectedDignitary(null)} 
+          />
+        )}
 
       </div>
     );
@@ -332,7 +353,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   return (
     <div className="space-y-20">
       
-      {/* Tier 01: Governing Council (Chairman in Center, Vice-Chairman on Left, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME */}
+      {/* Tier 01: Governing Council (Vice-Chairman on Left, Chairman in Center, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME */}
       {govMembers.length > 0 && (
         <div className="space-y-6">
           <div className="text-center">
@@ -343,12 +364,12 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
               Governing Council
             </h3>
             <p className="text-xs text-[#D4AF37]/75 font-cinematic uppercase tracking-widest mt-1">
-              Visionary Patrons & Institutional Leadership
+              Visionary Patrons & Institutional Leadership &bull; Click card to view full visionary address
             </p>
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={govMembers} speed={0.6} centerIfFits={true} theme="gold" size="xl" />
+          <HorizontalAutoScrollRow items={govMembers} speed={0.6} centerIfFits={true} theme="gold" size="xl" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -363,12 +384,12 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
               Dean, Principal & Department Head
             </h3>
             <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
-              Academic Governance & Institutional Pillars
+              Academic Governance & Institutional Pillars &bull; Click to open profile
             </p>
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={acadMembers} speed={0.7} centerIfFits={true} theme="gold" size="xl" />
+          <HorizontalAutoScrollRow items={acadMembers} speed={0.7} centerIfFits={true} theme="gold" size="xl" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -388,7 +409,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" />
+          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -408,7 +429,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" />
+          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -428,7 +449,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" />
+          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -451,7 +472,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" />
+              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={setSelectedDignitary} />
             </div>
           )}
 
@@ -471,7 +492,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" />
+              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" onSelectPerson={setSelectedDignitary} />
             </div>
           )}
         </div>
@@ -493,8 +514,16 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" />
+          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" onSelectPerson={setSelectedDignitary} />
         </div>
+      )}
+
+      {/* Dignitary Profile Modal */}
+      {selectedDignitary && (
+        <DignitaryProfileModal 
+          person={selectedDignitary} 
+          onClose={() => setSelectedDignitary(null)} 
+        />
       )}
 
     </div>

@@ -69,7 +69,7 @@ export const INITIAL_CLUBS = [
     vision: "Empowering students to build smart, data-driven applications for the real world.",
     mission: "Conduct research, build AI models, and compete in global data science challenges.",
     accentPrimary: "#10B981", // emerald
-    accentSecondary: "#34D399", 
+    accentSecondary: "#34D399",
     glowClass: "from-emerald-500/20 to-teal-500/10",
     borderClass: "hover:border-emerald-500/50",
     badgeClass: "bg-emerald-950/60 text-emerald-300 border-emerald-800/50",
@@ -143,7 +143,7 @@ export const INITIAL_CLUBS = [
     vision: "To beautify the campus and cultivate a deep appreciation for the fine arts among engineers.",
     mission: "Host art exhibitions, painting workshops, and collaborative mural projects.",
     accentPrimary: "#F43F5E", // rose
-    accentSecondary: "#FB923C", 
+    accentSecondary: "#FB923C",
     glowClass: "from-rose-500/20 to-orange-500/10",
     borderClass: "hover:border-rose-500/50",
     badgeClass: "bg-rose-950/60 text-rose-300 border-rose-800/50",
@@ -171,17 +171,6 @@ export const INITIAL_CLUBS = [
 
 export const GOVERNING_BODY = [
   {
-    id: "gov-chairman",
-    name: "Sri G.Panduranga Reddy",
-    position: "Chairman",
-    designation: "Chairman :",
-    qualifications: "B.Sc., LLB.",
-    department: "Governing Council, SDES",
-    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
-    roleType: "MANAGEMENT",
-    order: 1
-  },
-  {
     id: "gov-vice-chairman",
     name: "Dr. G.N.V. Vibhav Reddy",
     position: "Vice-Chairman",
@@ -190,6 +179,21 @@ export const GOVERNING_BODY = [
     department: "Governing Council, SDES",
     photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
     roleType: "MANAGEMENT",
+    bio: "Guiding the academic vision and technical elevation of Sree Dattha Institute of Engineering & Science with advanced research focus and industry integration.",
+    message: "PRAXIS is our flagship initiative to bridge the gap between classroom pedagogy and practical industry engineering. We encourage every student to innovate fearlessly.",
+    order: 1
+  },
+  {
+    id: "gov-chairman",
+    name: "Sri G.Panduranga Reddy",
+    position: "Chairman",
+    designation: "Chairman :",
+    qualifications: "B.Sc., LLB.",
+    department: "Governing Council, SDES",
+    photoUrl: "https://www.sreedattha.ac.in/home-images/chairman2.png",
+    roleType: "MANAGEMENT",
+    bio: "Visionary founder and Chairman of Sree Dattha Institutions, fostering generations of engineering leaders, technologists, and entrepreneurs.",
+    message: "Our vision is to empower young minds with world-class engineering infrastructure, moral leadership, and unbounded creativity through student-driven ecosystems like PRAXIS.",
     order: 2
   },
   {
@@ -201,6 +205,8 @@ export const GOVERNING_BODY = [
     department: "Governing Council, SDES",
     photoUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80",
     roleType: "MANAGEMENT",
+    bio: "Directing executive growth, modern technological campus initiatives, innovation labs, and global institutional partnerships.",
+    message: "Through PRAXIS, we provide every club chapter with the autonomy and resources to create real-world engineering prototypes and leadership opportunities.",
     order: 3
   }
 ];
@@ -215,6 +221,8 @@ export const ACADEMIC_LEADERSHIP = [
     department: "Sree Dattha Institute of Engineering & Science",
     photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
     roleType: "DEAN",
+    bio: "Overseeing curriculum excellence, outcome-based education, and interdisciplinary technical innovation across departments.",
+    message: "Engineering excellence thrives when students participate in collaborative coding guilds, robotics projects, and inter-collegiate technical symposia.",
     order: 1
   },
   {
@@ -226,6 +234,8 @@ export const ACADEMIC_LEADERSHIP = [
     department: "Sree Dattha Institute of Engineering & Science",
     photoUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80",
     roleType: "PRINCIPAL",
+    bio: "Head of Institution driving NBA/NAAC excellence, technical incubation cells, hackathon governance, and academic discipline.",
+    message: "PRAXIS represents the energetic heartbeat of SDES. We take immense pride in our students' ability to execute campus-wide hackathons and cultural festivals.",
     order: 2
   },
   {
@@ -237,6 +247,8 @@ export const ACADEMIC_LEADERSHIP = [
     department: "CSE & Allied Branches",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80",
     roleType: "HOD",
+    bio: "Guiding the Department of Computer Science & Engineering (Allied) towards cutting-edge Artificial Intelligence, Machine Learning, Data Science, and IoT mastery.",
+    message: "CSE-Allied students are uniquely positioned to spearhead technological disruptions. PRAXIS gives them the ideal launchpad to build, collaborate, and excel.",
     order: 3
   }
 ];
