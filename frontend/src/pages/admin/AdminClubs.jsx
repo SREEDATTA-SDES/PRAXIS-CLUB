@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import { Edit, Save, X, ExternalLink, Shield } from 'lucide-react';
+import { ImageUpload } from '../../components/ImageUpload';
 
 export const AdminClubs = () => {
   const { clubs, updateClub } = useData();
@@ -12,6 +13,7 @@ export const AdminClubs = () => {
   const startEdit = (c) => {
     setEditingClub(c.slug);
     setForm({
+      logoUrl: c.logoUrl || '',
       tagline: c.tagline || '',
       description: c.description || '',
       purpose: c.purpose || '',
@@ -90,6 +92,13 @@ export const AdminClubs = () => {
 
               {isCurrentEditing ? (
                 <div className="space-y-3 text-xs pt-2 border-t border-praxis-border/60">
+                  <ImageUpload
+                    value={form.logoUrl}
+                    onChange={(url) => setForm({ ...form, logoUrl: url })}
+                    label="Club Official Crest / Logo"
+                    folder="praxis_clubs"
+                  />
+
                   <div>
                     <label className="block text-praxis-muted uppercase tracking-wider font-semibold mb-1">
                       Tagline

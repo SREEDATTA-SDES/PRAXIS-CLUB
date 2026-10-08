@@ -27,24 +27,6 @@ const INITIAL_CLUBS = [
     order: 1
   },
   {
-    id: "tech-vertex",
-    slug: "tech-vertex",
-    name: "Tech Vertex",
-    category: "TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117784/Tech_Vortex_LOGO.png",
-    tagline: "Bridging Ideas into Scalable Digital Realities",
-    description: "Full-stack web architecture, cloud computational systems, DevOps, and modern computational frameworks hub.",
-    purpose: "To equip students with modern production-ready software engineering, microservices, and cloud deployment capabilities.",
-    vision: "Cultivating elite developers and system architects capable of designing and maintaining mission-critical digital platforms.",
-    mission: "Host hands-on full-stack hackathons, DevOps deployment masterclasses, open-source contributor clinics, and architectural teardowns.",
-    accentPrimary: "#00F2FE",
-    accentSecondary: "#4FACFE",
-    glowClass: "from-cyan-500/20 to-blue-500/10",
-    borderClass: "hover:border-cyan-400/50",
-    badgeClass: "bg-cyan-950/60 text-cyan-300 border-cyan-800/50",
-    order: 2
-  },
-  {
     id: "innovex",
     slug: "innovex",
     name: "Innovex",
@@ -60,7 +42,7 @@ const INITIAL_CLUBS = [
     glowClass: "from-red-500/20 to-rose-500/10",
     borderClass: "hover:border-red-500/50",
     badgeClass: "bg-red-950/60 text-red-300 border-red-800/50",
-    order: 3
+    order: 2
   },
   {
     id: "ai-club",
@@ -78,6 +60,24 @@ const INITIAL_CLUBS = [
     glowClass: "from-emerald-500/20 to-teal-500/10",
     borderClass: "hover:border-emerald-500/50",
     badgeClass: "bg-emerald-950/60 text-emerald-300 border-emerald-800/50",
+    order: 3
+  },
+  {
+    id: "visual-vibes",
+    slug: "visual-vibes",
+    name: "Visual Vibes",
+    category: "TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
+    tagline: "Cinematography, Digital Media & Tech Event Storytelling",
+    description: "The official cinematography, video editing, media production, and digital visual technology wing of PRAXIS.",
+    purpose: "To capture, edit, produce, and broadcast high-impact cinematic footage and digital media for tech summits, hackathons, and institutional events.",
+    vision: "To establish an industry-grade media and visual storytelling standard for engineering breakthroughs and student innovation.",
+    mission: "Produce official event aftermovies, direct cinematic recaps, craft high-impact motion graphics, and run video editing and lighting masterclasses.",
+    accentPrimary: "#A855F7",
+    accentSecondary: "#22D3EE",
+    glowClass: "from-purple-500/20 to-sky-500/10",
+    borderClass: "hover:border-purple-500/50",
+    badgeClass: "bg-purple-950/60 text-purple-300 border-purple-800/50",
     order: 4
   },
   {
@@ -99,24 +99,6 @@ const INITIAL_CLUBS = [
     order: 5
   },
   {
-    id: "visual-vibes",
-    slug: "visual-vibes",
-    name: "Visual Vibes",
-    category: "NON-TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
-    tagline: "The Visual Pulse of Campus Culture",
-    description: "The cinematography, digital media production, graphic design, and artistic narrative wing of PRAXIS.",
-    purpose: "To document, amplify, and stylize student achievements and campus events through high-caliber visual aesthetics.",
-    vision: "To set an industry-grade creative media benchmark in student video production, photography, and brand storytelling.",
-    mission: "Produce official event aftermovies, run photography and motion design masterclasses, and manage institutional visual archives.",
-    accentPrimary: "#A855F7",
-    accentSecondary: "#22D3EE",
-    glowClass: "from-purple-500/20 to-sky-500/10",
-    borderClass: "hover:border-purple-500/50",
-    badgeClass: "bg-purple-950/60 text-purple-300 border-purple-800/50",
-    order: 6
-  },
-  {
     id: "lakshya",
     slug: "lakshya",
     name: "Lakshya",
@@ -132,7 +114,7 @@ const INITIAL_CLUBS = [
     glowClass: "from-blue-500/20 to-amber-500/10",
     borderClass: "hover:border-amber-500/50",
     badgeClass: "bg-amber-950/60 text-amber-300 border-amber-800/50",
-    order: 7
+    order: 6
   },
   {
     id: "creative-art",
@@ -150,6 +132,24 @@ const INITIAL_CLUBS = [
     glowClass: "from-rose-500/20 to-orange-500/10",
     borderClass: "hover:border-rose-500/50",
     badgeClass: "bg-rose-950/60 text-rose-300 border-rose-800/50",
+    order: 7
+  },
+  {
+    id: "swara",
+    slug: "swara",
+    name: "Swara",
+    category: "NON-TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791469834/Grungy_SWARA_Ribbon_Emblem.png",
+    tagline: "The Melodic & Cultural Rhythm of SDES",
+    description: "The cultural wing dedicated to classical & western dance, vocal melody, instrumental harmony, folk arts, and campus cultural celebrations.",
+    purpose: "To celebrate diverse cultural heritage, nurture dance and musical talent, and stage high-energy cultural performances.",
+    vision: "To be an expressive performing arts platform fostering rhythm, musicality, and cultural pride across the entire institution.",
+    mission: "Organize campus cultural festivals, classical and western dance competitions, acoustic jamming nights, and folk music showcases.",
+    accentPrimary: "#F59E0B",
+    accentSecondary: "#EF4444",
+    glowClass: "from-amber-500/20 to-rose-500/10",
+    borderClass: "hover:border-amber-500/50",
+    badgeClass: "bg-amber-950/60 text-amber-300 border-amber-800/50",
     order: 8
   }
 ];

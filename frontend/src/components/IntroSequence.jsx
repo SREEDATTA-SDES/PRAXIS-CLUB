@@ -95,7 +95,7 @@ export const IntroSequence = ({ onComplete }) => {
             </motion.div>
           )}
 
-          {/* Step 4: PRAXIS Reveal Animation */}
+          {/* Step 4: PRAXIS Reveal Animation - Clean, no background shine */}
           {step >= 4 && (
             <motion.div 
               key="praxis-reveal"
@@ -106,11 +106,10 @@ export const IntroSequence = ({ onComplete }) => {
               className="flex flex-col items-center justify-center text-center"
             >
               <div className="relative">
-                <div className="absolute -inset-8 bg-praxis-cyan/15 blur-[50px] rounded-full pointer-events-none" />
                 <img
                   src="https://ik.imagekit.io/SDES/LOGOS/Grunge%20PRAXIS%20Typography%20with%20Butterflies.png"
                   alt="PRAXIS"
-                  className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative z-10 translate-x-2 md:translate-x-4"
+                  className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative z-10 translate-x-4 sm:translate-x-6 md:translate-x-8"
                 />
               </div>
             </motion.div>

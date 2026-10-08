@@ -19,7 +19,13 @@ export const GalleryPage = ({ onOpenLightbox }) => {
 
   const filteredGallery = gallery.filter(item => {
     if (categoryFilter !== 'ALL' && item.category !== categoryFilter) return false;
-    if (clubFilter !== 'ALL' && item.clubSlug !== clubFilter) return false;
+    if (clubFilter === 'others') {
+      if (item.clubSlug !== 'others' && item.clubSlug !== 'general' && item.clubSlug !== 'establishment' && item.clubSlug !== 'praxis') {
+        return false;
+      }
+    } else if (clubFilter !== 'ALL' && item.clubSlug !== clubFilter) {
+      return false;
+    }
     return true;
   });
 
@@ -39,25 +45,23 @@ export const GalleryPage = ({ onOpenLightbox }) => {
         />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 relative z-10 space-y-12">
         
-
-
         {/* Filter Controls - Liquid UI */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-20"
+          className="relative z-20 max-w-4xl mx-auto"
         >
-          <div className="liquid-glass-elevated p-8 rounded-[2.5rem] flex flex-col items-center gap-8 border-white/20 max-w-4xl mx-auto">
+          <div className="liquid-glass-elevated p-4 sm:p-8 rounded-3xl sm:rounded-[2.5rem] flex flex-col items-center gap-6 sm:gap-8 border-white/20">
             
-            {/* Category Tabs */}
-            <div className="flex items-center p-1 liquid-glass rounded-full border border-white/10 overflow-hidden">
+            {/* Category Tabs - Fully Mobile Responsive */}
+            <div className="flex items-center justify-between sm:justify-center p-1 liquid-glass rounded-full border border-white/10 w-full sm:w-auto max-w-full overflow-hidden">
               {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map(cat => (
                 <button
                   key={cat}
                   onClick={() => setCategoryFilter(cat)}
-                  className={`relative px-8 py-4 rounded-full text-[10px] uppercase font-bold tracking-[0.3em] transition-colors duration-500 z-10 ${
+                  className={`relative flex-1 sm:flex-initial px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 rounded-full text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-[0.25em] transition-colors duration-300 z-10 text-center whitespace-nowrap ${
                     categoryFilter === cat
                       ? 'text-praxis-bg'
                       : 'text-white/50 hover:text-white'
@@ -76,22 +80,34 @@ export const GalleryPage = ({ onOpenLightbox }) => {
             </div>
 
             {/* Club Filter Chips */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full">
               <button
                 onClick={() => setClubFilter('ALL')}
-                className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-semibold transition-all ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold transition-all ${
                   clubFilter === 'ALL'
                     ? 'bg-praxis-cyan text-praxis-bg shadow-[0_0_15px_rgba(6,182,212,0.4)]'
                     : 'liquid-glass border-white/10 text-white/40 hover:text-white'
                 }`}
               >
-                All Clubs
+                All Chapters
               </button>
+
+              <button
+                onClick={() => setClubFilter('others')}
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold transition-all ${
+                  clubFilter === 'others'
+                    ? 'bg-praxis-accent text-white shadow-[0_0_15px_rgba(236,72,153,0.4)]'
+                    : 'liquid-glass border-white/10 text-white/40 hover:text-white'
+                }`}
+              >
+                Others & Establishment
+              </button>
+
               {clubs.map(c => (
                 <button
                   key={c.slug}
                   onClick={() => setClubFilter(c.slug)}
-                  className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-semibold transition-all ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold transition-all ${
                     clubFilter === c.slug
                       ? 'bg-praxis-cyan text-praxis-bg shadow-[0_0_15px_rgba(6,182,212,0.4)]'
                       : 'liquid-glass border-white/10 text-white/40 hover:text-white'

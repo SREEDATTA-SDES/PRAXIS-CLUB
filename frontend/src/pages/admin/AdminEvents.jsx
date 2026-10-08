@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Calendar, MapPin, ExternalLink, X, Save, AlertTriangle } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, MapPin, ExternalLink, X, Save, AlertTriangle, Images, Star } from 'lucide-react';
+import { ImageUpload, MultiImageUpload } from '../../components/ImageUpload';
 
 export const AdminEvents = () => {
   const { events, clubs, addEvent, updateEvent, deleteEvent } = useData();
@@ -18,10 +19,12 @@ export const AdminEvents = () => {
     date: new Date().toISOString().split('T')[0],
     venue: 'SDES Campus, Seminar Hall',
     description: '',
-    posterUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80',
+    posterUrl: '',
     scheduleUrl: '',
     googleFormUrl: '',
-    status: 'UPCOMING'
+    photos: [],
+    status: 'UPCOMING',
+    featured: false
   };
 
   const [form, setForm] = useState(initialForm);
@@ -44,9 +47,18 @@ export const AdminEvents = () => {
       posterUrl: evt.posterUrl || '',
       scheduleUrl: evt.scheduleUrl || '',
       googleFormUrl: evt.googleFormUrl || '',
-      status: evt.status
+      photos: Array.isArray(evt.photos) ? evt.photos : [],
+      status: evt.status,
+      featured: !!evt.featured
     });
     setModalOpen(true);
+  };
+
+  const toggleFeatured = async (evt, e) => {
+    e.stopPropagation();
+    const eventId = evt.id || evt.slug;
+    const newFeaturedState = !evt.featured;
+    await updateEvent(eventId, { ...evt, featured: newFeaturedState });
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +93,7 @@ export const AdminEvents = () => {
             Events & Hackathons Management
           </h1>
           <p className="text-xs text-praxis-secondary">
-            Manage registrations (Google Forms), schedule PDFs, timetables, and posters.
+            Manage registrations (Google Forms), schedule PDFs, timetables, and Homepage Highlights.
           </p>
         </div>
 
@@ -104,6 +116,7 @@ export const AdminEvents = () => {
                 <th className="p-3.5">Category</th>
                 <th className="p-3.5">Club</th>
                 <th className="p-3.5">Date & Venue</th>
+                <th className="p-3.5">Homepage Highlight</th>
                 <th className="p-3.5">Status</th>
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
@@ -137,6 +150,20 @@ export const AdminEvents = () => {
                     <td className="p-3.5 text-praxis-muted">
                       <div>{evt.date}</div>
                       <div className="text-[10px] text-praxis-secondary truncate max-w-[150px]">{evt.venue}</div>
+                    </td>
+                    <td className="p-3.5">
+                      <button
+                        onClick={(e) => toggleFeatured(evt, e)}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase transition-all ${
+                          evt.featured
+                            ? 'bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm'
+                            : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border'
+                        }`}
+                        title="Click to toggle Homepage Highlight"
+                      >
+                        <Star size={12} className={evt.featured ? 'fill-amber-400 text-amber-400' : 'text-praxis-muted'} />
+                        <span>{evt.featured ? 'Featured' : 'Standard'}</span>
+                      </button>
                     </td>
                     <td className="p-3.5">
                       <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
@@ -266,6 +293,28 @@ export const AdminEvents = () => {
                 </div>
               </div>
 
+              {/* Highlight / Featured on Homepage Switch */}
+              <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5 font-bold uppercase text-amber-300 text-xs">
+                    <Star size={14} className="fill-amber-400 text-amber-400" />
+                    <span>Highlight in Homepage Featured Section</span>
+                  </div>
+                  <p className="text-[11px] text-praxis-secondary">
+                    Feature this event on the main PRAXIS homepage carousel & highlight showcase.
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.featured}
+                    onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-praxis-surface peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 border border-praxis-border"></div>
+                </label>
+              </div>
+
               <div>
                 <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
                   Venue / Location *
@@ -280,18 +329,19 @@ export const AdminEvents = () => {
                 />
               </div>
 
-              <div>
-                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
-                  Poster Image URL
-                </label>
-                <input
-                  type="url"
-                  value={form.posterUrl}
-                  onChange={(e) => setForm({ ...form, posterUrl: e.target.value })}
-                  placeholder="https://images.unsplash.com/... or Cloudinary URL"
-                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
-                />
-              </div>
+              <ImageUpload
+                value={form.posterUrl}
+                onChange={(url) => setForm({ ...form, posterUrl: url })}
+                label="Poster Image (Direct / Cloudinary)"
+                folder="praxis_events"
+              />
+
+              <MultiImageUpload
+                values={form.photos || []}
+                onChange={(photos) => setForm({ ...form, photos })}
+                label="Event Recap / Conducted Event Photos (1-4 Images)"
+                folder="praxis_events_recap"
+              />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -386,3 +436,4 @@ export const AdminEvents = () => {
     </div>
   );
 };
+

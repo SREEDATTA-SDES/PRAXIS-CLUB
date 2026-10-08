@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ExternalLink, FileText, CheckCircle2 } from 'lucide-react';
 
-export const EventCard = ({ event }) => {
+export const EventCard = ({ event, onSelectEvent }) => {
   const isUpcoming = event.status === 'UPCOMING';
 
-  const handleRegister = () => {
+  const handleRegister = (e) => {
+    e.stopPropagation();
     if (event.googleFormUrl) {
       window.open(event.googleFormUrl, '_blank', 'noopener,noreferrer');
     } else {
@@ -13,7 +14,8 @@ export const EventCard = ({ event }) => {
     }
   };
 
-  const handleSchedule = () => {
+  const handleSchedule = (e) => {
+    e.stopPropagation();
     if (event.scheduleUrl) {
       window.open(event.scheduleUrl, '_blank', 'noopener,noreferrer');
     } else {
@@ -26,11 +28,18 @@ export const EventCard = ({ event }) => {
   const month = eventDateObj.toLocaleString('default', { month: 'short' });
   const year = eventDateObj.getFullYear();
 
+  const handleCardClick = () => {
+    if (onSelectEvent) {
+      onSelectEvent(event);
+    }
+  };
+
   return (
     <motion.div 
       whileHover="hover"
       initial="initial"
-      className="relative w-full h-[450px] liquid-glass-card rounded-[2.5rem] overflow-hidden group border border-white/10 flex flex-col justify-between"
+      onClick={handleCardClick}
+      className="relative w-full h-[450px] liquid-glass-card rounded-[2.5rem] overflow-hidden group border border-white/10 flex flex-col justify-between cursor-pointer"
     >
       {/* Animated Gradient Aura */}
       <motion.div 
@@ -114,23 +123,29 @@ export const EventCard = ({ event }) => {
           <div className="flex items-center gap-3 w-full border-t border-white/10 pt-6">
             {isUpcoming ? (
               <button
+                type="button"
                 onClick={handleRegister}
-                className="flex-1 py-4 px-4 bg-praxis-cyan/10 hover:bg-praxis-cyan/20 border border-praxis-cyan/50 rounded-full text-white text-[10px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-colors duration-300"
+                className="flex-1 py-3.5 px-4 bg-praxis-cyan/10 hover:bg-praxis-cyan/20 border border-praxis-cyan/50 rounded-full text-white text-[10px] font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-colors duration-300"
               >
                 <span>REGISTER</span>
                 <ExternalLink size={12} />
               </button>
             ) : (
-              <span className="flex-1 py-4 px-4 liquid-glass border border-white/10 rounded-full text-white/30 text-[10px] font-bold uppercase tracking-[0.3em] text-center flex items-center justify-center gap-3">
-                <CheckCircle2 size={12} />
-                <span>CONCLUDED</span>
-              </span>
+              <button
+                type="button"
+                onClick={handleCardClick}
+                className="flex-1 py-3.5 px-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-white text-[10px] font-bold uppercase tracking-[0.25em] text-center flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+              >
+                <CheckCircle2 size={12} className="text-praxis-cyan" />
+                <span>VIEW RECAP</span>
+              </button>
             )}
 
             {event.scheduleUrl && (
               <button
+                type="button"
                 onClick={handleSchedule}
-                className="w-12 h-12 liquid-glass border border-white/10 hover:border-white/30 rounded-full text-white/50 hover:text-white flex items-center justify-center transition-colors duration-300 shrink-0"
+                className="w-11 h-11 liquid-glass border border-white/10 hover:border-white/30 rounded-full text-white/50 hover:text-white flex items-center justify-center transition-colors duration-300 shrink-0"
                 title="Download Timetable / Schedule PDF"
               >
                 <FileText size={14} />

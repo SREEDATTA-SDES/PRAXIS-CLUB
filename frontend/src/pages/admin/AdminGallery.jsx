@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Trash2, Image as ImageIcon, X, AlertTriangle, ExternalLink } from 'lucide-react';
+import { ImageUpload } from '../../components/ImageUpload';
 
 export const AdminGallery = () => {
   const { gallery, clubs, addGalleryItem, deleteGalleryItem } = useData();
@@ -22,7 +23,7 @@ export const AdminGallery = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!form.title || !form.imageUrl) {
-      alert('Title and Image URL are required.');
+      alert('Title and Image are required.');
       return;
     }
     await addGalleryItem(form);
@@ -142,24 +143,17 @@ export const AdminGallery = () => {
                 />
               </div>
 
-              <div>
-                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
-                  Image URL (Direct or Cloudinary) *
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={form.imageUrl}
-                  onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                  placeholder="https://images.unsplash.com/... or https://res.cloudinary.com/..."
-                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
-                />
-              </div>
+              <ImageUpload
+                value={form.imageUrl}
+                onChange={(url) => setForm({ ...form, imageUrl: url })}
+                label="Photo Upload (Direct / Cloudinary) *"
+                folder="praxis_gallery"
+              />
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
-                    Club Chapter
+                    Club Chapter / Origin
                   </label>
                   <select
                     disabled={isClubAdmin}
@@ -167,6 +161,7 @@ export const AdminGallery = () => {
                     onChange={(e) => setForm({ ...form, clubSlug: e.target.value })}
                     className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
                   >
+                    <option value="others">Others / General & Establishment</option>
                     {clubs.map(c => (
                       <option key={c.slug} value={c.slug}>{c.name}</option>
                     ))}

@@ -20,6 +20,7 @@ export const COLLEGE_BRAND = {
 };
 
 export const INITIAL_CLUBS = [
+  // TECHNICAL CLUBS (4)
   {
     id: "genesis",
     slug: "genesis",
@@ -39,24 +40,6 @@ export const INITIAL_CLUBS = [
     order: 1
   },
   {
-    id: "tech-vertex",
-    slug: "tech-vertex",
-    name: "Tech Vertex",
-    category: "TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117784/Tech_Vortex_LOGO.png",
-    tagline: "Bridging Ideas into Scalable Digital Realities",
-    description: "Full-stack web architecture, cloud computational systems, DevOps, and modern computational frameworks hub.",
-    purpose: "To equip students with modern production-ready software engineering, microservices, and cloud deployment capabilities.",
-    vision: "Cultivating elite developers and system architects capable of designing and maintaining mission-critical digital platforms.",
-    mission: "Host hands-on full-stack hackathons, DevOps deployment masterclasses, open-source contributor clinics, and architectural teardowns.",
-    accentPrimary: "#00F2FE", // cyan
-    accentSecondary: "#4FACFE", // blue
-    glowClass: "from-cyan-500/20 to-blue-500/10",
-    borderClass: "hover:border-cyan-400/50",
-    badgeClass: "bg-cyan-950/60 text-cyan-300 border-cyan-800/50",
-    order: 2
-  },
-  {
     id: "innovex",
     slug: "innovex",
     name: "Innovex",
@@ -72,7 +55,7 @@ export const INITIAL_CLUBS = [
     glowClass: "from-red-500/20 to-rose-500/10",
     borderClass: "hover:border-red-500/50",
     badgeClass: "bg-red-950/60 text-red-300 border-red-800/50",
-    order: 3
+    order: 2
   },
   {
     id: "ai-club",
@@ -90,8 +73,28 @@ export const INITIAL_CLUBS = [
     glowClass: "from-emerald-500/20 to-teal-500/10",
     borderClass: "hover:border-emerald-500/50",
     badgeClass: "bg-emerald-950/60 text-emerald-300 border-emerald-800/50",
+    order: 3
+  },
+  {
+    id: "visual-vibes",
+    slug: "visual-vibes",
+    name: "Visual Vibes",
+    category: "TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
+    tagline: "The Visual Pulse of Campus Culture & Tech Media",
+    description: "The digital media production, cinematography, video editing, poster design, and tech event storytelling wing of PRAXIS.",
+    purpose: "To capture, edit, and amplify campus technical achievements and symposiums through high-caliber visual media pipelines.",
+    vision: "To set an industry-grade media benchmark in tech aftermovies, motion graphics, and institutional visual documentation.",
+    mission: "Produce official event aftermovies, create event posters and graphics, manage high-definition video editing pipelines, and curate social media feeds.",
+    accentPrimary: "#00F2FE", // cyan
+    accentSecondary: "#A855F7", // purple
+    glowClass: "from-cyan-500/20 to-purple-500/10",
+    borderClass: "hover:border-cyan-400/50",
+    badgeClass: "bg-cyan-950/60 text-cyan-300 border-cyan-800/50",
     order: 4
   },
+
+  // NON-TECHNICAL CLUBS (4)
   {
     id: "d-talks",
     slug: "d-talks",
@@ -111,24 +114,6 @@ export const INITIAL_CLUBS = [
     order: 5
   },
   {
-    id: "visual-vibes",
-    slug: "visual-vibes",
-    name: "Visual Vibes",
-    category: "NON-TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
-    tagline: "The Visual Pulse of Campus Culture",
-    description: "The cinematography, digital media production, graphic design, and artistic narrative wing of PRAXIS.",
-    purpose: "To document, amplify, and stylize student achievements and campus events through high-caliber visual aesthetics.",
-    vision: "To set an industry-grade creative media benchmark in student video production, photography, and brand storytelling.",
-    mission: "Produce official event aftermovies, run photography and motion design masterclasses, and manage institutional visual archives.",
-    accentPrimary: "#A855F7", // purple
-    accentSecondary: "#22D3EE", // cyan
-    glowClass: "from-purple-500/20 to-sky-500/10",
-    borderClass: "hover:border-purple-500/50",
-    badgeClass: "bg-purple-950/60 text-purple-300 border-purple-800/50",
-    order: 6
-  },
-  {
     id: "lakshya",
     slug: "lakshya",
     name: "Lakshya",
@@ -144,7 +129,7 @@ export const INITIAL_CLUBS = [
     glowClass: "from-blue-500/20 to-amber-500/10",
     borderClass: "hover:border-amber-500/50",
     badgeClass: "bg-amber-950/60 text-amber-300 border-amber-800/50",
-    order: 7
+    order: 6
   },
   {
     id: "creative-art",
@@ -162,6 +147,24 @@ export const INITIAL_CLUBS = [
     glowClass: "from-rose-500/20 to-orange-500/10",
     borderClass: "hover:border-rose-500/50",
     badgeClass: "bg-rose-950/60 text-rose-300 border-rose-800/50",
+    order: 7
+  },
+  {
+    id: "swara",
+    slug: "swara",
+    name: "Swara",
+    category: "NON-TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791469834/Grungy_SWARA_Ribbon_Emblem.png",
+    tagline: "The Melodic & Cultural Rhythm of SDES",
+    description: "The cultural wing dedicated to classical & western dance, vocal melody, instrumental harmony, folk arts, and campus cultural celebrations.",
+    purpose: "To celebrate diverse cultural heritage, nurture dance and musical talent, and stage high-energy cultural performances.",
+    vision: "To be an expressive performing arts platform fostering rhythm, musicality, and cultural pride across the entire institution.",
+    mission: "Organize campus cultural festivals, classical and western dance competitions, acoustic jamming nights, and folk music showcases.",
+    accentPrimary: "#F59E0B", // amber / gold
+    accentSecondary: "#EF4444", // crimson
+    glowClass: "from-amber-500/20 to-rose-500/10",
+    borderClass: "hover:border-amber-500/50",
+    badgeClass: "bg-amber-950/60 text-amber-300 border-amber-800/50",
     order: 8
   }
 ];
@@ -174,7 +177,7 @@ export const GOVERNING_BODY = [
     designation: "Chairman :",
     qualifications: "B.Sc., LLB.",
     department: "Governing Council, SDES",
-    photoUrl: "/chairman.png",
+    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
     roleType: "MANAGEMENT",
     order: 1
   },
@@ -185,66 +188,311 @@ export const GOVERNING_BODY = [
     designation: "Vice-Chairman :",
     qualifications: "B. Tech., M.Tech., Ph.D.",
     department: "Governing Council, SDES",
-    photoUrl: "/vice-chairman.png",
+    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
     roleType: "MANAGEMENT",
     order: 2
   },
   {
     id: "gov-cmd",
     name: "Sri. G Devendra Vikram Reddy",
-    position: "Chief Managing Director",
-    designation: "Chief Managing Director :",
+    position: "Managing Director",
+    designation: "Managing Director :",
     qualifications: "B.Tech, MBA",
     department: "Governing Council, SDES",
-    photoUrl: "/cmd.png",
+    photoUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80",
     roleType: "MANAGEMENT",
     order: 3
   }
 ];
 
-export const INITIAL_LEADERSHIP = [
+export const ACADEMIC_LEADERSHIP = [
   {
-    id: "lead-hod",
-    name: "Dr. K. Srinivas Rao",
-    roleType: "FACULTY_HEAD",
-    position: "Head of the Department",
-    designation: "Head of Department (HOD) :",
+    id: "acad-dean",
+    name: "Dr. Academic Dean",
+    position: "Dean",
+    designation: "Dean - Academics :",
     qualifications: "M.Tech., Ph.D.",
-    department: "CSE & Allied Branches",
-    yearClass: "Faculty Leadership",
-    clubSlug: null,
-    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-    bio: "Guiding the technological vision and academic excellence of CSE-Allied students at SDES.",
+    department: "Sree Dattha Institute of Engineering & Science",
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    roleType: "DEAN",
     order: 1
   },
   {
-    id: "lead-faculty-coord",
-    name: "Prof. P. Rajesh Kumar",
-    roleType: "FACULTY_COORDINATOR",
-    position: "Faculty Coordinator",
-    designation: "Faculty Coordinator :",
-    qualifications: "M.Tech., (Ph.D.)",
-    department: "CSE-Allied",
-    yearClass: "Faculty Coordinator",
-    clubSlug: null,
-    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
-    bio: "Mentoring student leaders across technical and creative initiatives.",
+    id: "acad-principal",
+    name: "Dr. Principal SDES",
+    position: "Principal",
+    designation: "Principal :",
+    qualifications: "M.Tech., Ph.D., FIE",
+    department: "Sree Dattha Institute of Engineering & Science",
+    photoUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80",
+    roleType: "PRINCIPAL",
     order: 2
   },
   {
-    id: "lead-praxis-president",
-    name: "A. Sravan Reddy",
-    roleType: "PRAXIS_LEAD",
-    position: "President, PRAXIS",
-    designation: "Student President :",
-    qualifications: "B.Tech IV Year (CSE-AI&ML)",
+    id: "acad-hod",
+    name: "Dr. K. Srinivas Rao",
+    position: "HOD",
+    designation: "Head of Department (HOD) :",
+    qualifications: "M.Tech., Ph.D.",
+    department: "CSE & Allied Branches",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80",
+    roleType: "HOD",
+    order: 3
+  }
+];
+
+export const PRAXIS_STUDENT_LEADERSHIP = {
+  presidents: [
+    {
+      id: "lead-pres-male",
+      name: "Student President (Male)",
+      position: "President",
+      designation: "President, PRAXIS :",
+      gender: "Male",
+      rollNumber: "23SD1A0501",
+      qualifications: "B.Tech IV Year (CSE-AI&ML)",
+      department: "CSE (AI & ML)",
+      yearClass: "Final Year",
+      section: "A",
+      clubSlug: null,
+      photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80",
+      roleType: "PRAXIS_PRESIDENT",
+      order: 1
+    },
+    {
+      id: "lead-pres-female",
+      name: "Student President (Female)",
+      position: "President",
+      designation: "President, PRAXIS :",
+      gender: "Female",
+      rollNumber: "23SD1A0518",
+      qualifications: "B.Tech IV Year (CSE-DS)",
+      department: "CSE (Data Science)",
+      yearClass: "Final Year",
+      section: "B",
+      clubSlug: null,
+      photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      roleType: "PRAXIS_PRESIDENT",
+      order: 2
+    }
+  ],
+  vicePresidents: [
+    {
+      id: "lead-vp-male",
+      name: "Student Vice President (Male)",
+      position: "Vice President",
+      designation: "Vice President, PRAXIS :",
+      gender: "Male",
+      rollNumber: "24SD1A0532",
+      qualifications: "B.Tech III Year (CSE-Core)",
+      department: "CSE",
+      yearClass: "Third Year",
+      section: "A",
+      clubSlug: null,
+      photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+      roleType: "PRAXIS_VICE_PRESIDENT",
+      order: 3
+    },
+    {
+      id: "lead-vp-female",
+      name: "Student Vice President (Female)",
+      position: "Vice President",
+      designation: "Vice President, PRAXIS :",
+      gender: "Female",
+      rollNumber: "24SD1A0550",
+      qualifications: "B.Tech III Year (CSE-IoT)",
+      department: "CSE (IoT)",
+      yearClass: "Third Year",
+      section: "B",
+      clubSlug: null,
+      photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+      roleType: "PRAXIS_VICE_PRESIDENT",
+      order: 4
+    }
+  ]
+};
+
+export const PRAXIS_DOMAIN_LEADERSHIP = {
+  technical: [
+    {
+      id: "lead-tech-domain-1",
+      name: "Technical Guild Lead",
+      position: "Overall Technical Lead",
+      designation: "Technical Guild Lead :",
+      rollNumber: "23SD1A0560",
+      qualifications: "B.Tech IV Year (CSE-AI&ML)",
+      department: "CSE (AI & ML)",
+      yearClass: "Final Year",
+      section: "A",
+      clubSlug: "all-technical",
+      photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      roleType: "TECHNICAL_LEAD",
+      order: 1
+    },
+    {
+      id: "lead-tech-domain-2",
+      name: "Technical Guild Co-Lead",
+      position: "Overall Technical Co-Lead",
+      designation: "Technical Guild Co-Lead :",
+      rollNumber: "24SD1A0572",
+      qualifications: "B.Tech III Year (CSE-DS)",
+      department: "CSE (Data Science)",
+      yearClass: "Third Year",
+      section: "B",
+      clubSlug: "all-technical",
+      photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+      roleType: "TECHNICAL_LEAD",
+      order: 2
+    }
+  ],
+  nonTechnical: [
+    {
+      id: "lead-creative-domain-1",
+      name: "Creative & Cultural Lead",
+      position: "Overall Creative Lead",
+      designation: "Creative & Cultural Lead :",
+      rollNumber: "23SD1A0585",
+      qualifications: "B.Tech IV Year (CSE-IoT)",
+      department: "CSE (IoT)",
+      yearClass: "Final Year",
+      section: "A",
+      clubSlug: "all-non-technical",
+      photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+      roleType: "NON_TECHNICAL_LEAD",
+      order: 1
+    },
+    {
+      id: "lead-creative-domain-2",
+      name: "Creative & Cultural Co-Lead",
+      position: "Overall Creative Co-Lead",
+      designation: "Creative & Cultural Co-Lead :",
+      rollNumber: "24SD1A0596",
+      qualifications: "B.Tech III Year (CSE-Core)",
+      department: "CSE",
+      yearClass: "Third Year",
+      section: "C",
+      clubSlug: "all-non-technical",
+      photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      roleType: "NON_TECHNICAL_LEAD",
+      order: 2
+    }
+  ]
+};
+
+export const INITIAL_LEADERSHIP = [
+  // Tier 01: Governing Body
+  ...GOVERNING_BODY,
+
+  // Tier 02: Academic Leadership
+  ...ACADEMIC_LEADERSHIP,
+
+  // Tier 04 & 05: PRAXIS Presidents & Vice Presidents
+  ...PRAXIS_STUDENT_LEADERSHIP.presidents,
+  ...PRAXIS_STUDENT_LEADERSHIP.vicePresidents,
+
+  // Tier 06: Domain Leadership
+  ...PRAXIS_DOMAIN_LEADERSHIP.technical,
+  ...PRAXIS_DOMAIN_LEADERSHIP.nonTechnical,
+
+  // Faculty Members of all clubs
+  {
+    id: "faculty-genesis",
+    name: "Dr. Faculty Advisor - Genesis",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.Tech., Ph.D.",
+    department: "CSE (Algorithms & AI)",
+    clubSlug: "genesis",
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    order: 1
+  },
+  {
+    id: "faculty-innovex",
+    name: "Dr. Faculty Advisor - Innovex",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.Tech., Ph.D.",
+    department: "CSE (IoT & Embedded)",
+    clubSlug: "innovex",
+    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+    order: 2
+  },
+  {
+    id: "faculty-ai-club",
+    name: "Dr. Faculty Advisor - AI Club",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.Tech., Ph.D.",
     department: "CSE (AI & ML)",
-    yearClass: "Final Year",
-    clubSlug: null,
-    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80",
-    bio: "Leading collaborative inter-club initiatives and student development programs.",
+    clubSlug: "ai-club",
+    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80",
     order: 3
   },
+  {
+    id: "faculty-visual-vibes",
+    name: "Prof. Faculty Advisor - Visual Vibes",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.Tech. (Multimedia)",
+    department: "CSE & Digital Media Systems",
+    clubSlug: "visual-vibes",
+    photoUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80",
+    order: 4
+  },
+  {
+    id: "faculty-dtalks",
+    name: "Prof. Faculty Advisor - D-Talks",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.A., M.Phil.",
+    department: "Humanities & CSE-Allied",
+    clubSlug: "d-talks",
+    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+    order: 5
+  },
+  {
+    id: "faculty-lakshya",
+    name: "Dr. Faculty Advisor - Lakshya",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.Tech., Ph.D.",
+    department: "CSE-Allied",
+    clubSlug: "lakshya",
+    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+    order: 6
+  },
+  {
+    id: "faculty-creative-art",
+    name: "Prof. Faculty Advisor - Creative Art",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.F.A., M.Tech.",
+    department: "Design & CSE-Allied",
+    clubSlug: "creative-art",
+    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    order: 7
+  },
+  {
+    id: "faculty-swara",
+    name: "Dr. Faculty Advisor - Swara",
+    roleType: "FACULTY_COORDINATOR",
+    position: "Faculty In-Charge",
+    designation: "Faculty Advisor :",
+    qualifications: "M.A. (Performing Arts), Ph.D.",
+    department: "Performing Arts & CSE-Allied",
+    clubSlug: "swara",
+    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    order: 8
+  },
+
+  // Chapter Student Leads & Coordinators
   {
     id: "lead-genesis",
     name: "Genesis Lead",
@@ -253,8 +501,8 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE (Data Science)",
     yearClass: "Final Year",
     clubSlug: "genesis",
-    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-    order: 4
+    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    order: 9
   },
   {
     id: "coord-genesis-1",
@@ -264,38 +512,8 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "genesis",
-    order: 5
-  },
-  {
-    id: "coord-genesis-2",
-    name: "Event Coordinator",
-    roleType: "COORDINATOR",
-    position: "Operations Coordinator",
-    department: "CSE (AI)",
-    yearClass: "Third Year",
-    clubSlug: "genesis",
-    order: 6
-  },
-  {
-    id: "lead-tech-vertex",
-    name: "Tech Vertex Lead",
-    roleType: "CLUB_LEAD",
-    position: "Club Lead",
-    department: "CSE",
-    yearClass: "Final Year",
-    clubSlug: "tech-vertex",
-    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
-    order: 7
-  },
-  {
-    id: "coord-tv-1",
-    name: "Systems Coordinator",
-    roleType: "COORDINATOR",
-    position: "Full Stack Coordinator",
-    department: "CSE",
-    yearClass: "Third Year",
-    clubSlug: "tech-vertex",
-    order: 8
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    order: 10
   },
   {
     id: "lead-innovex",
@@ -305,8 +523,8 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE (IoT)",
     yearClass: "Final Year",
     clubSlug: "innovex",
-    photoUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80",
-    order: 9
+    photoUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80",
+    order: 11
   },
   {
     id: "coord-innovex-1",
@@ -316,28 +534,30 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "innovex",
-    order: 10
+    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80",
+    order: 12
   },
   {
-    id: "lead-dtalks",
-    name: "D-Talks Lead",
+    id: "lead-ai-club",
+    name: "AI Club Lead",
     roleType: "CLUB_LEAD",
     position: "Club Lead",
-    department: "CSE",
+    department: "CSE (AI & ML)",
     yearClass: "Final Year",
-    clubSlug: "d-talks",
-    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80",
-    order: 11
+    clubSlug: "ai-club",
+    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+    order: 13
   },
   {
-    id: "coord-dtalks-1",
-    name: "Debate Coordinator",
+    id: "coord-ai-1",
+    name: "Model Coordinator",
     roleType: "COORDINATOR",
-    position: "Public Speaking Coordinator",
-    department: "CSE",
+    position: "ML Coordinator",
+    department: "CSE (AI & ML)",
     yearClass: "Third Year",
-    clubSlug: "d-talks",
-    order: 12
+    clubSlug: "ai-club",
+    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+    order: 14
   },
   {
     id: "lead-visual-vibes",
@@ -347,8 +567,8 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Final Year",
     clubSlug: "visual-vibes",
-    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-    order: 13
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    order: 15
   },
   {
     id: "coord-vv-1",
@@ -358,7 +578,30 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "visual-vibes",
-    order: 14
+    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+    order: 16
+  },
+  {
+    id: "lead-dtalks",
+    name: "D-Talks Lead",
+    roleType: "CLUB_LEAD",
+    position: "Club Lead",
+    department: "CSE",
+    yearClass: "Final Year",
+    clubSlug: "d-talks",
+    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+    order: 17
+  },
+  {
+    id: "coord-dtalks-1",
+    name: "Debate Coordinator",
+    roleType: "COORDINATOR",
+    position: "Public Speaking Coordinator",
+    department: "CSE",
+    yearClass: "Third Year",
+    clubSlug: "d-talks",
+    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    order: 18
   },
   {
     id: "lead-lakshya",
@@ -368,8 +611,8 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Final Year",
     clubSlug: "lakshya",
-    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
-    order: 15
+    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+    order: 19
   },
   {
     id: "coord-lakshya-1",
@@ -379,7 +622,52 @@ export const INITIAL_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "lakshya",
-    order: 16
+    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80",
+    order: 20
+  },
+  {
+    id: "lead-creative-art",
+    name: "Creative Art Lead",
+    roleType: "CLUB_LEAD",
+    position: "Club Lead",
+    department: "CSE",
+    yearClass: "Final Year",
+    clubSlug: "creative-art",
+    photoUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80",
+    order: 21
+  },
+  {
+    id: "coord-art-1",
+    name: "Exhibition Coordinator",
+    roleType: "COORDINATOR",
+    position: "Design Coordinator",
+    department: "CSE",
+    yearClass: "Third Year",
+    clubSlug: "creative-art",
+    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    order: 22
+  },
+  {
+    id: "lead-swara",
+    name: "Swara Lead",
+    roleType: "CLUB_LEAD",
+    position: "Club Lead",
+    department: "CSE",
+    yearClass: "Final Year",
+    clubSlug: "swara",
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    order: 23
+  },
+  {
+    id: "coord-swara-1",
+    name: "Cultural Coordinator",
+    roleType: "COORDINATOR",
+    position: "Dance & Music Coordinator",
+    department: "CSE",
+    yearClass: "Third Year",
+    clubSlug: "swara",
+    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    order: 24
   }
 ];
 
@@ -404,18 +692,21 @@ export const INITIAL_EVENTS = [
     featured: true
   },
   {
-    id: "event-cloud-summit-2026",
-    title: "CLOUDFORGE: Full Stack & Cloud Native Architecture",
-    slug: "cloudforge-summit-2026",
-    category: "TECHNICAL",
-    clubSlug: "tech-vertex",
+    id: "event-swaranjali-2026",
+    title: "SWARANJALI: Annual Cultural & Musical Fest",
+    slug: "swaranjali-cultural-fest-2026",
+    category: "NON-TECHNICAL",
+    clubSlug: "swara",
     date: "2026-10-25",
-    venue: "Seminar Hall 2, SDES Campus",
-    description: "An intensive masterclass and live deployment hackathon exploring microservices, Docker containerization, Kubernetes orchestration, and serverless architectures.",
-    posterUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+    venue: "SDES Open Air Amphitheatre & Central Stage",
+    description: "A grand cultural fest celebrating classical, western, and folk dance ensembles, solo vocal melodies, acoustic rhythm jams, and vibrant musical performances.",
+    posterUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
     scheduleUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
     googleFormUrl: "https://forms.gle/sdesPraxisRegistrationDummy",
-    photos: [],
+    photos: [
+      "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
+    ],
     status: "UPCOMING",
     featured: true
   },
@@ -455,7 +746,7 @@ export const INITIAL_EVENTS = [
     id: "event-cinematic-lens-vv",
     title: "FRAME 24: Digital Cinematography & Storyboarding",
     slug: "frame-24-cinematography",
-    category: "NON-TECHNICAL",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     date: "2026-09-15",
     venue: "Media Center & Campus Amphitheatre",
@@ -464,7 +755,8 @@ export const INITIAL_EVENTS = [
     scheduleUrl: "",
     googleFormUrl: "https://forms.gle/sdesPraxisRegistrationDummy",
     photos: [
-      "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80"
     ],
     status: "COMPLETED",
     featured: false
@@ -481,7 +773,9 @@ export const INITIAL_EVENTS = [
     posterUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80",
     scheduleUrl: "",
     googleFormUrl: "https://forms.gle/sdesPraxisRegistrationDummy",
-    photos: [],
+    photos: [
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80"
+    ],
     status: "COMPLETED",
     featured: false
   }
@@ -512,9 +806,9 @@ export const INITIAL_ANNOUNCEMENTS = [
   },
   {
     id: "ann-3",
-    title: "Visual Vibes Official Media Crew Recruitment",
-    content: "Seeking cinematographers, video editors, and visual designers for the upcoming inter-college summit coverage.",
-    category: "NON-TECHNICAL",
+    title: "Visual Vibes Official Media & Technical Crew Recruitment",
+    content: "Seeking cinematographers, video editors, and visual tech creators for upcoming inter-college summit coverage.",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     date: "2026-09-25",
     linkUrl: "/clubs/visual-vibes",
@@ -524,6 +818,36 @@ export const INITIAL_ANNOUNCEMENTS = [
 ];
 
 export const INITIAL_GALLERY = [
+  {
+    id: "gal-est-1",
+    title: "PRAXIS Ecosystem Inauguration & Club Establishment Ceremony",
+    imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
+    caption: "The momentous official establishment and lamp lighting ceremony marking the inception of the PRAXIS club network at SDES.",
+    category: "NON-TECHNICAL",
+    clubSlug: "others",
+    albumName: "Establishment",
+    tags: ["praxis", "establishment", "inauguration", "founding"]
+  },
+  {
+    id: "gal-est-2",
+    title: "SDES Institutional Leadership & Chapter Chartering Day",
+    imageUrl: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
+    caption: "Institutional heads, deans, and faculty conveners conferring official charters upon student club leads.",
+    category: "NON-TECHNICAL",
+    clubSlug: "others",
+    albumName: "Establishment",
+    tags: ["praxis", "establishment", "charter", "governance"]
+  },
+  {
+    id: "gal-est-3",
+    title: "General Campus Convocation & Cultural Assemblage",
+    imageUrl: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+    caption: "The entire student body and faculty assembling at the SDES auditorium during the unified ecosystem launch.",
+    category: "NON-TECHNICAL",
+    clubSlug: "others",
+    albumName: "Campus Life",
+    tags: ["praxis", "others", "campus", "community"]
+  },
   {
     id: "gal-1",
     title: "Algorithmic Code Sprint 2026",
@@ -536,13 +860,13 @@ export const INITIAL_GALLERY = [
   },
   {
     id: "gal-2",
-    title: "Cloud Infrastructure Workshop",
-    imageUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80",
-    caption: "Hands-on architecture session with Tech Vertex cloud leads.",
-    category: "TECHNICAL",
-    clubSlug: "tech-vertex",
-    albumName: "Workshops",
-    tags: ["tech-vertex", "cloud", "workshop"]
+    title: "Swaranjali Cultural Rhythm & Classical Dance",
+    imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+    caption: "Vibrant classical dance and musical harmony presented by the Swara cultural troupe.",
+    category: "NON-TECHNICAL",
+    clubSlug: "swara",
+    albumName: "Cultural Performances",
+    tags: ["swara", "dance", "music", "cultural"]
   },
   {
     id: "gal-3",
@@ -566,13 +890,13 @@ export const INITIAL_GALLERY = [
   },
   {
     id: "gal-5",
-    title: "Cinematography Masterclass Exhibition",
+    title: "Cinematography & Video Tech Masterclass Exhibition",
     imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80",
-    caption: "Visual Vibes students capturing dynamic campus scenes with professional camera rigs.",
-    category: "NON-TECHNICAL",
+    caption: "Visual Vibes students capturing dynamic campus scenes with professional camera rigs and post-production workflows.",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     albumName: "Workshops",
-    tags: ["visual-vibes", "cinema", "media"]
+    tags: ["visual-vibes", "cinema", "media", "editing"]
   },
   {
     id: "gal-6",

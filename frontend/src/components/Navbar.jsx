@@ -25,6 +25,7 @@ export const Navbar = ({ onOpenSearch }) => {
     { name: 'ABOUT', path: '/about' },
     { name: 'CLUBS', path: '/clubs' },
     { name: 'EVENTS', path: '/events' },
+    { name: 'GALLERY', path: '/gallery' },
     { name: 'CONTACT', path: '/contact' }
   ];
 

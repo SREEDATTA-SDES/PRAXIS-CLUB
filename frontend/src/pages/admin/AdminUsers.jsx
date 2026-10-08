@@ -93,10 +93,10 @@ export const AdminUsers = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold uppercase text-white font-display tracking-wider">
-            Administrators & Roles
+            Administrators & Role Permissions
           </h1>
           <p className="text-xs text-praxis-secondary">
-            Manage administrative personnel with Super Admin, Faculty Admin, and Club Admin access.
+            Manage administrative credentials, club-scoped access control, and faculty privileges.
           </p>
         </div>
 
@@ -107,6 +107,51 @@ export const AdminUsers = () => {
           <Plus size={15} />
           <span>Add Administrator</span>
         </button>
+      </div>
+
+      {/* Role Hierarchy & Scope Guide */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* SUPER_ADMIN */}
+        <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-2">
+          <div className="flex items-center gap-2 text-amber-300 font-bold uppercase tracking-wider text-xs font-cinematic">
+            <Shield size={16} className="text-amber-400" />
+            <span>Super Administrator</span>
+          </div>
+          <p className="text-[11px] text-white/70 leading-relaxed">
+            Full root authority. Can create and remove administrators, manage institutional leadership, update all 8 chapters, delete system records, and publish broadcast notifications.
+          </p>
+          <span className="text-[10px] uppercase font-bold text-amber-400/90 tracking-widest block font-mono">
+            Scope: Full Ecosystem & Security
+          </span>
+        </div>
+
+        {/* FACULTY_ADMIN */}
+        <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+          <div className="flex items-center gap-2 text-emerald-300 font-bold uppercase tracking-wider text-xs font-cinematic">
+            <UserCheck size={16} className="text-emerald-400" />
+            <span>Faculty Administrator</span>
+          </div>
+          <p className="text-[11px] text-white/70 leading-relaxed">
+            Faculty guidance in-charge. Can approve and edit events, publish official announcements, and manage student coordinators across all technical and non-technical clubs.
+          </p>
+          <span className="text-[10px] uppercase font-bold text-emerald-400/90 tracking-widest block font-mono">
+            Scope: All 8 Club Chapters
+          </span>
+        </div>
+
+        {/* CLUB_ADMIN */}
+        <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-2">
+          <div className="flex items-center gap-2 text-cyan-300 font-bold uppercase tracking-wider text-xs font-cinematic">
+            <Shield size={16} className="text-praxis-cyan" />
+            <span>Club Chapter Admin</span>
+          </div>
+          <p className="text-[11px] text-white/70 leading-relaxed">
+            Student chapter leads. Access is securely isolated to their assigned club (e.g. Genesis, Turing). Can manage their chapter's events, team coordinators, and media gallery.
+          </p>
+          <span className="text-[10px] uppercase font-bold text-praxis-cyan/90 tracking-widest block font-mono">
+            Scope: Designated Club Only
+          </span>
+        </div>
       </div>
 
       {/* Admins Table */}

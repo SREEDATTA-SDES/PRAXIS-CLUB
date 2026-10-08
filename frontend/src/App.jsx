@@ -73,7 +73,7 @@ export function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/clubs" element={<ClubsPage />} />
           <Route path="/clubs/:clubSlug" element={<ClubDetailPage onOpenLightbox={(img) => setActiveLightboxItem(img)} />} />
-          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events" element={<EventsPage onOpenLightbox={(img) => setActiveLightboxItem(img)} />} />
           <Route path="/gallery" element={<GalleryPage onOpenLightbox={(img) => setActiveLightboxItem(img)} />} />
           <Route path="/contact" element={<ContactPage />} />
 

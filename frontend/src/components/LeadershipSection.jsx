@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useData } from '../context/DataContext';
-import { GOVERNING_BODY } from '../data/initialData';
+import { GOVERNING_BODY, ACADEMIC_LEADERSHIP, PRAXIS_STUDENT_LEADERSHIP, PRAXIS_DOMAIN_LEADERSHIP } from '../data/initialData';
+import { Shield, Sparkles, Award, Cpu, Palette } from 'lucide-react';
 
 // Fallback high-resolution portraits
 const DEFAULT_AVATARS = [
@@ -15,28 +16,91 @@ const DEFAULT_AVATARS = [
 ];
 
 /**
- * Gold-Framed Circular Portrait Card Matching Institutional Branding
+ * Gilded / Themed Circular Portrait Card Matching Institutional & Tier Branding
  */
-export const GoldPortraitCard = ({ person, index = 0 }) => {
+export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md' }) => {
   const fallbackPhoto = DEFAULT_AVATARS[index % DEFAULT_AVATARS.length];
 
+  // Theme styling configurations
+  const themeStyles = {
+    gold: {
+      glow: 'from-[#D4AF37]/50 via-[#F59E0B]/30 to-transparent',
+      ring: 'from-[#FEF08A] via-[#D4AF37] to-[#854D0E]',
+      innerBorder: 'border-[#D4AF37]/60',
+      tagColor: 'text-[#D4AF37]',
+      accentBg: 'bg-[#D4AF37]/10'
+    },
+    cyan: {
+      glow: 'from-cyan-400/50 via-sky-500/30 to-transparent',
+      ring: 'from-cyan-200 via-sky-400 to-blue-700',
+      innerBorder: 'border-cyan-400/60',
+      tagColor: 'text-praxis-cyan',
+      accentBg: 'bg-cyan-950/40'
+    },
+    emerald: {
+      glow: 'from-emerald-400/50 via-teal-500/30 to-transparent',
+      ring: 'from-emerald-200 via-emerald-500 to-teal-800',
+      innerBorder: 'border-emerald-400/60',
+      tagColor: 'text-emerald-400',
+      accentBg: 'bg-emerald-950/40'
+    },
+    purple: {
+      glow: 'from-purple-400/50 via-pink-500/30 to-transparent',
+      ring: 'from-purple-200 via-purple-500 to-pink-700',
+      innerBorder: 'border-purple-400/60',
+      tagColor: 'text-purple-300',
+      accentBg: 'bg-purple-950/40'
+    },
+    amber: {
+      glow: 'from-amber-400/50 via-orange-500/30 to-transparent',
+      ring: 'from-amber-200 via-amber-500 to-orange-700',
+      innerBorder: 'border-amber-400/60',
+      tagColor: 'text-amber-400',
+      accentBg: 'bg-amber-950/40'
+    }
+  };
+
+  const sizeStyles = {
+    xl: {
+      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
+      wrapperWidth: 'w-64 sm:w-76 md:w-84',
+      titleSize: 'text-xs sm:text-sm md:text-base font-semibold',
+      nameSize: 'text-base sm:text-xl md:text-2xl font-bold font-serif'
+    },
+    lg: {
+      ringSize: 'w-32 h-32 sm:w-38 sm:h-38 md:w-42 md:h-42',
+      wrapperWidth: 'w-60 sm:w-72',
+      titleSize: 'text-xs sm:text-sm font-semibold',
+      nameSize: 'text-base sm:text-lg md:text-xl font-bold'
+    },
+    md: {
+      ringSize: 'w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38',
+      wrapperWidth: 'w-56 sm:w-64',
+      titleSize: 'text-xs sm:text-sm font-medium',
+      nameSize: 'text-sm sm:text-base md:text-lg font-bold'
+    }
+  };
+
+  const currentTheme = themeStyles[theme] || themeStyles.gold;
+  const currentSize = sizeStyles[size] || sizeStyles.md;
+
   return (
-    <div className="flex flex-col items-center text-center px-4 py-3 shrink-0 w-60 sm:w-68 select-none group">
-      {/* 1. Circular Portrait with Gilded Gold Double-Ring Border */}
+    <div className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300`}>
+      {/* 1. Circular Portrait with Themed Double-Ring Border */}
       <div className="relative mb-3 flex items-center justify-center">
-        {/* Ambient Gold Glow Behind */}
-        <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-[#D4AF37]/40 via-[#F59E0B]/25 to-transparent blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Ambient Glow Behind */}
+        <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-500`} />
         
-        {/* Outer Gold Ring */}
-        <div className="relative w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 rounded-full p-[2.5px] bg-gradient-to-b from-[#FDE68A] via-[#D4AF37] to-[#854D0E] shadow-[0_8px_25px_rgba(0,0,0,0.8)]">
+        {/* Outer Ring */}
+        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500`}>
           {/* Inner Dark Gap Ring */}
           <div className="w-full h-full rounded-full p-[2px] bg-[#07090D]">
-            {/* Image Container with Inner Gold Border */}
-            <div className="w-full h-full rounded-full overflow-hidden border border-[#D4AF37]/60">
+            {/* Image Container with Inner Border */}
+            <div className={`w-full h-full rounded-full overflow-hidden border ${currentTheme.innerBorder}`}>
               <img
                 src={person.photoUrl || fallbackPhoto}
                 alt={person.name}
-                className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-110"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = fallbackPhoto;
@@ -47,23 +111,37 @@ export const GoldPortraitCard = ({ person, index = 0 }) => {
         </div>
       </div>
 
-      {/* 2. Designation / Role Title in Golden Accent */}
-      <span className="text-[#D4AF37] font-cinematic uppercase tracking-[0.2em] text-xs sm:text-sm font-semibold mb-1 leading-snug drop-shadow-sm">
-        {person.designation || (person.position ? `${person.position} :` : 'Coordinator :')}
+      {/* 2. Designation / Role Title in Themed Accent */}
+      <span className={`${currentTheme.tagColor} font-cinematic uppercase tracking-[0.2em] ${currentSize.titleSize} mb-1 leading-snug drop-shadow-sm`}>
+        {person.designation || (person.position ? `${person.position}` : 'Coordinator')}
       </span>
 
       {/* 3. Official Name in Bold White/Ivory */}
-      <h4 className="text-white font-bold text-base sm:text-lg tracking-wide mb-1 font-serif sm:font-sans leading-tight">
+      <h4 className={`text-white tracking-wide mb-1 leading-tight ${currentSize.nameSize}`}>
         {person.name}
       </h4>
 
-      {/* 4. Qualifications / Subtitle in Subtle Gold / Cream */}
-      <span className="text-white/65 text-xs sm:text-sm tracking-wider font-normal leading-relaxed">
-        {person.qualifications || person.department || person.yearClass || ''}
-      </span>
+      {/* 4. Details / Qualifications / Year / Section */}
+      <div className="space-y-0.5">
+        {person.qualifications && (
+          <span className="text-white/75 text-xs sm:text-sm tracking-wider font-normal block leading-relaxed">
+            {person.qualifications}
+          </span>
+        )}
+        {(person.yearClass || person.section || person.department) && (
+          <span className="text-white/55 text-[11px] sm:text-xs tracking-wider block font-cinematic">
+            {[person.yearClass, person.section && `Sec: ${person.section}`, person.department].filter(Boolean).join(' • ')}
+          </span>
+        )}
+        {person.rollNumber && (
+          <span className="text-[10px] uppercase font-mono tracking-widest text-praxis-cyan/70 block">
+            ID: {person.rollNumber}
+          </span>
+        )}
+      </div>
 
       {person.clubSlug && (
-        <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-praxis-cyan mt-1 block">
+        <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 mt-1 block">
           {person.clubSlug}
         </span>
       )}
@@ -73,10 +151,8 @@ export const GoldPortraitCard = ({ person, index = 0 }) => {
 
 /**
  * Auto-Moving Horizontal Scroll Row
- * Smoothly auto-scrolls using requestAnimationFrame, pauses instantly when hovered or touched,
- * supports natural drag/swipe, and has NO black color shades on edges.
  */
-export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false }) => {
+export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false, theme = 'gold', size = 'md' }) => {
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isInteractingRef = useRef(false);
@@ -86,7 +162,6 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
     const el = scrollRef.current;
     if (!el) return;
 
-    // Check if content overflows container
     const checkOverflow = () => {
       setCanScroll(el.scrollWidth > el.clientWidth + 5);
     };
@@ -99,7 +174,7 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
     let scrollPos = el.scrollLeft;
 
     const tick = (now) => {
-      const dt = Math.min(now - lastTime, 50); // Cap frame delta to prevent jumps
+      const dt = Math.min(now - lastTime, 50);
       lastTime = now;
 
       if (!isHoveredRef.current && !isInteractingRef.current && el.scrollWidth > el.clientWidth + 5) {
@@ -137,7 +212,6 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
         setTimeout(() => { isInteractingRef.current = false; }, 1200); 
       }}
     >
-      {/* Scrollable Container - NO black edge shades */}
       <div 
         ref={scrollRef}
         className={`w-full overflow-x-auto scrollbar-none flex items-center py-2 cursor-grab active:cursor-grabbing ${
@@ -151,6 +225,8 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
               key={`${person.id || person._id || idx}-${idx}`} 
               person={person} 
               index={idx}
+              theme={theme}
+              size={size}
             />
           ))}
         </div>
@@ -162,96 +238,266 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
 export const LeadershipSection = ({ filterClubSlug = null }) => {
   const { leadership } = useData();
 
-  // Filter based on context
-  const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR');
-  const praxisLeads = leadership.filter(l => l.roleType === 'PRAXIS_LEAD');
-  
-  const clubLeads = filterClubSlug 
-    ? leadership.filter(l => l.clubSlug === filterClubSlug && l.roleType === 'CLUB_LEAD')
-    : leadership.filter(l => l.roleType === 'CLUB_LEAD');
-
-  const coordinators = filterClubSlug
-    ? leadership.filter(l => l.clubSlug === filterClubSlug && l.roleType === 'COORDINATOR')
-    : leadership.filter(l => l.roleType === 'COORDINATOR');
-
-  // Combined Student Coordinators & Leads for global view
-  const allStudentCoordinators = [...praxisLeads, ...clubLeads, ...coordinators];
-
-  // If viewing specific club details
+  // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators
   if (filterClubSlug) {
-    const clubTeam = [...clubLeads, ...coordinators];
+    const clubFaculty = leadership.filter(
+      l => l.clubSlug === filterClubSlug && (l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR')
+    );
+
+    const clubStudents = leadership.filter(
+      l => l.clubSlug === filterClubSlug && (l.roleType === 'CLUB_LEAD' || l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD')
+    );
 
     return (
-      <div className="space-y-6">
-        <div className="text-center sm:text-left">
-          <span className="text-xs uppercase font-bold tracking-[0.25em] text-[#D4AF37] block mb-1">
-            Chapter Governance
-          </span>
-          <h3 className="text-2xl font-bold uppercase text-white font-display">
-            Club Leads & Coordinators
-          </h3>
-          <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
-            Auto-scrolling &bull; Hover cursor to pause &bull; Drag to inspect
-          </p>
+      <div className="space-y-16">
+        
+        {/* Section 1: Faculty In-Charge / Advisors */}
+        <div className="space-y-6">
+          <div className="text-center sm:text-left border-l-2 border-emerald-400/80 pl-4 sm:pl-6">
+            <span className="text-xs uppercase font-bold tracking-[0.25em] text-emerald-400 flex items-center gap-2 mb-1 font-cinematic">
+              <Shield size={14} /> Faculty In-Charge & Guidance
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display">
+              Faculty Coordinators
+            </h3>
+            <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
+              Academic mentorship & chapter oversight
+            </p>
+          </div>
+
+          {clubFaculty.length > 0 ? (
+            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" />
+          ) : (
+            <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
+              <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
+                Faculty Advisor appointment in progress.
+              </p>
+            </div>
+          )}
         </div>
 
-        <HorizontalAutoScrollRow items={clubTeam} speed={0.9} />
+        {/* Section 2: Student Chapter Leadership & Coordinators */}
+        <div className="space-y-6 pt-8 border-t border-white/5">
+          <div className="text-center sm:text-left border-l-2 border-praxis-cyan/80 pl-4 sm:pl-6">
+            <span className="text-xs uppercase font-bold tracking-[0.25em] text-praxis-cyan flex items-center gap-2 mb-1 font-cinematic">
+              <Sparkles size={14} /> Student Chapter Command
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display">
+              Club Leads & Coordinators
+            </h3>
+            <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
+              Operational execution, technical lead & event management &bull; Hover to pause
+            </p>
+          </div>
+
+          {clubStudents.length > 0 ? (
+            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" />
+          ) : (
+            <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
+              <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
+                Student coordinators list being updated.
+              </p>
+            </div>
+          )}
+        </div>
+
       </div>
     );
   }
 
-  // Global Institutional View (About Page)
+  // Global Institutional View (About Page) with All Dynamic Hierarchical Tiers
+  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN'].includes(l.roleType));
+  const govMembers = liveGovMembers.length > 0 ? liveGovMembers : GOVERNING_BODY;
+
+  const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType));
+  const acadMembers = liveAcadMembers.length > 0 ? liveAcadMembers : ACADEMIC_LEADERSHIP;
+
+  const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR');
+
+  const livePresidents = leadership.filter(l => l.roleType === 'PRAXIS_PRESIDENT');
+  const presidents = livePresidents.length > 0 ? livePresidents : (PRAXIS_STUDENT_LEADERSHIP?.presidents || []);
+
+  const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT');
+  const vicePresidents = liveVicePresidents.length > 0 ? liveVicePresidents : (PRAXIS_STUDENT_LEADERSHIP?.vicePresidents || []);
+
+  const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD');
+  const techDomain = liveTechDomain.length > 0 ? liveTechDomain : (PRAXIS_DOMAIN_LEADERSHIP?.technical || []);
+
+  const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD');
+  const creativeDomain = liveCreativeDomain.length > 0 ? liveCreativeDomain : (PRAXIS_DOMAIN_LEADERSHIP?.creative || PRAXIS_DOMAIN_LEADERSHIP?.nonTechnical || []);
+
+  const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD');
+  const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD');
+
   return (
-    <div className="space-y-16">
+    <div className="space-y-20">
       
-      {/* 1. Governing Body / Management Dignitaries - 3 Distinct Leaders, No Duplicates */}
-      <div className="space-y-4">
-        <div className="text-center">
-          <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic">
-            Institutional Leadership
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display">
-            Governing Council
-          </h3>
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-2" />
-        </div>
-
-        {/* Displays the 3 dignitaries centered on desktop, auto-scrolls on mobile */}
-        <HorizontalAutoScrollRow items={GOVERNING_BODY} speed={0.8} centerIfFits={true} />
-      </div>
-
-      {/* 2. Head of Department (HOD) & Faculty Coordinators */}
-      <div className="space-y-4 pt-6 border-t border-white/5">
-        <div className="text-center">
-          <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan block mb-1 font-cinematic">
-            Academic & Advisory Steering
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display">
-            HOD & Faculty Coordinators
-          </h3>
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-2" />
-        </div>
-
-        <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} centerIfFits={true} />
-      </div>
-
-      {/* 3. Central Student Council, Club Leads & Student Coordinators */}
-      {allStudentCoordinators.length > 0 && (
-        <div className="space-y-4 pt-6 border-t border-white/5">
+      {/* Tier 01: Governing Council (Chairman in Center, Vice-Chairman on Left, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME */}
+      {govMembers.length > 0 && (
+        <div className="space-y-6">
           <div className="text-center">
-            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-accent block mb-1 font-cinematic">
-              Student Operational Steering
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic">
+              Tier 01 &bull; Institutional Governance
             </span>
-            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display">
-              Student Coordinators & Chapter Leads
+            <h3 className="text-2xl sm:text-4xl font-bold uppercase text-white font-display tracking-wider">
+              Governing Council
             </h3>
-            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-praxis-accent to-transparent mx-auto mt-2" />
+            <p className="text-xs text-[#D4AF37]/75 font-cinematic uppercase tracking-widest mt-1">
+              Visionary Patrons & Institutional Leadership
+            </p>
+            <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={allStudentCoordinators} speed={1.0} />
+          <HorizontalAutoScrollRow items={govMembers} speed={0.6} centerIfFits={true} theme="gold" size="xl" />
+        </div>
+      )}
+
+      {/* Tier 02: Academic Leadership (Dean, Principal, HOD) - PROMINENT XL/LG SIZE */}
+      {acadMembers.length > 0 && (
+        <div className="space-y-6 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-white/80 block mb-1 font-cinematic">
+              Tier 02 &bull; Academic Leadership
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              Dean, Principal & Department Head
+            </h3>
+            <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
+              Academic Governance & Institutional Pillars
+            </p>
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto mt-3" />
+          </div>
+
+          <HorizontalAutoScrollRow items={acadMembers} speed={0.7} centerIfFits={true} theme="gold" size="xl" />
+        </div>
+      )}
+
+      {/* Tier 03: Faculty In-Charges & Coordinators Across All 8 Clubs - EMERALD THEME */}
+      {facultyMembers.length > 0 && (
+        <div className="space-y-6 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-emerald-400 block mb-1 font-cinematic">
+              Tier 03 &bull; Faculty Mentorship & Advisors
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              Faculty Advisors & Coordinators (All Chapters)
+            </h3>
+            <p className="text-xs text-emerald-400/70 font-cinematic uppercase tracking-widest mt-1">
+              Continuous steering & departmental coordination &bull; Hover to pause
+            </p>
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent mx-auto mt-3" />
+          </div>
+
+          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" />
+        </div>
+      )}
+
+      {/* Tier 04: PRAXIS Main Club Student Presidents - PROMINENT LG SIZE & GOLD THEME */}
+      {presidents.length > 0 && (
+        <div className="space-y-6 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic flex items-center justify-center gap-2">
+              <Award size={15} className="text-[#D4AF37]" /> Tier 04 &bull; Student Command
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              PRAXIS Student Presidents
+            </h3>
+            <p className="text-xs text-[#D4AF37]/80 font-cinematic uppercase tracking-widest mt-1">
+              Executive Apex Council &bull; Male & Female Representation
+            </p>
+            <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
+          </div>
+
+          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" />
+        </div>
+      )}
+
+      {/* Tier 05: PRAXIS Main Club Student Vice Presidents - PROMINENT LG SIZE & CYAN THEME */}
+      {vicePresidents.length > 0 && (
+        <div className="space-y-6 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan block mb-1 font-cinematic flex items-center justify-center gap-2">
+              <Shield size={15} className="text-praxis-cyan" /> Tier 05 &bull; Operational Council
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              PRAXIS Student Vice Presidents
+            </h3>
+            <p className="text-xs text-praxis-cyan/80 font-cinematic uppercase tracking-widest mt-1">
+              Vice Executive Council &bull; Male & Female Representation
+            </p>
+            <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-3" />
+          </div>
+
+          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" />
+        </div>
+      )}
+
+      {/* Tier 06: Overall Technical Domain Leads & Creative/Non-Technical Domain Leads */}
+      {(techDomain.length > 0 || creativeDomain.length > 0) && (
+        <div className="space-y-12 pt-10 border-t border-white/10">
+          {/* Technical Domain Leads */}
+          {techDomain.length > 0 && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="text-xs uppercase font-bold tracking-[0.3em] text-cyan-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
+                  <Cpu size={15} className="text-cyan-400" /> Tier 06A &bull; Overall Technical Domain Leads
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
+                  Overall Technical Coordinators
+                </h3>
+                <p className="text-xs text-cyan-400/70 font-cinematic uppercase tracking-widest mt-1">
+                  Overseeing Technical Chapters & Inter-Club Engineering Projects
+                </p>
+                <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
+              </div>
+
+              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" />
+            </div>
+          )}
+
+          {/* Creative / Non-Technical Domain Leads */}
+          {creativeDomain.length > 0 && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="text-xs uppercase font-bold tracking-[0.3em] text-purple-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
+                  <Palette size={15} className="text-purple-400" /> Tier 06B &bull; Overall Creative & Operations Leads
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
+                  Overall Non-Technical Coordinators
+                </h3>
+                <p className="text-xs text-purple-400/70 font-cinematic uppercase tracking-widest mt-1">
+                  Overseeing Cultural, Sports, Arts, Media & Stage Management
+                </p>
+                <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
+              </div>
+
+              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Tier 07: Chapter Leads & Student Coordinators */}
+      {(clubLeads.length > 0 || coordinators.length > 0) && (
+        <div className="space-y-6 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-secondary block mb-1 font-cinematic">
+              Tier 07 &bull; Chapter Operations
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              Club Chapter Leads & Student Coordinators
+            </h3>
+            <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
+              Execution team across all 8 special-interest chapters
+            </p>
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mx-auto mt-3" />
+          </div>
+
+          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" />
         </div>
       )}
 
     </div>
   );
 };
+

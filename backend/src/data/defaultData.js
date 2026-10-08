@@ -35,22 +35,6 @@ export const DEFAULT_CLUBS = [
     order: 1
   },
   {
-    id: "tech-vertex",
-    slug: "tech-vertex",
-    name: "Tech Vertex",
-    category: "TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117784/Tech_Vortex_LOGO.png",
-    tagline: "Bridging Ideas into Scalable Digital Realities",
-    description: "Full-stack web architecture, cloud computational systems, DevOps, and modern computational frameworks hub.",
-    purpose: "To equip students with modern production-ready software engineering, microservices, and cloud deployment capabilities.",
-    vision: "Cultivating elite developers and system architects capable of designing and maintaining mission-critical digital platforms.",
-    mission: "Host hands-on full-stack hackathons, DevOps deployment masterclasses, open-source contributor clinics, and architectural teardowns.",
-    accentPrimary: "#00F2FE",
-    accentSecondary: "#4FACFE",
-    status: "active",
-    order: 2
-  },
-  {
     id: "innovex",
     slug: "innovex",
     name: "Innovex",
@@ -64,7 +48,7 @@ export const DEFAULT_CLUBS = [
     accentPrimary: "#EF4444",
     accentSecondary: "#F87171",
     status: "active",
-    order: 3
+    order: 2
   },
   {
     id: "ai-club",
@@ -79,6 +63,22 @@ export const DEFAULT_CLUBS = [
     mission: "Conduct research, build AI models, and compete in global data science challenges.",
     accentPrimary: "#10B981",
     accentSecondary: "#34D399", 
+    status: "active",
+    order: 3
+  },
+  {
+    id: "visual-vibes",
+    slug: "visual-vibes",
+    name: "Visual Vibes",
+    category: "TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
+    tagline: "Cinematography, Digital Media & Tech Event Storytelling",
+    description: "The cinematography, video editing, media production, and digital visual technology wing of PRAXIS.",
+    purpose: "To capture, edit, produce, and broadcast high-impact cinematic footage and digital media for tech summits, hackathons, and institutional events.",
+    vision: "To set an industry-grade creative media benchmark in student video production, photography, and brand storytelling.",
+    mission: "Produce official event aftermovies, run photography and motion design masterclasses, and manage institutional visual archives.",
+    accentPrimary: "#A855F7",
+    accentSecondary: "#22D3EE",
     status: "active",
     order: 4
   },
@@ -99,22 +99,6 @@ export const DEFAULT_CLUBS = [
     order: 5
   },
   {
-    id: "visual-vibes",
-    slug: "visual-vibes",
-    name: "Visual Vibes",
-    category: "NON-TECHNICAL",
-    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791117782/Visual_Vibes_LOGO.png",
-    tagline: "The Visual Pulse of Campus Culture",
-    description: "The cinematography, digital media production, graphic design, and artistic narrative wing of PRAXIS.",
-    purpose: "To document, amplify, and stylize student achievements and campus events through high-caliber visual aesthetics.",
-    vision: "To set an industry-grade creative media benchmark in student video production, photography, and brand storytelling.",
-    mission: "Produce official event aftermovies, run photography and motion design masterclasses, and manage institutional visual archives.",
-    accentPrimary: "#A855F7",
-    accentSecondary: "#22D3EE",
-    status: "active",
-    order: 6
-  },
-  {
     id: "lakshya",
     slug: "lakshya",
     name: "Lakshya",
@@ -128,7 +112,7 @@ export const DEFAULT_CLUBS = [
     accentPrimary: "#3B82F6",
     accentSecondary: "#F59E0B",
     status: "active",
-    order: 7
+    order: 6
   },
   {
     id: "creative-art",
@@ -143,6 +127,22 @@ export const DEFAULT_CLUBS = [
     mission: "Host art exhibitions, painting workshops, and collaborative mural projects.",
     accentPrimary: "#F43F5E",
     accentSecondary: "#FB923C", 
+    status: "active",
+    order: 7
+  },
+  {
+    id: "swara",
+    slug: "swara",
+    name: "Swara",
+    category: "NON-TECHNICAL",
+    logoUrl: "https://res.cloudinary.com/mb7zqdf5/image/upload/v1791469834/Grungy_SWARA_Ribbon_Emblem.png",
+    tagline: "The Melodic & Cultural Rhythm of SDES",
+    description: "The cultural wing dedicated to classical & western dance, vocal melody, instrumental harmony, folk arts, and campus cultural celebrations.",
+    purpose: "To celebrate diverse cultural heritage, nurture dance and musical talent, and stage high-energy cultural performances.",
+    vision: "To be an expressive performing arts platform fostering rhythm, musicality, and cultural pride across the entire institution.",
+    mission: "Organize campus cultural festivals, classical and western dance competitions, acoustic jamming nights, and folk music showcases.",
+    accentPrimary: "#F59E0B",
+    accentSecondary: "#EF4444",
     status: "active",
     order: 8
   }
@@ -220,27 +220,6 @@ export const DEFAULT_LEADERSHIP = [
     order: 6
   },
   {
-    id: "lead-tech-vertex",
-    name: "Tech Vertex Lead",
-    roleType: "CLUB_LEAD",
-    position: "Club Lead",
-    department: "CSE",
-    yearClass: "Final Year",
-    clubSlug: "tech-vertex",
-    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
-    order: 7
-  },
-  {
-    id: "coord-tv-1",
-    name: "Systems Coordinator",
-    roleType: "COORDINATOR",
-    position: "Full Stack Coordinator",
-    department: "CSE",
-    yearClass: "Third Year",
-    clubSlug: "tech-vertex",
-    order: 8
-  },
-  {
     id: "lead-innovex",
     name: "Innovex Lead",
     roleType: "CLUB_LEAD",
@@ -249,7 +228,7 @@ export const DEFAULT_LEADERSHIP = [
     yearClass: "Final Year",
     clubSlug: "innovex",
     photoUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80",
-    order: 9
+    order: 7
   },
   {
     id: "coord-innovex-1",
@@ -259,28 +238,18 @@ export const DEFAULT_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "innovex",
-    order: 10
+    order: 8
   },
   {
-    id: "lead-dtalks",
-    name: "D-Talks Lead",
+    id: "lead-ai-club",
+    name: "AI Club Lead",
     roleType: "CLUB_LEAD",
     position: "Club Lead",
-    department: "CSE",
+    department: "CSE (AI & ML)",
     yearClass: "Final Year",
-    clubSlug: "d-talks",
+    clubSlug: "ai-club",
     photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80",
-    order: 11
-  },
-  {
-    id: "coord-dtalks-1",
-    name: "Debate Coordinator",
-    roleType: "COORDINATOR",
-    position: "Public Speaking Coordinator",
-    department: "CSE",
-    yearClass: "Third Year",
-    clubSlug: "d-talks",
-    order: 12
+    order: 9
   },
   {
     id: "lead-visual-vibes",
@@ -291,7 +260,7 @@ export const DEFAULT_LEADERSHIP = [
     yearClass: "Final Year",
     clubSlug: "visual-vibes",
     photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-    order: 13
+    order: 10
   },
   {
     id: "coord-vv-1",
@@ -301,7 +270,28 @@ export const DEFAULT_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "visual-vibes",
-    order: 14
+    order: 11
+  },
+  {
+    id: "lead-dtalks",
+    name: "D-Talks Lead",
+    roleType: "CLUB_LEAD",
+    position: "Club Lead",
+    department: "CSE",
+    yearClass: "Final Year",
+    clubSlug: "d-talks",
+    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80",
+    order: 12
+  },
+  {
+    id: "coord-dtalks-1",
+    name: "Debate Coordinator",
+    roleType: "COORDINATOR",
+    position: "Public Speaking Coordinator",
+    department: "CSE",
+    yearClass: "Third Year",
+    clubSlug: "d-talks",
+    order: 13
   },
   {
     id: "lead-lakshya",
@@ -312,7 +302,7 @@ export const DEFAULT_LEADERSHIP = [
     yearClass: "Final Year",
     clubSlug: "lakshya",
     photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
-    order: 15
+    order: 14
   },
   {
     id: "coord-lakshya-1",
@@ -322,6 +312,17 @@ export const DEFAULT_LEADERSHIP = [
     department: "CSE",
     yearClass: "Third Year",
     clubSlug: "lakshya",
+    order: 15
+  },
+  {
+    id: "lead-swara",
+    name: "Swara Lead",
+    roleType: "CLUB_LEAD",
+    position: "Club Lead",
+    department: "CSE",
+    yearClass: "Final Year",
+    clubSlug: "swara",
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
     order: 16
   }
 ];
@@ -347,18 +348,21 @@ export const DEFAULT_EVENTS = [
     featured: true
   },
   {
-    id: "event-cloud-summit-2026",
-    title: "CLOUDFORGE: Full Stack & Cloud Native Architecture",
-    slug: "cloudforge-summit-2026",
-    category: "TECHNICAL",
-    clubSlug: "tech-vertex",
+    id: "event-swaranjali-2026",
+    title: "SWARANJALI: Annual Cultural & Musical Fest",
+    slug: "swaranjali-cultural-fest-2026",
+    category: "NON-TECHNICAL",
+    clubSlug: "swara",
     date: "2026-10-25",
-    venue: "Seminar Hall 2, SDES Campus",
-    description: "An intensive masterclass and live deployment hackathon exploring microservices, Docker containerization, Kubernetes orchestration, and serverless architectures.",
-    posterUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+    venue: "SDES Open Air Amphitheatre & Central Stage",
+    description: "A grand cultural fest celebrating classical, western, and folk dance ensembles, solo vocal melodies, acoustic rhythm jams, and vibrant musical performances.",
+    posterUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
     scheduleUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
     googleFormUrl: "https://forms.gle/sdesPraxisRegistrationDummy",
-    photos: [],
+    photos: [
+      "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
+    ],
     status: "UPCOMING",
     featured: true
   },
@@ -398,7 +402,7 @@ export const DEFAULT_EVENTS = [
     id: "event-cinematic-lens-vv",
     title: "FRAME 24: Digital Cinematography & Storyboarding",
     slug: "frame-24-cinematography",
-    category: "NON-TECHNICAL",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     date: "2026-09-15",
     venue: "Media Center & Campus Amphitheatre",
@@ -455,9 +459,9 @@ export const DEFAULT_ANNOUNCEMENTS = [
   },
   {
     id: "ann-3",
-    title: "Visual Vibes Official Media Crew Recruitment",
-    content: "Seeking cinematographers, video editors, and visual designers for the upcoming inter-college summit coverage.",
-    category: "NON-TECHNICAL",
+    title: "Visual Vibes Official Media & Technical Crew Recruitment",
+    content: "Seeking cinematographers, video editors, and visual designers for upcoming inter-college summit coverage.",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     date: "2026-09-25",
     linkUrl: "/clubs/visual-vibes",
@@ -479,13 +483,13 @@ export const DEFAULT_GALLERY = [
   },
   {
     id: "gal-2",
-    title: "Cloud Infrastructure Workshop",
-    imageUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80",
-    caption: "Hands-on architecture session with Tech Vertex cloud leads.",
-    category: "TECHNICAL",
-    clubSlug: "tech-vertex",
-    albumName: "Workshops",
-    tags: ["tech-vertex", "cloud", "workshop"]
+    title: "Swaranjali Cultural Rhythm & Classical Dance",
+    imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+    caption: "Vibrant classical dance and musical harmony presented by the Swara cultural troupe.",
+    category: "NON-TECHNICAL",
+    clubSlug: "swara",
+    albumName: "Cultural Performances",
+    tags: ["swara", "dance", "music", "cultural"]
   },
   {
     id: "gal-3",
@@ -509,13 +513,13 @@ export const DEFAULT_GALLERY = [
   },
   {
     id: "gal-5",
-    title: "Cinematography Masterclass Exhibition",
+    title: "Cinematography & Video Tech Masterclass Exhibition",
     imageUrl: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80",
-    caption: "Visual Vibes students capturing dynamic campus scenes with professional camera rigs.",
-    category: "NON-TECHNICAL",
+    caption: "Visual Vibes students capturing dynamic campus scenes with professional camera rigs and editing suites.",
+    category: "TECHNICAL",
     clubSlug: "visual-vibes",
     albumName: "Workshops",
-    tags: ["visual-vibes", "cinema", "media"]
+    tags: ["visual-vibes", "cinema", "media", "editing"]
   },
   {
     id: "gal-6",

@@ -1,15 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, CheckCircle, Compass, Shield, Award } from 'lucide-react';
 import { SpatialHero } from '../components/SpatialHero';
 import { ClubCard } from '../components/ClubCard';
 import { EventCard } from '../components/EventCard';
+import { EventDetailModal } from '../components/EventDetailModal';
 import { AnnouncementsSection } from '../components/AnnouncementsSection';
 import { useData } from '../context/DataContext';
 
 export const HomePage = ({ onOpenLightbox }) => {
   const { clubs, events, gallery } = useData();
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -27,7 +29,11 @@ export const HomePage = ({ onOpenLightbox }) => {
 
   const technicalClubs = clubs.filter(c => c.category === 'TECHNICAL');
   const nonTechnicalClubs = clubs.filter(c => c.category === 'NON-TECHNICAL');
-  const upcomingEvents = events.filter(e => e.status === 'UPCOMING').slice(0, 3);
+  
+  // Prioritize events marked as highlighted / featured by admin, followed by upcoming events
+  const featuredEvents = events.filter(e => e.featured || e.isHighlighted);
+  const remainingUpcoming = events.filter(e => e.status === 'UPCOMING' && !e.featured && !e.isHighlighted);
+  const upcomingEvents = (featuredEvents.length > 0 ? [...featuredEvents, ...remainingUpcoming] : events.filter(e => e.status === 'UPCOMING')).slice(0, 3);
   const previewGallery = gallery.slice(0, 6);
 
   // Parallax Values
@@ -45,38 +51,38 @@ export const HomePage = ({ onOpenLightbox }) => {
 
       {/* 2. Praxis Introduction / Manifesto - Liquid Glass Redesign */}
       <motion.section
-        style={{ y: yManifesto, opacity: opacityManifesto }}
-        className="relative flex items-center py-12 z-10"
+        style={{ y: isMobile ? 0 : yManifesto, opacity: isMobile ? 1 : opacityManifesto }}
+        className="relative flex items-center py-10 sm:py-12 z-10"
       >
-        <div className="max-w-[1600px] w-full mx-auto px-6 md:px-12 relative">
-          <div className="liquid-glass-elevated rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
+        <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 md:px-12 relative">
+          <div className="liquid-glass-elevated rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 md:p-16 overflow-hidden relative">
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-praxis-cyan/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-praxis-accent/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center relative z-10">
-              <div className="lg:col-span-6 space-y-6">
-                <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-24 items-center relative z-10 text-center lg:text-left">
+              <div className="lg:col-span-6 space-y-4 sm:space-y-6">
+                <span className="text-[10px] md:text-xs uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic block">
                   The CSE-Allied Catalyst
                 </span>
-                <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 font-display leading-[1.1] tracking-wider">
+                <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 font-display leading-[1.1] tracking-wider">
                   Where <span className="text-praxis-cyan">Engineering</span> Meets Expression
                 </h2>
               </div>
 
-              <div className="lg:col-span-6 space-y-8">
+              <div className="lg:col-span-6 space-y-6 sm:space-y-8 flex flex-col items-center lg:items-start">
                 <p className="text-sm md:text-base lg:text-xl text-white/70 leading-relaxed font-cinematic tracking-wide">
                   PRAXIS is the unifying student club ecosystem of <strong className="text-white">Sree Dattha Institute of Engineering & Science</strong>.
                   It provides an open runway for ambitious students to transition beyond classroom theory into competitive coding, systems engineering, hardware invention, parliamentary debate, cinematography, and civic leadership.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-6 text-[10px] md:text-xs text-white/50 uppercase tracking-[0.2em] font-bold">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-row justify-center lg:justify-start gap-6 text-[10px] md:text-xs text-white/50 uppercase tracking-[0.2em] font-bold">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
                     <div className="w-8 h-8 rounded-full border border-praxis-cyan flex items-center justify-center text-praxis-cyan shadow-[0_0_15px_rgba(6,182,212,0.5)]">
                       <CheckCircle size={12} />
                     </div>
                     <span>Technical Guilds</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
                     <div className="w-8 h-8 rounded-full border border-praxis-accent flex items-center justify-center text-praxis-accent shadow-[0_0_15px_rgba(236,72,153,0.5)]">
                       <CheckCircle size={12} />
                     </div>
@@ -84,10 +90,10 @@ export const HomePage = ({ onOpenLightbox }) => {
                   </div>
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-4 sm:pt-6">
                   <Link
                     to="/about"
-                    className="group inline-flex items-center gap-4 px-8 py-4 liquid-glass rounded-full text-xs font-bold uppercase tracking-[0.3em] text-white hover:bg-white/10 transition-colors"
+                    className="group inline-flex items-center gap-4 px-8 py-3.5 sm:py-4 liquid-glass rounded-full text-xs font-bold uppercase tracking-[0.3em] text-white hover:bg-white/10 transition-colors"
                   >
                     <span>Read Manifesto</span>
                     <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
@@ -100,37 +106,38 @@ export const HomePage = ({ onOpenLightbox }) => {
       </motion.section>
 
       {/* 3. Clubs Section - Liquid Glass Layout */}
-      <section className="relative py-12 overflow-hidden z-10">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12">
+      <section className="relative py-10 sm:py-12 overflow-hidden z-10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12">
 
-          <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-12 border-b border-white/10 pb-8">
-            <div className="max-w-3xl space-y-4">
-              <span className="text-[10px] uppercase font-bold tracking-[0.5em] text-praxis-cyan font-cinematic">
+          {/* Centered on mobile, aligned on desktop */}
+          <div className="flex flex-col lg:flex-row justify-between items-center lg:items-end gap-6 sm:gap-8 mb-10 sm:mb-12 border-b border-white/10 pb-8 text-center lg:text-left">
+            <div className="max-w-3xl space-y-3">
+              <span className="text-[10px] sm:text-xs uppercase font-bold tracking-[0.4em] sm:tracking-[0.5em] text-praxis-cyan font-cinematic block">
                 Autonomous Chapters
               </span>
-              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 font-display tracking-widest leading-none">
                 Our Ecosystem
               </h2>
             </div>
             <div className="max-w-md">
               <p className="text-xs text-white/50 tracking-widest font-cinematic leading-loose uppercase">
-                Six specialized student bodies engineering excellence across algorithms, cloud, IoT, debating, media, and leadership.
+                Eight specialized student bodies engineering excellence across algorithms, hardware IoT, artificial intelligence, cinematography, debating, social impact, fine arts, and cultural rhythm.
               </p>
             </div>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-12 sm:space-y-16">
             {/* TECHNICAL CLUBS */}
             <motion.div style={{ x: isMobile ? 0 : xClubsLeft }}>
-              <div className="flex items-center gap-6 mb-8">
-                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase text-white font-display tracking-widest">
                   Technical Layer
                 </h3>
-                <div className="h-[1px] flex-grow bg-white/10 relative">
-                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-cyan to-transparent" />
+                <div className="w-full sm:flex-grow h-[1px] bg-white/10 relative">
+                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-cyan to-transparent hidden sm:block" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 {technicalClubs.map(club => (
                   <ClubCard key={club.slug} club={club} />
                 ))}
@@ -139,15 +146,15 @@ export const HomePage = ({ onOpenLightbox }) => {
 
             {/* NON-TECHNICAL CLUBS */}
             <motion.div style={{ x: isMobile ? 0 : xClubsRight }}>
-              <div className="flex items-center gap-6 mb-8">
-                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white font-display tracking-widest">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase text-white font-display tracking-widest">
                   Creative Layer
                 </h3>
-                <div className="h-[1px] flex-grow bg-white/10 relative">
-                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-accent to-transparent" />
+                <div className="w-full sm:flex-grow h-[1px] bg-white/10 relative">
+                  <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-praxis-accent to-transparent hidden sm:block" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 {nonTechnicalClubs.map(club => (
                   <ClubCard key={club.slug} club={club} />
                 ))}
@@ -158,16 +165,17 @@ export const HomePage = ({ onOpenLightbox }) => {
       </section>
 
       {/* 4. Upcoming Events - Liquid Design */}
-      <section className="relative py-12 z-10">
+      <section className="relative py-10 sm:py-12 z-10">
         <div className="absolute inset-0 bg-white/5 skew-y-[-3deg] transform-origin-top-left pointer-events-none" />
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 relative z-10">
 
-          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
-            <div className="space-y-4">
-              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-accent font-cinematic">
+          {/* Centered on mobile, aligned on desktop */}
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-6 mb-8 text-center sm:text-left">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-accent font-cinematic block">
                 Calendar & Action
               </span>
-              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+              <h2 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 font-display tracking-widest leading-none">
                 Operations
               </h2>
             </div>
@@ -181,31 +189,44 @@ export const HomePage = ({ onOpenLightbox }) => {
           </div>
 
           {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               {upcomingEvents.map(event => (
-                <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <EventCard key={event.id || event.slug} event={event} />
+                <motion.div key={event.id || event.slug} whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <EventCard 
+                    event={event} 
+                    onSelectEvent={(e) => setSelectedEvent(e)}
+                  />
                 </motion.div>
               ))}
             </div>
           ) : (
-            <div className="liquid-glass-elevated rounded-[2.5rem] py-24 text-center">
+            <div className="liquid-glass-elevated rounded-[2.5rem] py-20 sm:py-24 text-center">
               <p className="text-white/50 tracking-widest uppercase text-sm font-cinematic">New event registrations will open shortly.</p>
             </div>
+          )}
+
+          {/* Event Details Lightbox / Modal */}
+          {selectedEvent && (
+            <EventDetailModal
+              event={selectedEvent}
+              onClose={() => setSelectedEvent(null)}
+              onOpenLightbox={onOpenLightbox}
+            />
           )}
         </div>
       </section>
 
       {/* 6. Gallery Preview - Liquid Tiles */}
-      <section className="relative py-12 z-10">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12">
+      <section className="relative py-10 sm:py-12 z-10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12">
 
-          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
-            <div className="space-y-4">
-              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic">
+          {/* Centered on mobile, aligned on desktop */}
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-6 mb-8 text-center sm:text-left">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-praxis-cyan font-cinematic block">
                 Visual Archives
               </span>
-              <h2 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30 font-display tracking-widest">
+              <h2 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 font-display tracking-widest leading-none">
                 Highlights
               </h2>
             </div>
@@ -218,7 +239,7 @@ export const HomePage = ({ onOpenLightbox }) => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {previewGallery.map((item, i) => (
               <motion.div
                 key={item.id}
@@ -227,7 +248,7 @@ export const HomePage = ({ onOpenLightbox }) => {
                 viewport={{ once: true }}
                 transition={{ delay: (i % 3) * 0.1 }}
                 onClick={() => onOpenLightbox && onOpenLightbox(item)}
-                className="group relative h-80 rounded-[2rem] overflow-hidden cursor-pointer liquid-glass-card"
+                className="group relative h-72 sm:h-80 rounded-[2rem] overflow-hidden cursor-pointer liquid-glass-card"
               >
                 <img
                   src={item.imageUrl}
@@ -237,7 +258,7 @@ export const HomePage = ({ onOpenLightbox }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 transition-opacity duration-500" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                   <span className="text-[9px] uppercase font-bold text-praxis-cyan tracking-[0.3em] mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                     {item.albumName || item.category}
                   </span>

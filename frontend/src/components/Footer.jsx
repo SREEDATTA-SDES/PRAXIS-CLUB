@@ -78,31 +78,33 @@ export const Footer = ({ onReplayIntro }) => {
             </h5>
             <ul className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
               <li><Link to="/" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Home</Link></li>
-              <li><Link to="/about" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Manifesto</Link></li>
-              <li><Link to="/clubs" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Chapters</Link></li>
-              <li><Link to="/events" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Operations</Link></li>
-              <li><Link to="/gallery" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Visuals</Link></li>
-              <li><Link to="/contact" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Connect</Link></li>
+              <li><Link to="/about" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">About</Link></li>
+              <li><Link to="/clubs" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Clubs</Link></li>
+              <li><Link to="/events" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Events</Link></li>
+              <li><Link to="/gallery" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Gallery</Link></li>
+              <li><Link to="/contact" className="text-praxis-secondary hover:text-praxis-cyan transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Clubs Ecosystem */}
           <div className="col-span-1 md:col-span-4 lg:col-span-3">
             <h5 className="text-[10px] uppercase tracking-[0.4em] text-white font-bold mb-8">
-              Chapters
+              Clubs
             </h5>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
-                <span className="text-[9px] text-praxis-cyan tracking-[0.4em] block mb-2">Technical</span>
+              <div className="space-y-3 text-[10px] uppercase tracking-[0.2em] font-bold">
+                <span className="text-[9px] text-praxis-cyan tracking-[0.4em] block mb-1">Technical</span>
                 <Link to="/clubs/genesis" className="block text-praxis-secondary hover:text-white transition-colors">Genesis</Link>
-                <Link to="/clubs/tech-vertex" className="block text-praxis-secondary hover:text-white transition-colors">Tech Vertex</Link>
                 <Link to="/clubs/innovex" className="block text-praxis-secondary hover:text-white transition-colors">Innovex</Link>
-              </div>
-              <div className="space-y-4 text-[10px] uppercase tracking-[0.2em] font-bold">
-                <span className="text-[9px] text-praxis-accent tracking-[0.4em] block mb-2">Creative</span>
-                <Link to="/clubs/d-talks" className="block text-praxis-secondary hover:text-white transition-colors">D-Talks</Link>
+                <Link to="/clubs/ai-club" className="block text-praxis-secondary hover:text-white transition-colors">AI Club</Link>
                 <Link to="/clubs/visual-vibes" className="block text-praxis-secondary hover:text-white transition-colors">Visual Vibes</Link>
+              </div>
+              <div className="space-y-3 text-[10px] uppercase tracking-[0.2em] font-bold">
+                <span className="text-[9px] text-praxis-accent tracking-[0.4em] block mb-1">Non-Technical</span>
+                <Link to="/clubs/d-talks" className="block text-praxis-secondary hover:text-white transition-colors">D-Talks</Link>
                 <Link to="/clubs/lakshya" className="block text-praxis-secondary hover:text-white transition-colors">Lakshya</Link>
+                <Link to="/clubs/creative-art" className="block text-praxis-secondary hover:text-white transition-colors">Creative Art</Link>
+                <Link to="/clubs/swara" className="block text-praxis-secondary hover:text-white transition-colors">Swara</Link>
               </div>
             </div>
           </div>

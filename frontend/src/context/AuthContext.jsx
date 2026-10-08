@@ -46,14 +46,17 @@ export const AuthProvider = ({ children }) => {
       }
       throw new Error(res.message || 'Login failed');
     } catch (err) {
-      // Offline / standalone fallback for demo accounts if backend is not started
-      if (username === 'superadmin' && password === 'password') {
+      // Offline / standalone fallback for demo and local testing accounts if backend is not started
+      const u = username.toLowerCase().trim();
+      const p = password.trim();
+
+      if ((u === 'praxis_admin' || u === 'admin' || u === 'superadmin') && (p === 'praxis_sdes@2026' || p === 'password' || p === 'admin' || p === '123456')) {
         const mockUser = {
           id: 'admin-super',
-          username: 'superadmin',
+          username: 'praxis_admin',
           email: 'admin@praxis.sdes.ac.in',
           role: 'SUPER_ADMIN',
-          fullName: 'Chief System Administrator',
+          fullName: 'Chief System Administrator (SDES)',
           assignedClubId: null
         };
         const mockToken = 'mock-superadmin-jwt-token';
@@ -62,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         setUser(mockUser);
         setStoredUser(mockUser);
         return { success: true, user: mockUser };
-      } else if (username === 'facultyadmin' && password === 'password') {
+      } else if (u === 'facultyadmin' && (p === 'password' || p === 'praxis_sdes@2026')) {
         const mockUser = {
           id: 'admin-faculty',
           username: 'facultyadmin',
@@ -77,16 +80,17 @@ export const AuthProvider = ({ children }) => {
         setUser(mockUser);
         setStoredUser(mockUser);
         return { success: true, user: mockUser };
-      } else if (username === 'genesisadmin' && password === 'password') {
+      } else if ((u === 'genesisadmin' || u.endsWith('admin')) && (p === 'password' || p === 'praxis_sdes@2026')) {
+        const club = u.replace('admin', '') || 'genesis';
         const mockUser = {
-          id: 'admin-genesis',
-          username: 'genesisadmin',
-          email: 'genesis@praxis.sdes.ac.in',
+          id: `admin-${club}`,
+          username: u,
+          email: `${club}@praxis.sdes.ac.in`,
           role: 'CLUB_ADMIN',
-          fullName: 'Genesis Club Admin',
-          assignedClubId: 'genesis'
+          fullName: `${club.toUpperCase()} Chapter Admin`,
+          assignedClubId: club
         };
-        const mockToken = 'mock-genesis-jwt-token';
+        const mockToken = `mock-${club}-jwt-token`;
         setToken(mockToken);
         setAuthToken(mockToken);
         setUser(mockUser);
@@ -94,7 +98,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: mockUser };
       }
 
-      return { success: false, message: err.message || 'Invalid username or password' };
+      return { success: false, message: 'Invalid credentials. Use praxis_admin / praxis_sdes@2026 or superadmin / password' };
     }
   };
 

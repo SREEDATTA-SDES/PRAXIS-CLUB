@@ -1,14 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, Target, Eye, Compass, Calendar, Image as ImageIcon, Mail } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { EventCard } from '../components/EventCard';
+import { EventDetailModal } from '../components/EventDetailModal';
 import { LeadershipSection } from '../components/LeadershipSection';
 
 export const ClubDetailPage = ({ onOpenLightbox }) => {
   const { clubSlug } = useParams();
   const { clubs, events, gallery } = useData();
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -203,8 +205,11 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
             {clubEvents.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {clubEvents.map(evt => (
-                  <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
-                    <EventCard key={evt.id || evt.slug} event={evt} />
+                  <motion.div key={evt.id || evt.slug} whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                    <EventCard 
+                      event={evt} 
+                      onSelectEvent={(e) => setSelectedEvent(e)}
+                    />
                   </motion.div>
                 ))}
               </div>
@@ -212,6 +217,15 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
               <div className="liquid-glass p-16 rounded-[3rem] text-center border-white/10">
                 <p className="text-lg text-white/50 font-cinematic uppercase tracking-widest">Awaiting deployment of new operations.</p>
               </div>
+            )}
+
+            {/* Event Lightbox / Modal */}
+            {selectedEvent && (
+              <EventDetailModal
+                event={selectedEvent}
+                onClose={() => setSelectedEvent(null)}
+                onOpenLightbox={onOpenLightbox}
+              />
             )}
           </motion.div>
 

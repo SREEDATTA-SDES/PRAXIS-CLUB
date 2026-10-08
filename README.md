@@ -25,34 +25,36 @@ All official master logos are hosted and referenced from official ImageKit asset
 ### 1. Technical Clubs
 1. **Genesis** (`/clubs/genesis`)  
    *Software, Algorithms, AI, and Competitive Programming*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/GENOSIS%20Logo.png`  
    Accent: Purple / Cyan (`#8B5CF6` / `#06B6D4`)
 
-2. **Tech Vertex** (`/clubs/tech-vertex`)  
-   *Full-Stack Web Architecture, Cloud Systems & DevOps*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/TECH%20VORTEX%20Logo.png`  
-   Accent: Cyan / Blue (`#00F2FE` / `#4FACFE`)
-
-3. **Innovex** (`/clubs/innovex`)  
+2. **Innovex** (`/clubs/innovex`)  
    *Embedded Hardware, Internet of Things (IoT) & Robotics*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/INNOVEX%20Logo.png`  
    Accent: Red / Crimson (`#EF4444` / `#F87171`)
 
+3. **AI Club** (`/clubs/ai-club`)  
+   *Artificial Intelligence, Machine Learning & Data Science*  
+   Accent: Emerald / Teal (`#10B981` / `#34D399`)
+
+4. **Visual Vibes** (`/clubs/visual-vibes`)  
+   *Cinematography, Digital Media, Video Editing & Tech Event Storytelling*  
+   Accent: Purple / Sky (`#A855F7` / `#22D3EE`)
+
 ### 2. Non-Technical Clubs
-4. **D-Talks** (`/clubs/d-talks`)  
+5. **D-Talks** (`/clubs/d-talks`)  
    *Parliamentary Debating, Oratory, MUNs & Public Speaking*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/D-TALKS%20Logo.png`  
    Accent: Cyan / Magenta (`#EC4899` / `#06B6D4`)
 
-5. **Visual Vibes** (`/clubs/visual-vibes`)  
-   *Cinematography, Digital Media, Photography & Visual Design*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/VISUAL%20VIBES%20Logo.png`  
-   Accent: Purple / Cyan (`#A855F7` / `#22D3EE`)
-
 6. **Lakshya** (`/clubs/lakshya`)  
-   *Civic Responsibility, Social Outreach & Campus Culture*  
-   Logo: `https://ik.imagekit.io/SDES/LOGOS/LAKSHYA%20Logo.png`  
+   *Civic Responsibility, Social Outreach & Campus Vitality*  
    Accent: Blue / Gold (`#3B82F6` / `#F59E0B`)
+
+7. **Creative Art** (`/clubs/creative-art`)  
+   *Fine Arts, Canvas Painting, Sketching & Creative Crafts*  
+   Accent: Rose / Orange (`#F43F5E` / `#FB923C`)
+
+8. **Swara** (`/clubs/swara`)  
+   *Classical & Western Dance, Vocal Melodies, Rhythm Jams & Cultural Performing Arts*  
+   Accent: Amber / Crimson (`#F59E0B` / `#EF4444`)
 
 ---
 

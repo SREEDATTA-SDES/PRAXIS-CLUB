@@ -15,6 +15,7 @@ import galleryRoutes from './routes/galleryRoutes.js';
 import leadershipRoutes from './routes/leadershipRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +54,7 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/leadership', leadershipRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Optional: Serve frontend build if running in single-service mode
 const frontendBuildPath = path.resolve(__dirname, '../../frontend/dist');

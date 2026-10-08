@@ -90,7 +90,7 @@ export const SearchModal = ({ isOpen, onClose }) => {
           {query && totalResults === 0 && (
             <div className="py-12 text-center space-y-2">
               <p className="text-praxis-text font-medium">No results found for "{query}"</p>
-              <p className="text-xs text-praxis-muted">Try searching for Genesis, Tech Vertex, debate, hackathon, or workshops.</p>
+              <p className="text-xs text-praxis-muted">Try searching for Genesis, Swara, debate, hackathon, or workshops.</p>
             </div>
           )}
 

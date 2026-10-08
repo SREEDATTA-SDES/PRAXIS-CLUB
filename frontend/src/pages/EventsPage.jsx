@@ -1,14 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { EventCard } from '../components/EventCard';
+import { EventDetailModal } from '../components/EventDetailModal';
 import { useData } from '../context/DataContext';
 import { Search } from 'lucide-react';
 
-export const EventsPage = () => {
+export const EventsPage = ({ onOpenLightbox }) => {
   const { events } = useData();
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedEvent, setSelectedEvent] = useState(null);
   
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -48,38 +50,36 @@ export const EventsPage = () => {
         />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 space-y-12">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 relative z-10 space-y-12">
         
-
-
         {/* Filter & Search Bar - Liquid UI */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-20 max-w-4xl mx-auto"
+          className="relative z-20 max-w-5xl mx-auto"
         >
-          <div className="liquid-glass-elevated p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-6 border-white/20">
+          <div className="liquid-glass-elevated p-4 sm:p-6 md:p-8 rounded-3xl sm:rounded-[2.5rem] flex flex-col lg:flex-row items-center gap-4 sm:gap-6 border-white/20">
             
             {/* Search Box */}
-            <div className="relative w-full md:w-1/2">
-              <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40" />
+            <div className="relative w-full lg:w-2/5">
+              <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by event, venue, or club..."
-                className="w-full pl-14 pr-6 py-4 rounded-full liquid-glass border border-white/10 text-sm text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors bg-transparent"
+                placeholder="Search events, venues, or clubs..."
+                className="w-full pl-12 pr-6 py-3.5 rounded-full liquid-glass border border-white/10 text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-praxis-cyan transition-colors bg-transparent"
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-3/5 justify-end">
               {/* Category Tabs */}
-              <div className="flex items-center p-1 liquid-glass rounded-full border border-white/10">
+              <div className="flex items-center justify-between sm:justify-center p-1 liquid-glass rounded-full border border-white/10 w-full sm:w-auto overflow-hidden">
                 {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map(cat => (
                   <button
                     key={cat}
                     onClick={() => setCategoryFilter(cat)}
-                    className={`px-6 py-3 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all ${
+                    className={`flex-1 sm:flex-initial px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] uppercase font-bold tracking-wider transition-all whitespace-nowrap text-center ${
                       categoryFilter === cat
                         ? 'bg-white text-praxis-bg shadow-[0_0_20px_rgba(255,255,255,0.4)]'
                         : 'text-white/50 hover:text-white'
@@ -91,12 +91,12 @@ export const EventsPage = () => {
               </div>
 
               {/* Status Tabs */}
-              <div className="flex items-center p-1 liquid-glass rounded-full border border-white/10">
+              <div className="flex items-center justify-between sm:justify-center p-1 liquid-glass rounded-full border border-white/10 w-full sm:w-auto overflow-hidden">
                 {['ALL', 'UPCOMING', 'COMPLETED'].map(st => (
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`px-5 py-3 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all ${
+                    className={`flex-1 sm:flex-initial px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] uppercase font-bold tracking-wider transition-all whitespace-nowrap text-center ${
                       statusFilter === st
                         ? 'bg-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]'
                         : 'text-white/40 hover:text-white/80'
@@ -125,7 +125,10 @@ export const EventsPage = () => {
                     transition={{ type: "spring", stiffness: 300, damping: 25, delay: i * 0.05 }}
                     whileHover={{ y: -10 }}
                   >
-                    <EventCard event={event} />
+                    <EventCard 
+                      event={event} 
+                      onSelectEvent={(evt) => setSelectedEvent(evt)}
+                    />
                   </motion.div>
                 ))}
               </motion.div>
@@ -144,6 +147,15 @@ export const EventsPage = () => {
         </section>
 
       </div>
+
+      {/* Event Detail / Recap Modal */}
+      {selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          onOpenLightbox={onOpenLightbox}
+        />
+      )}
     </div>
   );
 };
