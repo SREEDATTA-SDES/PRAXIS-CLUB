@@ -537,6 +537,21 @@ export const AdminLeadership = () => {
                     </span>
                   </div>
 
+                  {/* Dignitary Sub-Type Selector */}
+                  <div>
+                    <label className="block uppercase text-white/80 font-bold tracking-wider mb-1 text-[11px]">
+                      Dignitary Tier Type *
+                    </label>
+                    <select
+                      value={form.roleType}
+                      onChange={(e) => setForm({ ...form, roleType: e.target.value })}
+                      className="w-full p-2.5 rounded-lg bg-black/40 border border-[#D4AF37]/40 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
+                    >
+                      <option value="MANAGEMENT">Governing Council (Chairman, Director, etc.)</option>
+                      <option value="ACADEMIC_LEAD">Academic Leadership (Dean, Principal, HOD, etc.)</option>
+                    </select>
+                  </div>
+
                   {/* Message Quote */}
                   <div>
                     <label className="block uppercase text-white/80 font-bold tracking-wider mb-1 text-[11px]">
