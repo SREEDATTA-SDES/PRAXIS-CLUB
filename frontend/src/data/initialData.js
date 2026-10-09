@@ -179,6 +179,8 @@ export const PRAXIS_DOMAIN_LEADERSHIP = {};
 
 export const INITIAL_LEADERSHIP = [];
 
+export const INITIAL_EVENTS = [];
+
 export const INITIAL_ANNOUNCEMENTS = [
   {
     id: "ann-1",
