@@ -142,7 +142,7 @@ export const AdminLeadership = () => {
             <Award className="text-[#D4AF37]" size={24} /> Leadership & Coordinators Roster
           </h1>
           <p className="text-xs text-praxis-secondary mt-1">
-            Manage the 6 Institutional Dignitaries (with dynamic detail pages) as well as student coordinators & faculty advisors.
+            Manage the Institutional Dignitaries (with dynamic detail pages) as well as student coordinators & faculty advisors.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ export const AdminLeadership = () => {
                 : 'text-praxis-muted hover:text-white'
             }`}
           >
-            <Award size={14} className="text-[#D4AF37]" /> Dignitaries (6 Members) &bull; Detail Pages
+            <Award size={14} className="text-[#D4AF37]" /> Dignitaries &bull; Detail Pages
           </button>
         )}
 
@@ -210,9 +210,9 @@ export const AdminLeadership = () => {
           <div className="flex items-center gap-2.5 text-[#D4AF37]">
             <Sparkles size={16} className="shrink-0" />
             <div>
-              <span className="font-bold uppercase tracking-wider">6 Dignitaries with Full Detailing Modal Enabled</span>
+              <span className="font-bold uppercase tracking-wider">Dignitaries with Full Detailing Modal Enabled</span>
               <p className="text-white/70 text-[11px] mt-0.5">
-                Chairman, Vice-Chairman, Managing Director, Dean, Principal, and HOD. You can click <strong>Edit</strong> on any of these 6 to customize their Visionary Message quote, Detailed Bio matter, qualifications, and portrait.
+                You can click <strong>Edit</strong> on any of the dignitaries to customize their Visionary Message quote, Detailed Bio matter, qualifications, and portrait.
               </p>
             </div>
           </div>
@@ -436,7 +436,7 @@ export const AdminLeadership = () => {
                       }`}
                     >
                       <Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />
-                      Dignitary (6 Leaders)
+                      Dignitary
                     </button>
 
                     <button

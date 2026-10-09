@@ -151,7 +151,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
         )}
       </div>
 
-      {/* Detail Page CTA Button for the 6 Dignitaries */}
+      {/* Detail Page CTA Button for Dignitaries */}
       {onSelectPerson && (
         <button
           type="button"
