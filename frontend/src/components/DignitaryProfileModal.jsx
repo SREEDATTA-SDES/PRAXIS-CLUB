@@ -83,13 +83,13 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
                 <div className={`w-32 h-32 sm:w-36 sm:h-36 rounded-full p-[3px] bg-gradient-to-b ${themeColors.ring} shadow-[0_12px_35px_rgba(0,0,0,0.9)]`}>
                   <div className="w-full h-full rounded-full p-[2px] bg-[#07090D] overflow-hidden">
                     <img
-                      src={person.photoUrl}
+                      src={person.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name || 'Dignitary')}&background=random&color=fff&size=400&font-size=0.4`}
                       alt={person.name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover rounded-full"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name || 'Dignitary')}&background=0D1117&color=fff&size=400&font-size=0.4`;
                       }}
                     />
                   </div>

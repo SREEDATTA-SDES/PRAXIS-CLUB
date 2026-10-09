@@ -4,23 +4,14 @@ import { GOVERNING_BODY, ACADEMIC_LEADERSHIP, PRAXIS_STUDENT_LEADERSHIP, PRAXIS_
 import { Shield, Sparkles, Award, Cpu, Palette, ExternalLink } from 'lucide-react';
 import { DignitaryProfileModal } from './DignitaryProfileModal';
 
-// Fallback high-resolution portraits
-const DEFAULT_AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80'
-];
+// No longer using default stock photos as per user request
 
 /**
  * Gilded / Themed Circular Portrait Card Matching Institutional & Tier Branding
  */
 export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md', onSelectPerson }) => {
-  const fallbackPhoto = DEFAULT_AVATARS[index % DEFAULT_AVATARS.length];
+  // Use UI-Avatars to generate a fallback image with the first letter of the name
+  const fallbackPhoto = `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name || 'Member')}&background=random&color=fff&size=400&font-size=0.4`;
 
   // Theme styling configurations
   const themeStyles = {
