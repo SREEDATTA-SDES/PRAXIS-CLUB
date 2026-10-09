@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import path from 'path';
 import { 
   DEFAULT_CLUBS, 
   DEFAULT_LEADERSHIP, 
@@ -18,7 +20,9 @@ import { Gallery } from '../models/Gallery.js';
 import { Setting } from '../models/Setting.js';
 
 // In-Memory store for offline/local resilience
-const memoryStore = {
+const DB_FILE = path.resolve('./local_fallback_db.json');
+
+let memoryStore = {
   clubs: JSON.parse(JSON.stringify(DEFAULT_CLUBS)),
   leadership: JSON.parse(JSON.stringify(DEFAULT_LEADERSHIP)),
   events: JSON.parse(JSON.stringify(DEFAULT_EVENTS)),
@@ -26,6 +30,23 @@ const memoryStore = {
   gallery: JSON.parse(JSON.stringify(DEFAULT_GALLERY)),
   settings: JSON.parse(JSON.stringify(DEFAULT_CONFIG)),
   admins: JSON.parse(JSON.stringify(DEFAULT_ADMINS))
+};
+
+if (fs.existsSync(DB_FILE)) {
+  try {
+    const fileData = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+    memoryStore = { ...memoryStore, ...fileData };
+  } catch (e) {
+    console.error('Failed to parse local fallback DB', e);
+  }
+}
+
+const saveLocalDB = () => {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(memoryStore, null, 2));
+  } catch (e) {
+    console.error('Failed to write to local fallback DB', e);
+  }
 };
 
 // Inject env admin to memory store if present
@@ -66,6 +87,7 @@ export const dataService = {
     }
     const newClub = { id: data.slug || `club-${Date.now()}`, ...data };
     memoryStore.clubs.push(newClub);
+    saveLocalDB();
     return newClub;
   },
 
@@ -76,6 +98,7 @@ export const dataService = {
     const idx = memoryStore.clubs.findIndex(c => c.slug === slug);
     if (idx !== -1) {
       memoryStore.clubs[idx] = { ...memoryStore.clubs[idx], ...data, updatedAt: new Date() };
+      saveLocalDB();
       return memoryStore.clubs[idx];
     }
     return null;
@@ -87,7 +110,9 @@ export const dataService = {
     }
     const idx = memoryStore.clubs.findIndex(c => c.slug === slug);
     if (idx !== -1) {
-      return memoryStore.clubs.splice(idx, 1)[0];
+      const deleted = memoryStore.clubs.splice(idx, 1)[0];
+      saveLocalDB();
+      return deleted;
     }
     return null;
   },
