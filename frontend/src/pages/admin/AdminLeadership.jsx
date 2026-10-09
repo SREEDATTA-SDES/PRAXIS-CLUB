@@ -425,36 +425,62 @@ export const AdminLeadership = () => {
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1.5">
                     Member Classification *
                   </label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     <button
                       type="button"
                       onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman' })}
                       className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
-                        form.memberCategory === 'ADMIN'
+                        form.roleType === 'MANAGEMENT'
                           ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm'
                           : 'bg-praxis-card border-praxis-border text-praxis-muted'
                       }`}
                     >
                       <Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />
-                      Dignitary
+                      Governing Council
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Technical Coordinator' })}
+                      onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal' })}
                       className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
-                        form.memberCategory === 'STUDENT'
-                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm'
+                        form.roleType === 'ACADEMIC_LEAD'
+                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm'
+                          : 'bg-praxis-card border-praxis-border text-praxis-muted'
+                      }`}
+                    >
+                      <Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />
+                      Academic Leadership
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President' })}
+                      className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
+                        form.roleType === 'PRAXIS_PRESIDENT'
+                          ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm'
                           : 'bg-praxis-card border-praxis-border text-praxis-muted'
                       }`}
                     >
                       <GraduationCap size={16} className="mx-auto mb-1" />
-                      Student Lead
+                      Presidents & VPs
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Coordinator' })}
+                      onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Technical Lead' })}
+                      className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
+                        form.roleType === 'TECHNICAL_LEAD'
+                          ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm'
+                          : 'bg-praxis-card border-praxis-border text-praxis-muted'
+                      }`}
+                    >
+                      <GraduationCap size={16} className="mx-auto mb-1" />
+                      Domain Leads
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Club Coordinator', department: 'CSE Allied' })}
                       className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
                         form.memberCategory === 'FACULTY'
                           ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm'
@@ -463,6 +489,19 @@ export const AdminLeadership = () => {
                     >
                       <Shield size={16} className="mx-auto mb-1" />
                       Faculty Advisor
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator' })}
+                      className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${
+                        form.roleType === 'COORDINATOR'
+                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm'
+                          : 'bg-praxis-card border-praxis-border text-praxis-muted'
+                      }`}
+                    >
+                      <GraduationCap size={16} className="mx-auto mb-1" />
+                      Student Coordinator
                     </button>
                   </div>
                 </div>
@@ -535,21 +574,6 @@ export const AdminLeadership = () => {
                     <span className="font-bold uppercase tracking-wider text-xs">
                       Dignitary Detail Page Matter & Information
                     </span>
-                  </div>
-
-                  {/* Dignitary Sub-Type Selector */}
-                  <div>
-                    <label className="block uppercase text-white/80 font-bold tracking-wider mb-1 text-[11px]">
-                      Dignitary Tier Type *
-                    </label>
-                    <select
-                      value={form.roleType}
-                      onChange={(e) => setForm({ ...form, roleType: e.target.value })}
-                      className="w-full p-2.5 rounded-lg bg-black/40 border border-[#D4AF37]/40 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
-                    >
-                      <option value="MANAGEMENT">Governing Council (Chairman, Director, etc.)</option>
-                      <option value="ACADEMIC_LEAD">Academic Leadership (Dean, Principal, HOD, etc.)</option>
-                    </select>
                   </div>
 
                   {/* Message Quote */}
