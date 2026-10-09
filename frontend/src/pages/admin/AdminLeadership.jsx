@@ -27,7 +27,7 @@ export const AdminLeadership = () => {
     rollNumber: '',
     qualifications: '',
     clubSlug: isClubAdmin && user.assignedClubId ? user.assignedClubId : null,
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    photoUrl: '',
     message: '',
     bio: '',
     order: 1
