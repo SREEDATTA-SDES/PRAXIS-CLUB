@@ -142,19 +142,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
         )}
       </div>
 
-      {/* Detail Page CTA Button for Dignitaries */}
-      {onSelectPerson && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClick();
-          }}
-          className="mt-2.5 text-[9px] uppercase font-bold tracking-[0.2em] text-[#D4AF37] hover:text-black bg-[#D4AF37]/10 hover:bg-[#D4AF37] border border-[#D4AF37]/40 px-3 py-1 rounded-full transition-all duration-300 shadow-sm flex items-center gap-1 font-cinematic"
-        >
-          <Sparkles size={10} /> View Profile & Vision
-        </button>
-      )}
+
 
       {person.clubSlug && !onSelectPerson && (
         <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 mt-1 block font-cinematic">
@@ -260,11 +248,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   if (filterClubSlug) {
     const clubFaculty = leadership.filter(
       l => l.clubSlug === filterClubSlug && (l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR')
-    );
+    ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
     const clubStudents = leadership.filter(
       l => l.clubSlug === filterClubSlug && (l.roleType === 'CLUB_LEAD' || l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD')
-    );
+    ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return (
       <div className="space-y-16">
@@ -284,7 +272,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubFaculty.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="lg" onSelectPerson={null} />
+            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="xl" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -309,7 +297,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubStudents.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="md" onSelectPerson={null} />
+            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -324,28 +312,28 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   }
 
   // Global Institutional View (About Page) with the 6 Key Dignitaries Clickable
-  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType));
+  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
   const govMembers = liveGovMembers.length > 0 ? liveGovMembers : GOVERNING_BODY;
 
-  const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType));
+  const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
   const acadMembers = liveAcadMembers.length > 0 ? liveAcadMembers : ACADEMIC_LEADERSHIP;
 
-  const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR');
+  const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR').sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  const livePresidents = leadership.filter(l => l.roleType === 'PRAXIS_PRESIDENT');
+  const livePresidents = leadership.filter(l => l.roleType === 'PRAXIS_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
   const presidents = livePresidents.length > 0 ? livePresidents : (PRAXIS_STUDENT_LEADERSHIP?.presidents || []);
 
-  const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT');
+  const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
   const vicePresidents = liveVicePresidents.length > 0 ? liveVicePresidents : (PRAXIS_STUDENT_LEADERSHIP?.vicePresidents || []);
 
-  const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD');
+  const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
   const techDomain = liveTechDomain.length > 0 ? liveTechDomain : (PRAXIS_DOMAIN_LEADERSHIP?.technical || []);
 
-  const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD');
+  const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
   const creativeDomain = liveCreativeDomain.length > 0 ? liveCreativeDomain : (PRAXIS_DOMAIN_LEADERSHIP?.creative || PRAXIS_DOMAIN_LEADERSHIP?.nonTechnical || []);
 
-  const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD');
-  const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD');
+  const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
     <div className="space-y-20">
