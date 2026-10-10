@@ -1,4 +1,12 @@
 import { dataService } from '../services/dataService.js';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary explicitly just in case
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'mb7zqdf5',
+  api_key: process.env.CLOUDINARY_API_KEY || '351337647988248',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'I-kB3U9uJ-Z9PCOERPNSOCryhVQ'
+});
 
 export const getLeadership = async (req, res) => {
   try {
@@ -54,7 +62,24 @@ export const updateLeader = async (req, res) => {
 export const deleteLeader = async (req, res) => {
   try {
     const { id } = req.params;
-    await dataService.deleteLeader(id);
+    const deletedLeader = await dataService.deleteLeader(id);
+
+    // Delete image from Cloudinary if it exists
+    if (deletedLeader && deletedLeader.photoUrl && deletedLeader.photoUrl.includes('cloudinary.com')) {
+      try {
+        const urlParts = deletedLeader.photoUrl.split('/');
+        const filenameWithExt = urlParts[urlParts.length - 1];
+        const folderName = urlParts[urlParts.length - 2];
+        const filename = filenameWithExt.split('.')[0];
+        
+        const publicId = `${folderName}/${filename}`;
+        await cloudinary.uploader.destroy(publicId);
+        console.log(`Cloudinary image ${publicId} deleted successfully.`);
+      } catch (cloudinaryErr) {
+        console.error('Failed to delete image from Cloudinary:', cloudinaryErr);
+      }
+    }
+
     return res.json({ success: true, message: 'Leader removed successfully.' });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
