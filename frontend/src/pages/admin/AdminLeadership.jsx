@@ -246,7 +246,6 @@ export const AdminLeadership = () => {
                 {activeTab === 'DIGNITARIES' && <th className="p-3.5">Qualifications</th>}
                 {activeTab === 'STUDENTS' && <th className="p-3.5">Hall Ticket & Class</th>}
                 {activeTab === 'FACULTY' && <th className="p-3.5">Qualifications</th>}
-                {activeTab !== 'DIGNITARIES' && <th className="p-3.5">Department</th>}
                 {activeTab !== 'DIGNITARIES' && <th className="p-3.5">Club/Chapter</th>}
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
@@ -301,14 +300,13 @@ export const AdminLeadership = () => {
                       {activeTab === 'STUDENTS' && (
                         <td className="p-3.5">
                           <span className="block font-mono text-praxis-cyan font-bold">{item.rollNumber || '—'}</span>
-                          <span className="block text-praxis-secondary text-[10px]">{[item.section && `Sec: ${item.section}`, item.yearClass].filter(Boolean).join(' • ') || '—'}</span>
+                          <span className="block text-praxis-secondary text-[10px]">{item.yearClass || '—'}</span>
                         </td>
                       )}
                       
                       {activeTab === 'FACULTY' && <td className="p-3.5 text-emerald-300/90 font-medium">{item.qualifications || '—'}</td>}
                       
-                      {activeTab !== 'DIGNITARIES' && <td className="p-3.5 text-praxis-secondary">{item.department}</td>}
-                      
+
                       {activeTab !== 'DIGNITARIES' && <td className="p-3.5 capitalize font-medium text-praxis-cyan">{item.clubSlug ? item.clubSlug : 'Institutional (Central)'}</td>}
 
                       <td className="p-3.5 text-right">
@@ -388,11 +386,6 @@ export const AdminLeadership = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Department / Institutional Body</label>
-                <input type="text" value={form.department} onChange={(e) => setForm({ ...form, department: e.target.value })} className="w-full p-2.5 rounded-lg bg-praxis-card border border-praxis-border text-white text-xs focus:border-praxis-cyan focus:outline-none" />
-              </div>
-
               {form.memberCategory === 'ADMIN' && (
                 <div className="p-4 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 space-y-4">
                   <div className="flex items-center gap-2 text-[#D4AF37]">
@@ -414,13 +407,9 @@ export const AdminLeadership = () => {
                 <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-500/20 space-y-3">
                   <span className="text-[11px] font-bold text-cyan-300 uppercase tracking-wider block font-cinematic">Student Academic Profile</span>
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
+                    <div className="col-span-2">
                       <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Roll Number / College ID</label>
                       <input type="text" value={form.rollNumber} onChange={(e) => setForm({ ...form, rollNumber: e.target.value })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs font-mono" />
-                    </div>
-                    <div>
-                      <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Section</label>
-                      <input type="text" value={form.section} onChange={(e) => setForm({ ...form, section: e.target.value })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
