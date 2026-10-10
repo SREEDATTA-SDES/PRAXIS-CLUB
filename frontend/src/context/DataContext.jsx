@@ -72,14 +72,8 @@ export const DataProvider = ({ children }) => {
       showToast('Event created successfully');
       return { success: true };
     } catch (err) {
-      const fallbackEvt = {
-        id: `evt-${Date.now()}`,
-        slug: eventData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        ...eventData
-      };
-      setEvents(prev => [fallbackEvt, ...prev]);
-      showToast('Event saved locally');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -93,9 +87,8 @@ export const DataProvider = ({ children }) => {
       showToast('Event updated successfully');
       return { success: true };
     } catch (err) {
-      setEvents(prev => prev.map(e => (e.id === id || e.slug === id ? { ...e, ...eventData } : e)));
-      showToast('Event updated locally');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -106,9 +99,8 @@ export const DataProvider = ({ children }) => {
       showToast('Event deleted successfully');
       return { success: true };
     } catch (err) {
-      setEvents(prev => prev.filter(e => e.id !== id && e.slug !== id));
-      showToast('Event deleted');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -123,10 +115,8 @@ export const DataProvider = ({ children }) => {
       showToast('Gallery image added');
       return { success: true };
     } catch (err) {
-      const fallback = { id: `gal-${Date.now()}`, ...itemData, date: new Date().toISOString().split('T')[0] };
-      setGallery(prev => [fallback, ...prev]);
-      showToast('Image added to gallery');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -137,9 +127,8 @@ export const DataProvider = ({ children }) => {
       showToast('Image removed from gallery');
       return { success: true };
     } catch (err) {
-      setGallery(prev => prev.filter(g => g.id !== id && g._id !== id));
-      showToast('Image removed');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -154,10 +143,8 @@ export const DataProvider = ({ children }) => {
       showToast('Announcement published');
       return { success: true };
     } catch (err) {
-      const fallback = { id: `ann-${Date.now()}`, ...data, date: new Date().toISOString().split('T')[0] };
-      setAnnouncements(prev => [fallback, ...prev]);
-      showToast('Announcement saved');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -171,9 +158,8 @@ export const DataProvider = ({ children }) => {
       showToast('Announcement updated');
       return { success: true };
     } catch (err) {
-      setAnnouncements(prev => prev.map(a => (a.id === id || a._id === id ? { ...a, ...data } : a)));
-      showToast('Announcement updated');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -184,9 +170,8 @@ export const DataProvider = ({ children }) => {
       showToast('Announcement removed');
       return { success: true };
     } catch (err) {
-      setAnnouncements(prev => prev.filter(a => a.id !== id && a._id !== id));
-      showToast('Announcement removed');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -201,9 +186,8 @@ export const DataProvider = ({ children }) => {
       showToast('Club details updated');
       return { success: true };
     } catch (err) {
-      setClubs(prev => prev.map(c => (c.slug === slug ? { ...c, ...data } : c)));
-      showToast('Club details updated');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -218,7 +202,7 @@ export const DataProvider = ({ children }) => {
       showToast('Member added');
       return { success: true };
     } catch (err) {
-      showToast(err.message || 'Failed to add member', 'error');
+      showToast(err.message || 'Action failed', 'error');
       return { success: false, message: err.message };
     }
   };
@@ -233,7 +217,7 @@ export const DataProvider = ({ children }) => {
       showToast('Member updated');
       return { success: true };
     } catch (err) {
-      showToast(err.message || 'Failed to update member', 'error');
+      showToast(err.message || 'Action failed', 'error');
       return { success: false, message: err.message };
     }
   };
@@ -245,9 +229,8 @@ export const DataProvider = ({ children }) => {
       showToast('Member removed');
       return { success: true };
     } catch (err) {
-      setLeadership(prev => prev.filter(l => l.id !== id && l._id !== id));
-      showToast('Member removed');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -262,9 +245,8 @@ export const DataProvider = ({ children }) => {
       showToast('Settings saved');
       return { success: true };
     } catch (err) {
-      setSettings(prev => ({ ...prev, ...data }));
-      showToast('Settings saved');
-      return { success: true };
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
     }
   };
 
