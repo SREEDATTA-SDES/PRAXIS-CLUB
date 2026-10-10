@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useData } from '../context/DataContext';
-import { GOVERNING_BODY, ACADEMIC_LEADERSHIP, PRAXIS_STUDENT_LEADERSHIP, PRAXIS_DOMAIN_LEADERSHIP } from '../data/initialData';
 import { Shield, Sparkles, Award, Cpu, Palette, ExternalLink } from 'lucide-react';
 import { DignitaryProfileModal } from './DignitaryProfileModal';
 
@@ -313,24 +312,24 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
 
   // Global Institutional View (About Page) with the 6 Key Dignitaries Clickable
   const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
-  const govMembers = liveGovMembers.length > 0 ? liveGovMembers : GOVERNING_BODY;
+  const govMembers = liveGovMembers;
 
   const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
-  const acadMembers = liveAcadMembers.length > 0 ? liveAcadMembers : ACADEMIC_LEADERSHIP;
+  const acadMembers = liveAcadMembers;
 
   const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR').sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const livePresidents = leadership.filter(l => l.roleType === 'PRAXIS_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const presidents = livePresidents.length > 0 ? livePresidents : (PRAXIS_STUDENT_LEADERSHIP?.presidents || []);
+  const presidents = livePresidents;
 
   const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const vicePresidents = liveVicePresidents.length > 0 ? liveVicePresidents : (PRAXIS_STUDENT_LEADERSHIP?.vicePresidents || []);
+  const vicePresidents = liveVPs;
 
   const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const techDomain = liveTechDomain.length > 0 ? liveTechDomain : (PRAXIS_DOMAIN_LEADERSHIP?.technical || []);
+  const techDomain = liveTech;
 
   const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const creativeDomain = liveCreativeDomain.length > 0 ? liveCreativeDomain : (PRAXIS_DOMAIN_LEADERSHIP?.creative || PRAXIS_DOMAIN_LEADERSHIP?.nonTechnical || []);
+  const creativeDomain = liveCreative;
 
   const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
   const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));

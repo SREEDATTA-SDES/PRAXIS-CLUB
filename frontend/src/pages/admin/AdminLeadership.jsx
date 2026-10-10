@@ -9,7 +9,7 @@ export const AdminLeadership = () => {
   const { leadership, clubs, addLeader, updateLeader, deleteLeader } = useData();
   const { user, canManageClub, isClubAdmin } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('DIGNITARIES');
+  const [activeTab, setActiveTab] = useState('MANAGEMENT');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
@@ -122,14 +122,17 @@ export const AdminLeadership = () => {
 
   const visibleLeadership = leadership.filter(item => {
     if (isClubAdmin && item.clubSlug !== user.assignedClubId) return false;
-    if (activeTab === 'ALL') return true;
-    const isDignitary = isDignitaryItem(item);
-    const isFaculty = ['FACULTY_HEAD', 'FACULTY_COORDINATOR'].includes(item.roleType);
-    const isStudent = !isFaculty && !isDignitary;
-    if (activeTab === 'DIGNITARIES') return isDignitary;
-    if (activeTab === 'STUDENTS') return isStudent;
-    if (activeTab === 'FACULTY') return isFaculty;
-    return true;
+    
+    // Map existing legacy categories to the 6 exact roles if needed, or just match exactly
+    let role = item.roleType;
+    if (!role) return false;
+    
+    // Fallbacks for legacy items
+    if (role === 'GOVERNING_BODY' || role === 'CHAIRMAN' || role === 'VICE_CHAIRMAN' || role === 'MANAGING_DIRECTOR') role = 'MANAGEMENT';
+    if (role === 'DEAN' || role === 'PRINCIPAL' || role === 'HOD') role = 'ACADEMIC_LEAD';
+    if (role === 'FACULTY_HEAD') role = 'FACULTY_COORDINATOR';
+
+    return role === activeTab;
   }).sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const toggleSelect = (id) => {
@@ -167,7 +170,7 @@ export const AdminLeadership = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider flex items-center gap-2.5">
-            <Award className="text-[#D4AF37]" size={24} /> Leadership & Coordinators Roster
+            <Award className="text-[#D4AF37]" size={24} /> Leadership & Coordinators Roster ({leadership.length} Total)
           </h1>
           <p className="text-xs text-praxis-secondary mt-1">
             Manage the Institutional Dignitaries (with dynamic detail pages) as well as student coordinators & faculty advisors.
@@ -196,38 +199,56 @@ export const AdminLeadership = () => {
       <div className="w-full overflow-x-auto pb-2">
         <div className="flex items-center gap-2 p-1 bg-praxis-card border border-praxis-border rounded-xl w-max">
           {!isClubAdmin && (
-            <button
-              onClick={() => { setActiveTab('DIGNITARIES'); setSelectedIds([]); }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                activeTab === 'DIGNITARIES' ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shadow-sm' : 'text-praxis-muted hover:text-white'
-              }`}
-            >
-              <Award size={14} className="text-[#D4AF37]" /> Dignitaries
-            </button>
+            <>
+              <button
+                onClick={() => { setActiveTab('MANAGEMENT'); setSelectedIds([]); }}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                  activeTab === 'MANAGEMENT' ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shadow-sm' : 'text-praxis-muted hover:text-white'
+                }`}
+              >
+                <Award size={12} /> Governing Council
+              </button>
+              <button
+                onClick={() => { setActiveTab('ACADEMIC_LEAD'); setSelectedIds([]); }}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                  activeTab === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
+                }`}
+              >
+                <Award size={12} /> Academic Lead
+              </button>
+            </>
           )}
           <button
-            onClick={() => { setActiveTab('STUDENTS'); setSelectedIds([]); }}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'STUDENTS' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
+            onClick={() => { setActiveTab('PRAXIS_PRESIDENT'); setSelectedIds([]); }}
+            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+              activeTab === 'PRAXIS_PRESIDENT' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
             }`}
           >
-            <GraduationCap size={14} /> Students
+            <GraduationCap size={12} /> Presidents & VPs
           </button>
           <button
-            onClick={() => { setActiveTab('FACULTY'); setSelectedIds([]); }}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
+            onClick={() => { setActiveTab('TECHNICAL_LEAD'); setSelectedIds([]); }}
+            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+              activeTab === 'TECHNICAL_LEAD' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
             }`}
           >
-            <Shield size={14} /> Faculty
+            <GraduationCap size={12} /> Domain Leads
           </button>
           <button
-            onClick={() => { setActiveTab('ALL'); setSelectedIds([]); }}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'ALL' ? 'bg-praxis-cyan/20 text-praxis-cyan border border-praxis-cyan/40 shadow-sm' : 'text-praxis-muted hover:text-white'
+            onClick={() => { setActiveTab('FACULTY_COORDINATOR'); setSelectedIds([]); }}
+            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+              activeTab === 'FACULTY_COORDINATOR' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
             }`}
           >
-            <Users size={14} /> All Roster ({leadership.length})
+            <Shield size={12} /> Faculty
+          </button>
+          <button
+            onClick={() => { setActiveTab('COORDINATOR'); setSelectedIds([]); }}
+            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+              activeTab === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
+            }`}
+          >
+            <GraduationCap size={12} /> Coordinators
           </button>
         </div>
       </div>
@@ -240,13 +261,12 @@ export const AdminLeadership = () => {
                 <th className="p-3.5 w-10 text-center">
                   <input type="checkbox" checked={selectedIds.length > 0 && selectedIds.length === visibleLeadership.length} onChange={toggleSelectAll} className="w-4 h-4 rounded bg-black/40 border-praxis-border" />
                 </th>
-                <th className="p-3.5">{activeTab === 'DIGNITARIES' ? 'Dignitary & Portrait' : 'Member'}</th>
+                <th className="p-3.5">{['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) ? 'Dignitary & Portrait' : 'Member'}</th>
                 <th className="p-3.5">Position / Title</th>
                 <th className="p-3.5">Reorder</th>
-                {activeTab === 'DIGNITARIES' && <th className="p-3.5">Qualifications</th>}
-                {activeTab === 'STUDENTS' && <th className="p-3.5">Hall Ticket & Class</th>}
-                {activeTab === 'FACULTY' && <th className="p-3.5">Qualifications</th>}
-                {activeTab !== 'DIGNITARIES' && <th className="p-3.5">Club/Chapter</th>}
+                {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3.5">Qualifications</th>}
+                {['PRAXIS_PRESIDENT', 'TECHNICAL_LEAD', 'COORDINATOR'].includes(activeTab) && <th className="p-3.5">Class & Hall Ticket</th>}
+                {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && <th className="p-3.5">Club/Chapter</th>}
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
@@ -295,23 +315,22 @@ export const AdminLeadership = () => {
                         </div>
                       </td>
 
-                      {activeTab === 'DIGNITARIES' && <td className="p-3.5 text-white/80 font-mono text-[11px]">{item.qualifications || '—'}</td>}
-                      
-                      {activeTab === 'STUDENTS' && (
+
+                      {['PRAXIS_PRESIDENT', 'TECHNICAL_LEAD', 'COORDINATOR'].includes(activeTab) && (
                         <td className="p-3.5">
                           <span className="block font-mono text-praxis-cyan font-bold">{item.rollNumber || '—'}</span>
                           <span className="block text-praxis-secondary text-[10px]">{item.yearClass || '—'}</span>
                         </td>
                       )}
                       
-                      {activeTab === 'FACULTY' && <td className="p-3.5 text-emerald-300/90 font-medium">{item.qualifications || '—'}</td>}
+                      {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <td className="p-3.5 text-emerald-300/90 font-medium">{item.qualifications || '—'}</td>}
                       
 
-                      {activeTab !== 'DIGNITARIES' && <td className="p-3.5 capitalize font-medium text-praxis-cyan">{item.clubSlug ? item.clubSlug : 'Institutional (Central)'}</td>}
+                      {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && <td className="p-3.5 capitalize font-medium text-praxis-cyan">{item.clubSlug ? item.clubSlug : 'Institutional (Central)'}</td>}
 
                       <td className="p-3.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          {isDignitary && (
+                          {['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && (
                             <button onClick={() => setPreviewDignitary(item)} className="p-1.5 rounded hover:bg-[#D4AF37]/20 text-[#D4AF37] transition-colors" title="Preview Detail Page Modal">
                               <Eye size={14} />
                             </button>

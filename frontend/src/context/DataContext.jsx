@@ -1,22 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  COLLEGE_BRAND, 
-  INITIAL_CLUBS, 
-  INITIAL_EVENTS, 
-  INITIAL_GALLERY, 
-  INITIAL_ANNOUNCEMENTS, 
-  INITIAL_LEADERSHIP 
-} from '../data/initialData';
+import { COLLEGE_BRAND } from '../data/initialData';
 import { apiRequest } from '../services/api';
 
 const DataContext = createContext(null);
 
 export const DataProvider = ({ children }) => {
-  const [clubs, setClubs] = useState(INITIAL_CLUBS);
-  const [events, setEvents] = useState(INITIAL_EVENTS);
-  const [gallery, setGallery] = useState(INITIAL_GALLERY);
-  const [announcements, setAnnouncements] = useState(INITIAL_ANNOUNCEMENTS);
-  const [leadership, setLeadership] = useState(INITIAL_LEADERSHIP);
+  const [clubs, setClubs] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [gallery, setGallery] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [leadership, setLeadership] = useState([]);
   const [settings, setSettings] = useState(COLLEGE_BRAND);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
