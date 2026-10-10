@@ -225,10 +225,8 @@ export const DataProvider = ({ children }) => {
       showToast('Member added');
       return { success: true };
     } catch (err) {
-      const fallback = { id: `lead-${Date.now()}`, ...data };
-      setLeadership(prev => [...prev, fallback]);
-      showToast('Member added');
-      return { success: true };
+      showToast(err.message || 'Failed to add member', 'error');
+      return { success: false, message: err.message };
     }
   };
 
@@ -242,9 +240,8 @@ export const DataProvider = ({ children }) => {
       showToast('Member updated');
       return { success: true };
     } catch (err) {
-      setLeadership(prev => prev.map(l => (l.id === id || l._id === id ? { ...l, ...data } : l)));
-      showToast('Member updated');
-      return { success: true };
+      showToast(err.message || 'Failed to update member', 'error');
+      return { success: false, message: err.message };
     }
   };
 
