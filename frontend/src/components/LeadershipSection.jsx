@@ -323,13 +323,13 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   const presidents = livePresidents;
 
   const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const vicePresidents = liveVPs;
+  const vicePresidents = liveVicePresidents;
 
   const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const techDomain = liveTech;
+  const techDomain = liveTechDomain;
 
   const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const creativeDomain = liveCreative;
+  const creativeDomain = liveCreativeDomain;
 
   const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
   const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
