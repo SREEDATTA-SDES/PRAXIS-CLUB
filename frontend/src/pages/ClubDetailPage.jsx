@@ -249,7 +249,7 @@ export const ClubDetailPage = ({ onOpenLightbox }) => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: (i % 3) * 0.1 }}
-                    onClick={() => onOpenLightbox && onOpenLightbox(img)}
+                    onClick={() => onOpenLightbox && onOpenLightbox({ items: clubGallery, currentIndex: i })}
                     className="relative overflow-hidden rounded-[2rem] cursor-pointer liquid-glass group break-inside-avoid"
                   >
                     <img

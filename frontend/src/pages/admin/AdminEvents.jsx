@@ -335,14 +335,15 @@ export const AdminEvents = () => {
                 value={form.posterUrl}
                 onChange={(url) => setForm({ ...form, posterUrl: url })}
                 label="Poster Image (Direct / Cloudinary)"
-                folder="praxis_events"
+                folder="praxis_sdes/events"
               />
 
               <MultiImageUpload
                 values={form.photos || []}
                 onChange={(photos) => setForm({ ...form, photos })}
-                label="Event Recap / Conducted Event Photos (1-4 Images)"
-                folder="praxis_events_recap"
+                label="Event Recap / Conducted Event Photos (1-8 Images)"
+                folder="praxis_sdes/events/recap"
+                maxImages={8}
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

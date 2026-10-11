@@ -41,6 +41,25 @@ export const AdminLeadership = () => {
       ['chairman', 'vice-chairman', 'director', 'principal', 'dean', 'hod'].some(k => item.position?.toLowerCase().includes(k) || item.designation?.toLowerCase().includes(k));
   };
 
+  const getLeaderCloudinaryFolder = (roleType, memberCategory) => {
+    if (['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(roleType)) {
+      return 'praxis_sdes/leaders/governing_council';
+    }
+    if (['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(roleType)) {
+      return 'praxis_sdes/leaders/academic_leadership';
+    }
+    if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(roleType)) {
+      return 'praxis_sdes/leaders/presidents';
+    }
+    if (['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(roleType)) {
+      return 'praxis_sdes/leaders/domain_leads';
+    }
+    if (['FACULTY_COORDINATOR', 'FACULTY_HEAD'].includes(roleType) || memberCategory === 'FACULTY') {
+      return 'praxis_sdes/leaders/faculty';
+    }
+    return 'praxis_sdes/leaders/student_coordinators';
+  };
+
   const openCreateModal = () => {
     setEditingId(null);
     let cat = 'STUDENT';
@@ -518,7 +537,12 @@ export const AdminLeadership = () => {
                 </div>
               )}
 
-              <ImageUpload value={form.photoUrl} onChange={(url) => setForm({ ...form, photoUrl: url })} label="Portrait Photo" />
+              <ImageUpload
+                value={form.photoUrl}
+                onChange={(url) => setForm({ ...form, photoUrl: url })}
+                label="Portrait Photo"
+                folder={getLeaderCloudinaryFolder(form.roleType, form.memberCategory)}
+              />
 
               <div className="flex justify-end gap-2 pt-4 border-t border-praxis-border">
                 <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg bg-praxis-card text-praxis-secondary uppercase font-semibold text-xs">Cancel</button>

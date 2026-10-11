@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, MapPin, CheckCircle2, ExternalLink, FileText, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { 
+  X, Calendar, MapPin, CheckCircle2, ExternalLink, FileText, 
+  Image as ImageIcon, Sparkles, ChevronLeft, ChevronRight, Maximize2 
+} from 'lucide-react';
 
 export const EventDetailModal = ({ event, onClose, onOpenLightbox }) => {
-  const [activePhoto, setActivePhoto] = useState(null);
+  const [currentPhotoIdx, setCurrentPhotoIdx] = useState(0);
 
   if (!event) return null;
 
@@ -17,9 +20,37 @@ export const EventDetailModal = ({ event, onClose, onOpenLightbox }) => {
     ? event.photos
     : (event.posterUrl ? [event.posterUrl] : []);
 
+  const hasMultiplePhotos = photos.length > 1;
+
+  const handlePrevPhoto = (e) => {
+    if (e) e.stopPropagation();
+    setCurrentPhotoIdx(prev => (prev > 0 ? prev - 1 : photos.length - 1));
+  };
+
+  const handleNextPhoto = (e) => {
+    if (e) e.stopPropagation();
+    setCurrentPhotoIdx(prev => (prev < photos.length - 1 ? prev + 1 : 0));
+  };
+
+  const openInLightbox = (idx = currentPhotoIdx) => {
+    if (!onOpenLightbox) return;
+    onOpenLightbox({
+      items: photos.map((p, i) => ({
+        imageUrl: p,
+        title: `${event.title} - Photo ${i + 1}`,
+        albumName: event.title,
+        category: event.category,
+        clubSlug: event.clubSlug,
+        date: event.date,
+        caption: `Event capture from ${event.title}`
+      })),
+      currentIndex: idx
+    });
+  };
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -120,35 +151,92 @@ export const EventDetailModal = ({ event, onClose, onOpenLightbox }) => {
               </p>
             </div>
 
-            {/* Conducted / Recap Photos */}
+            {/* Conducted / Recap Photos - Interactive Carousel & Navigation */}
             {photos.length > 0 && (
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
                   <h4 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white flex items-center gap-2">
-                    <ImageIcon size={13} className="text-praxis-cyan" />
+                    <ImageIcon size={14} className="text-praxis-cyan" />
                     <span>Conducted Event Recap Photos ({photos.length})</span>
                   </h4>
-                  <span className="text-[9px] uppercase tracking-widest text-white/40">Click to expand</span>
+                  {hasMultiplePhotos && (
+                    <span className="text-[10px] uppercase tracking-widest text-praxis-cyan font-mono font-bold bg-praxis-cyan/10 px-2.5 py-0.5 rounded-full border border-praxis-cyan/30">
+                      Photo {currentPhotoIdx + 1} of {photos.length}
+                    </span>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {photos.map((photoUrl, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => onOpenLightbox ? onOpenLightbox({ imageUrl: photoUrl, title: `${event.title} - Photo ${idx + 1}` }) : setActivePhoto(photoUrl)}
-                      className="group relative aspect-video rounded-xl overflow-hidden border border-white/10 cursor-pointer bg-black/40 hover:border-praxis-cyan transition-all"
-                    >
-                      <img
-                        src={photoUrl}
-                        alt={`${event.title} capture ${idx + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Sparkles size={16} className="text-praxis-cyan" />
-                      </div>
-                    </div>
-                  ))}
+                {/* Main Carousel Stage */}
+                <div className="relative group aspect-video sm:aspect-[16/9] max-h-[360px] rounded-2xl overflow-hidden border border-white/20 bg-black/60 shadow-xl flex items-center justify-center">
+                  <motion.img
+                    key={photos[currentPhotoIdx]}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    src={photos[currentPhotoIdx]}
+                    alt={`${event.title} capture ${currentPhotoIdx + 1}`}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => openInLightbox(currentPhotoIdx)}
+                  />
+
+                  {/* Left / Right Nav Buttons */}
+                  {hasMultiplePhotos && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handlePrevPhoto}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full liquid-glass-elevated border border-white/30 text-white hover:text-black hover:bg-praxis-cyan flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 z-10"
+                        title="Previous Image (Scroll Left)"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleNextPhoto}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full liquid-glass-elevated border border-white/30 text-white hover:text-black hover:bg-praxis-cyan flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 z-10"
+                        title="Next Image (Scroll Right)"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Expand to Fullscreen Lightbox Button */}
+                  <button
+                    type="button"
+                    onClick={() => openInLightbox(currentPhotoIdx)}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full liquid-glass border border-white/20 text-white hover:bg-praxis-cyan hover:text-black flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 z-10"
+                    title="Open Fullscreen Lightbox"
+                  >
+                    <Maximize2 size={14} />
+                  </button>
                 </div>
+
+                {/* Horizontal Thumbnail Strip */}
+                {hasMultiplePhotos && (
+                  <div className="flex items-center gap-2.5 overflow-x-auto pb-1 pt-0.5">
+                    {photos.map((photoUrl, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setCurrentPhotoIdx(idx)}
+                        className={`relative w-20 sm:w-24 aspect-video rounded-xl overflow-hidden shrink-0 border transition-all ${
+                          idx === currentPhotoIdx
+                            ? 'border-praxis-cyan ring-2 ring-praxis-cyan/50 scale-105'
+                            : 'border-white/15 opacity-60 hover:opacity-100 hover:border-white/40'
+                        }`}
+                      >
+                        <img
+                          src={photoUrl}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

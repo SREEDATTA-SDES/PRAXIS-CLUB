@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { Club } from '../models/Club.js';
-import { Leader } from '../models/Leader.js';
+import { Leader, getLeaderSubModel, getAllLeaderSubModels } from '../models/Leader.js';
 import { Event } from '../models/Event.js';
 import { Announcement } from '../models/Announcement.js';
 import { Gallery } from '../models/Gallery.js';
@@ -63,15 +63,52 @@ export const dataService = {
 
   async createLeader(data) {
     const l = new Leader(data);
-    return await l.save();
+    const saved = await l.save();
+    try {
+      const SubModel = getLeaderSubModel(saved.roleType);
+      if (SubModel) {
+        await SubModel.findByIdAndUpdate(saved._id, saved.toObject(), { upsert: true, new: true });
+      }
+    } catch (syncErr) {
+      console.warn('Sub-collection sync error on createLeader:', syncErr);
+    }
+    return saved;
   },
 
   async updateLeader(id, data) {
-    return await Leader.findByIdAndUpdate(id, data, { new: true });
+    const oldDoc = await Leader.findById(id);
+    const updated = await Leader.findByIdAndUpdate(id, data, { new: true });
+    if (updated) {
+      try {
+        const NewSubModel = getLeaderSubModel(updated.roleType);
+        // If roleType changed, clean up old sub-collection
+        if (oldDoc && oldDoc.roleType && oldDoc.roleType !== updated.roleType) {
+          const OldSubModel = getLeaderSubModel(oldDoc.roleType);
+          if (OldSubModel) {
+            await OldSubModel.findByIdAndDelete(id);
+          }
+        }
+        if (NewSubModel) {
+          await NewSubModel.findByIdAndUpdate(id, updated.toObject(), { upsert: true, new: true });
+        }
+      } catch (syncErr) {
+        console.warn('Sub-collection sync error on updateLeader:', syncErr);
+      }
+    }
+    return updated;
   },
 
   async deleteLeader(id) {
-    return await Leader.findByIdAndDelete(id);
+    const deleted = await Leader.findByIdAndDelete(id);
+    try {
+      const allSubModels = getAllLeaderSubModels();
+      for (const SubModel of allSubModels) {
+        await SubModel.findByIdAndDelete(id);
+      }
+    } catch (syncErr) {
+      console.warn('Sub-collection sync error on deleteLeader:', syncErr);
+    }
+    return deleted;
   },
 
   // === ANNOUNCEMENTS ===

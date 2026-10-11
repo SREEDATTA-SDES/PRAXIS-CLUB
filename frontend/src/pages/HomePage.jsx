@@ -247,7 +247,7 @@ export const HomePage = ({ onOpenLightbox }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: (i % 3) * 0.1 }}
-                onClick={() => onOpenLightbox && onOpenLightbox(item)}
+                onClick={() => onOpenLightbox && onOpenLightbox({ items: gallery, currentIndex: i })}
                 className="group relative h-72 sm:h-80 rounded-[2rem] overflow-hidden cursor-pointer liquid-glass-card"
               >
                 <img
