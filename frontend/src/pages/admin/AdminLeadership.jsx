@@ -124,13 +124,22 @@ export const AdminLeadership = () => {
     }
 
     let effectiveDept = form.department;
+    let effectiveQual = form.qualifications;
+    let effectiveClubSlug = form.clubSlug;
+
     if (form.memberCategory === 'STUDENT') {
       effectiveDept = '';
+      effectiveQual = '';
+      if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType)) {
+        effectiveClubSlug = null;
+      }
     }
 
     const payload = {
       ...form,
       department: effectiveDept,
+      qualifications: effectiveQual,
+      clubSlug: effectiveClubSlug,
       roleType: effectiveRoleType
     };
 
@@ -308,7 +317,7 @@ export const AdminLeadership = () => {
                 <th className="p-3.5">Reorder</th>
                 {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3.5">Qualifications</th>}
                 {['PRAXIS_PRESIDENT', 'TECHNICAL_LEAD', 'COORDINATOR'].includes(activeTab) && <th className="p-3.5">Class & Hall Ticket</th>}
-                {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && <th className="p-3.5">Club/Chapter</th>}
+                {['COORDINATOR', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3.5">Club/Chapter</th>}
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
@@ -368,9 +377,9 @@ export const AdminLeadership = () => {
                       {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <td className="p-3.5 text-emerald-300/90 font-medium">{item.qualifications || '—'}</td>}
                       
 
-                      {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && (
+                      {['COORDINATOR', 'FACULTY_COORDINATOR'].includes(activeTab) && (
                         <td className="p-3.5 capitalize font-medium text-praxis-cyan">
-                          {item.clubSlug && item.clubSlug !== 'none' ? item.clubSlug : '—'}
+                          {item.clubSlug && item.clubSlug !== 'none' ? item.clubSlug : 'All Clubs'}
                         </td>
                       )}
 
@@ -441,14 +450,16 @@ export const AdminLeadership = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
+                <div className={form.memberCategory === 'STUDENT' ? 'sm:col-span-2' : ''}>
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Position Title *</label>
                   <input type="text" required value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} className="w-full p-2.5 rounded-lg bg-praxis-card border border-praxis-border text-white text-xs focus:border-praxis-cyan focus:outline-none" />
                 </div>
-                <div>
-                  <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Qualifications / Degrees</label>
-                  <input type="text" value={form.qualifications} onChange={(e) => setForm({ ...form, qualifications: e.target.value })} className="w-full p-2.5 rounded-lg bg-praxis-card border border-praxis-border text-white text-xs focus:border-praxis-cyan focus:outline-none" />
-                </div>
+                {form.memberCategory !== 'STUDENT' && (
+                  <div>
+                    <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Qualifications / Degrees</label>
+                    <input type="text" value={form.qualifications} onChange={(e) => setForm({ ...form, qualifications: e.target.value })} className="w-full p-2.5 rounded-lg bg-praxis-card border border-praxis-border text-white text-xs focus:border-praxis-cyan focus:outline-none" />
+                  </div>
+                )}
               </div>
 
               {form.memberCategory === 'ADMIN' && (
@@ -478,17 +489,19 @@ export const AdminLeadership = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
+                    <div className={['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) ? 'col-span-2' : ''}>
                       <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Class / Year</label>
                       <input type="text" value={form.yearClass} onChange={(e) => setForm({ ...form, yearClass: e.target.value })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs" />
                     </div>
-                    <div>
-                      <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Club Chapter</label>
-                      <select disabled={isClubAdmin} value={form.clubSlug || ''} onChange={(e) => setForm({ ...form, clubSlug: e.target.value || null })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs">
-                        {!isClubAdmin && <option value="">None</option>}
-                        {clubs.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-                      </select>
-                    </div>
+                    {!['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) && (
+                      <div>
+                        <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Club Chapter</label>
+                        <select disabled={isClubAdmin} value={form.clubSlug || ''} onChange={(e) => setForm({ ...form, clubSlug: e.target.value || null })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs">
+                          {!isClubAdmin && <option value="">General / Central</option>}
+                          {clubs.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
