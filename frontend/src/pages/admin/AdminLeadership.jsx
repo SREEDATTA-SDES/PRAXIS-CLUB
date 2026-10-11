@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette, Search } from 'lucide-react';
 import { ImageUpload } from '../../components/ImageUpload';
 import { DignitaryProfileModal } from '../../components/DignitaryProfileModal';
 
@@ -15,6 +15,8 @@ export const AdminLeadership = () => {
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [previewDignitary, setPreviewDignitary] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const DEFAULT_STUDENT_CLASS = 'CSE (AIML) /3rd YEAR';
 
   const initialForm = {
@@ -326,6 +328,32 @@ export const AdminLeadership = () => {
 
   const currentTabDef = LEADERSHIP_TABS.find(t => t.id === activeTab) || LEADERSHIP_TABS[0];
 
+  const handleSearchSubmit = (e) => {
+    e?.preventDefault();
+    setSearchQuery(searchInput.trim());
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    setSearchQuery('');
+  };
+
+  const matchesSearch = (item) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return Boolean(
+      (item.name && item.name.toLowerCase().includes(q)) ||
+      (item.rollNumber && item.rollNumber.toLowerCase().includes(q)) ||
+      (item.position && item.position.toLowerCase().includes(q)) ||
+      (item.designation && item.designation.toLowerCase().includes(q)) ||
+      (item.department && item.department.toLowerCase().includes(q)) ||
+      (item.yearClass && item.yearClass.toLowerCase().includes(q)) ||
+      (item.clubSlug && item.clubSlug.toLowerCase().includes(q)) ||
+      (item.qualifications && item.qualifications.toLowerCase().includes(q)) ||
+      (item.roleType && item.roleType.toLowerCase().includes(q))
+    );
+  };
+
   // Specific lists for segmented Upper & Down views
   const presidentsList = leadership.filter(item => {
     if (isClubAdmin && item.clubSlug !== user.assignedClubId) return false;
@@ -360,6 +388,12 @@ export const AdminLeadership = () => {
     }
     return false;
   }).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const filteredPresidents = presidentsList.filter(matchesSearch);
+  const filteredVicePresidents = vicePresidentsList.filter(matchesSearch);
+  const filteredTech = techList.filter(matchesSearch);
+  const filteredNonTech = nonTechList.filter(matchesSearch);
+  const filteredVisible = visibleLeadership.filter(matchesSearch);
 
   const toggleSelect = (id) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -448,8 +482,21 @@ export const AdminLeadership = () => {
             <tbody className="divide-y divide-praxis-border/40">
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-6 text-center text-praxis-muted uppercase tracking-wider font-cinematic text-xs">
-                    No members added in this group yet. Click "{addLabel || 'Add Member'}" above to appoint someone.
+                  <td colSpan={10} className="p-8 text-center text-praxis-muted uppercase tracking-wider font-cinematic text-xs">
+                    {searchQuery ? (
+                      <div className="flex flex-col items-center justify-center gap-2 py-3">
+                        <Search size={22} className="text-amber-400 opacity-70" />
+                        <span className="text-amber-300 font-bold">No leaders match "{searchQuery}" in this section</span>
+                        <button
+                          onClick={handleClearSearch}
+                          className="mt-1 px-3 py-1 rounded-lg bg-praxis-elevated hover:bg-praxis-card border border-praxis-border text-praxis-cyan text-[11px] font-sans normal-case"
+                        >
+                          Clear search filter
+                        </button>
+                      </div>
+                    ) : (
+                      `No members added in this group yet. Click "${addLabel || 'Add Member'}" above to appoint someone.`
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -587,6 +634,51 @@ export const AdminLeadership = () => {
         </div>
       </div>
 
+      {/* Search Bar with Dedicated Search Button */}
+      <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-praxis-card border border-praxis-border p-2.5 rounded-xl shadow-lg">
+        <div className="relative flex-1 flex items-center">
+          <Search size={16} className="absolute left-3 text-praxis-muted pointer-events-none" />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              setSearchQuery(e.target.value);
+            }}
+            placeholder="Search leaders by name, hall ticket ID, role, department, class, club..."
+            className="w-full pl-9 pr-8 py-2 rounded-lg bg-praxis-surface border border-praxis-border/60 text-white text-xs placeholder:text-praxis-muted/70 focus:border-praxis-cyan focus:outline-none"
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="absolute right-2.5 text-praxis-muted hover:text-white p-0.5"
+              title="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-praxis-cyan to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-black font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all shrink-0 cursor-pointer"
+        >
+          <Search size={14} />
+          <span>Search</span>
+        </button>
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={handleClearSearch}
+            className="px-3 py-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all shrink-0 cursor-pointer"
+          >
+            <X size={14} />
+            <span>Reset</span>
+          </button>
+        )}
+      </form>
+
+      {/* Tab Navigation Row */}
       <div className="w-full overflow-x-auto pb-2">
         <div className="flex items-center gap-2 p-1 bg-praxis-card border border-praxis-border rounded-xl w-max">
           {LEADERSHIP_TABS.filter(tab => !isClubAdmin || !['MANAGEMENT', 'ACADEMIC_LEAD'].includes(tab.id)).map((tab) => {
@@ -621,8 +713,13 @@ export const AdminLeadership = () => {
             {currentTabDef.collection}
           </span>
           <span className="text-praxis-muted">
-            ({activeTab === 'PRESIDENTS' ? presidentsList.length + vicePresidentsList.length : activeTab === 'DOMAIN_LEADS' ? techList.length + nonTechList.length : visibleLeadership.length} loaded)
+            ({activeTab === 'PRESIDENTS' ? filteredPresidents.length + filteredVicePresidents.length : activeTab === 'DOMAIN_LEADS' ? filteredTech.length + filteredNonTech.length : filteredVisible.length} {searchQuery ? 'matching' : 'loaded'})
           </span>
+          {searchQuery && (
+            <span className="text-[11px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">
+              Filter: "{searchQuery}"
+            </span>
+          )}
         </div>
         <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -634,7 +731,7 @@ export const AdminLeadership = () => {
       {activeTab === 'PRESIDENTS' && (
         <div className="space-y-6">
           {renderLeaderTable(
-            presidentsList,
+            filteredPresidents,
             '1. PRAXIS Presidents',
             'Upper Section: Executive Apex Council & Student Presidents',
             'PRAXIS_PRESIDENT',
@@ -643,7 +740,7 @@ export const AdminLeadership = () => {
             'bg-purple-500/20 text-purple-300 border-purple-500/40'
           )}
           {renderLeaderTable(
-            vicePresidentsList,
+            filteredVicePresidents,
             '2. PRAXIS Vice Presidents',
             'Down Section: Operational Vice Council & Student Vice Presidents',
             'PRAXIS_VICE_PRESIDENT',
@@ -658,7 +755,7 @@ export const AdminLeadership = () => {
       {activeTab === 'DOMAIN_LEADS' && (
         <div className="space-y-6">
           {renderLeaderTable(
-            techList,
+            filteredTech,
             '1. Overall Technical Coordinators',
             'Upper Section: Overseeing Technical Chapters & Inter-Club Engineering Projects',
             'TECHNICAL_LEAD',
@@ -667,7 +764,7 @@ export const AdminLeadership = () => {
             'bg-blue-500/20 text-blue-300 border-blue-500/40'
           )}
           {renderLeaderTable(
-            nonTechList,
+            filteredNonTech,
             '2. Overall Non-Technical Coordinators',
             'Down Section: Overseeing Cultural, Sports, Arts, Media & Stage Management',
             'NON_TECHNICAL_LEAD',
@@ -681,7 +778,7 @@ export const AdminLeadership = () => {
       {/* Single Table for all other single-tier collections */}
       {!['PRESIDENTS', 'DOMAIN_LEADS'].includes(activeTab) && (
         renderLeaderTable(
-          visibleLeadership,
+          filteredVisible,
           currentTabDef.label,
           `Atlas Collection: ${currentTabDef.collection}`,
           activeTab,

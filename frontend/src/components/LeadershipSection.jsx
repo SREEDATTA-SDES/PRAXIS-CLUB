@@ -59,30 +59,30 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
       titleSize: 'text-xs sm:text-sm md:text-base font-semibold whitespace-normal sm:whitespace-nowrap',
       nameSize: 'text-lg sm:text-2xl md:text-2xl font-bold font-serif whitespace-normal sm:whitespace-nowrap'
     },
-    // Tier 4 & 5: Presidents & Vice Presidents (Prominent apex student leaders)
+    // Tier 4 & 5: Presidents & Vice Presidents (Prominent apex student leaders - guaranteed 1:1 perfect circle)
     presidential: {
-      ringSize: 'w-38 h-38 sm:w-46 sm:h-46 md:w-50 md:h-50',
+      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
       wrapperWidth: 'w-64 sm:w-76 md:w-84',
       titleSize: 'text-xs sm:text-sm md:text-base font-semibold',
       nameSize: 'text-base sm:text-xl md:text-2xl font-bold font-serif'
     },
     // Tier 6 & 7: Head Coordinators (Technical & Non-Technical Domain Leads)
     headLead: {
-      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
+      ringSize: 'w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44',
       wrapperWidth: 'w-64 sm:w-72 md:w-80',
       titleSize: 'text-xs sm:text-sm font-semibold',
       nameSize: 'text-base sm:text-lg md:text-xl font-bold'
     },
     // Tier 3: Faculty Advisors (Larger than student coordinators)
     faculty: {
-      ringSize: 'w-34 h-34 sm:w-40 sm:h-40 md:w-44 md:h-44',
+      ringSize: 'w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44',
       wrapperWidth: 'w-60 sm:w-72 md:w-76',
       titleSize: 'text-xs sm:text-sm font-semibold',
       nameSize: 'text-base sm:text-lg md:text-xl font-bold'
     },
-    // Tier 8: Student Coordinators & Chapter Leads (Slightly increased)
+    // Tier 8: Student Coordinators & Chapter Leads
     student: {
-      ringSize: 'w-30 h-30 sm:w-36 sm:h-36 md:w-40 md:h-40',
+      ringSize: 'w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36',
       wrapperWidth: 'w-56 sm:w-64 md:w-68',
       titleSize: 'text-xs sm:text-sm font-medium',
       nameSize: 'text-sm sm:text-base md:text-lg font-bold'
@@ -101,7 +101,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
       nameSize: 'text-base sm:text-lg md:text-xl font-bold'
     },
     md: {
-      ringSize: 'w-30 h-30 sm:w-36 sm:h-36 md:w-40 md:h-40',
+      ringSize: 'w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36',
       wrapperWidth: 'w-56 sm:w-64 md:w-68',
       titleSize: 'text-xs sm:text-sm font-medium',
       nameSize: 'text-sm sm:text-base md:text-lg font-bold'
@@ -122,22 +122,22 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
       onClick={handleClick}
       className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer' : 'cursor-default'}`}
     >
-      {/* 1. Circular Portrait with Themed Double-Ring Border & Frame Lift Effect (No Inner Image Zoom) */}
-      <div className="relative mb-3 flex items-center justify-center transition-all duration-300 ease-out group-hover:-translate-y-2 group-hover:scale-105">
+      {/* 1. Circular Portrait with Themed Double-Ring Border & Frame Lift Effect (Forced 1:1 Aspect Ratio) */}
+      <div className="relative mb-3 flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover:-translate-y-2 group-hover:scale-105">
         {/* Ambient Glow Behind */}
-        <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 group-hover:blur-xl transition-all duration-300`} />
+        <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 group-hover:blur-xl transition-all duration-300 pointer-events-none`} />
         
-        {/* Outer Ring */}
-        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)] group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.95)] transition-shadow duration-300`}>
+        {/* Outer Ring - Forced aspect-square to guarantee 100% perfect round circle */}
+        <div className={`relative ${currentSize.ringSize} aspect-square shrink-0 rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)] group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.95)] transition-shadow duration-300`}>
           {/* Inner Dark Gap Ring */}
-          <div className="w-full h-full rounded-full p-[2px] bg-[#07090D]">
+          <div className="w-full h-full aspect-square rounded-full p-[2px] bg-[#07090D] shrink-0">
             {/* Image Container with Inner Border */}
-            <div className={`w-full h-full rounded-full overflow-hidden border ${currentTheme.innerBorder}`}>
+            <div className={`w-full h-full aspect-square rounded-full overflow-hidden border ${currentTheme.innerBorder} shrink-0`}>
               <img
                 src={person.photoUrl || fallbackPhoto}
                 alt={person.name}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full aspect-square object-cover object-center rounded-full block"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = fallbackPhoto;
