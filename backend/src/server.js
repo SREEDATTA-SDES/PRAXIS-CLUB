@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-import { connectDB } from './config/db.js';
+import { connectDB, getDbStatus } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import clubRoutes from './routes/clubRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
@@ -41,7 +41,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
-    service: 'PRAXIS SDES API Platform'
+    service: 'PRAXIS SDES API Platform',
+    db: getDbStatus()
   });
 });
 
