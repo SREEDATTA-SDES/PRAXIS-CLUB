@@ -28,7 +28,7 @@ export const PageTransitionLoader = () => {
     }
   }, [location, displayLocation.pathname]);
 
-  if (!isTransitioning) return null;
+  if (location.pathname.startsWith('/admin') || !isTransitioning) return null;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-praxis-bg/95 backdrop-blur-md pointer-events-none transition-opacity duration-300">

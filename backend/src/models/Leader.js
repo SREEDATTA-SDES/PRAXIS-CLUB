@@ -9,7 +9,7 @@ const leaderSchema = new mongoose.Schema({
   position: { type: String, required: true },
   designation: { type: String, default: '' },
   qualifications: { type: String, default: '' },
-  department: { type: String, default: 'CSE-Allied' },
+  department: { type: String, default: '' },
   yearClass: { type: String, default: '' },
   section: { type: String, default: '' },
   rollNumber: { type: String, default: '' },

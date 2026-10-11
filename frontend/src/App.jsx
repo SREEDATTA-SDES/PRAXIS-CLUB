@@ -52,7 +52,7 @@ export function App() {
       <ScrollToTop />
 
       {/* 1. Cinematic Opening Intro Sequence (Skippable & stored in session) */}
-      {showIntro && <IntroSequence onComplete={handleIntroComplete} />}
+      {showIntro && !isAdminRoute && <IntroSequence onComplete={handleIntroComplete} />}
 
       {/* 2. Global Atmospheric Canvas Background */}
       <AtmosphericBackground />

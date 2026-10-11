@@ -129,11 +129,17 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
             {person.qualifications}
           </span>
         )}
-        {(person.yearClass || person.section || person.department) && (
-          <span className="text-white/55 text-[11px] sm:text-xs tracking-wider block font-cinematic">
-            {[person.yearClass, person.section && `Sec: ${person.section}`, person.department].filter(Boolean).join(' • ')}
-          </span>
-        )}
+        {(() => {
+          const isStudentRole = ['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD', 'COORDINATOR', 'STUDENT_LEAD'].includes(person.roleType);
+          const displayDept = (isStudentRole && person.department?.includes('Governing Council')) ? null : person.department;
+          const details = [person.yearClass, person.section && `Sec: ${person.section}`, displayDept].filter(Boolean);
+          if (details.length === 0) return null;
+          return (
+            <span className="text-white/55 text-[11px] sm:text-xs tracking-wider block font-cinematic">
+              {details.join(' • ')}
+            </span>
+          );
+        })()}
         {person.rollNumber && (
           <span className="text-[10px] uppercase font-mono tracking-widest text-praxis-cyan/70 block">
             ID: {person.rollNumber}
@@ -141,9 +147,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
         )}
       </div>
 
-
-
-      {person.clubSlug && !onSelectPerson && (
+      {person.clubSlug && person.clubSlug !== 'none' && !onSelectPerson && (
         <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/40 mt-1 block font-cinematic">
           {person.clubSlug}
         </span>

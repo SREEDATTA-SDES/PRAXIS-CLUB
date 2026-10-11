@@ -130,25 +130,115 @@ export const dataService = {
   },
 
   // === ADMIN / USERS ===
+  async findUserByUsernameOrEmail(identifier) {
+    const user = await User.findOne({
+      $or: [{ username: identifier }, { email: identifier }]
+    });
+    if (user) return user;
+
+    // Environment Super Admin fallback
+    const envUser = process.env.ADMIN_USERNAME || 'praxis_admin';
+    const envPass = process.env.ADMIN_PASSWORD || 'praxis_sdes@2026';
+    if (identifier === envUser || identifier === `${envUser}@praxis.sdes.ac.in`) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(envPass, salt);
+      return {
+        _id: 'admin-super-root',
+        id: 'admin-super-root',
+        username: envUser,
+        email: `${envUser}@praxis.sdes.ac.in`,
+        role: 'SUPER_ADMIN',
+        fullName: 'Chief System Administrator (SDES)',
+        assignedClubId: null,
+        passwordHash,
+        toObject() {
+          return {
+            _id: 'admin-super-root',
+            id: 'admin-super-root',
+            username: envUser,
+            email: `${envUser}@praxis.sdes.ac.in`,
+            role: 'SUPER_ADMIN',
+            fullName: 'Chief System Administrator (SDES)',
+            assignedClubId: null
+          };
+        }
+      };
+    }
+    return null;
+  },
+
+  async findUserById(id) {
+    if (id === 'admin-super-root') {
+      const envUser = process.env.ADMIN_USERNAME || 'praxis_admin';
+      return {
+        _id: 'admin-super-root',
+        id: 'admin-super-root',
+        username: envUser,
+        email: `${envUser}@praxis.sdes.ac.in`,
+        role: 'SUPER_ADMIN',
+        fullName: 'Chief System Administrator (SDES)',
+        assignedClubId: null
+      };
+    }
+    return await User.findById(id).select('-passwordHash');
+  },
+
+  async getAllAdmins() {
+    return await User.find().select('-passwordHash').sort({ createdAt: -1 });
+  },
+
+  async createAdminUser(data) {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(data.password, salt);
+    const user = new User({
+      username: data.username,
+      email: data.email,
+      passwordHash,
+      role: data.role || 'CLUB_ADMIN',
+      assignedClubId: data.assignedClubId || null,
+      fullName: data.fullName || ''
+    });
+    return await user.save();
+  },
+
+  async deleteAdminUser(id) {
+    return await User.findByIdAndDelete(id);
+  },
+
+  // Overview Stats for Admin Dashboard
+  async getDashboardStats() {
+    const [clubsCount, techCount, nonTechCount, eventsCount, upcomingCount, completedCount, galleryCount, announcementsCount] = await Promise.all([
+      Club.countDocuments(),
+      Club.countDocuments({ category: 'TECHNICAL' }),
+      Club.countDocuments({ category: 'NON-TECHNICAL' }),
+      Event.countDocuments(),
+      Event.countDocuments({ status: 'UPCOMING' }),
+      Event.countDocuments({ status: 'COMPLETED' }),
+      Gallery.countDocuments(),
+      Announcement.countDocuments()
+    ]);
+
+    return {
+      totalClubs: clubsCount,
+      technicalClubs: techCount,
+      nonTechnicalClubs: nonTechCount,
+      totalEvents: eventsCount,
+      upcomingEvents: upcomingCount,
+      completedEvents: completedCount,
+      galleryCount,
+      announcementsCount
+    };
+  },
+
   async verifyAdmin(username, password) {
-    const user = await User.findOne({ username });
-    if (user && await bcrypt.compare(password, user.password)) {
+    const user = await this.findUserByUsernameOrEmail(username);
+    if (!user) return null;
+    if (user.passwordHash && await bcrypt.compare(password, user.passwordHash)) {
       return user;
     }
-
-    if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
-      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-        return {
-          id: "admin-env",
-          username: process.env.ADMIN_USERNAME,
-          email: process.env.ADMIN_USERNAME + "@praxis.sdes.ac.in",
-          role: "SUPER_ADMIN",
-          assignedClubId: null,
-          fullName: "System Administrator"
-        };
-      }
+    if (user.password && user.password === password) {
+      return user;
     }
-    
     return null;
   }
 };

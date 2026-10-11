@@ -22,7 +22,7 @@ export const AdminLeadership = () => {
     roleType: isClubAdmin ? 'COORDINATOR' : 'MANAGEMENT',
     position: 'Chairman',
     designation: '',
-    department: 'Governing Council, SDES',
+    department: '',
     yearClass: '',
     section: '',
     rollNumber: '',
@@ -43,7 +43,40 @@ export const AdminLeadership = () => {
 
   const openCreateModal = () => {
     setEditingId(null);
-    setForm(initialForm);
+    let cat = 'STUDENT';
+    let pos = 'Coordinator';
+    let dept = '';
+    
+    if (activeTab === 'MANAGEMENT') {
+      cat = 'ADMIN';
+      pos = 'Chairman';
+      dept = 'Governing Council, SDES';
+    } else if (activeTab === 'ACADEMIC_LEAD') {
+      cat = 'ADMIN';
+      pos = 'Principal';
+      dept = 'Academic Leadership, SDES';
+    } else if (activeTab === 'FACULTY_COORDINATOR') {
+      cat = 'FACULTY';
+      pos = 'Faculty Advisor';
+      dept = 'CSE-Allied';
+    } else if (activeTab === 'PRAXIS_PRESIDENT') {
+      cat = 'STUDENT';
+      pos = 'President';
+      dept = '';
+    } else if (activeTab === 'TECHNICAL_LEAD') {
+      cat = 'STUDENT';
+      pos = 'Technical Lead';
+      dept = '';
+    }
+
+    setForm({
+      ...initialForm,
+      memberCategory: isClubAdmin ? 'STUDENT' : cat,
+      roleType: isClubAdmin ? 'COORDINATOR' : activeTab,
+      position: pos,
+      department: dept,
+      clubSlug: isClubAdmin ? user.assignedClubId : null
+    });
     setModalOpen(true);
   };
 
@@ -62,7 +95,7 @@ export const AdminLeadership = () => {
       roleType: item.roleType || 'COORDINATOR',
       position: item.position || item.designation || '',
       designation: item.designation || '',
-      department: item.department || (category === 'ADMIN' ? 'Governing Council, SDES' : 'CSE-Allied'),
+      department: item.department || (category === 'ADMIN' ? 'Governing Council, SDES' : ''),
       yearClass: item.yearClass || '',
       section: item.section || '',
       rollNumber: item.rollNumber || '',
@@ -90,8 +123,14 @@ export const AdminLeadership = () => {
       }
     }
 
+    let effectiveDept = form.department;
+    if (form.memberCategory === 'STUDENT') {
+      effectiveDept = '';
+    }
+
     const payload = {
       ...form,
+      department: effectiveDept,
       roleType: effectiveRoleType
     };
 
@@ -329,7 +368,11 @@ export const AdminLeadership = () => {
                       {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <td className="p-3.5 text-emerald-300/90 font-medium">{item.qualifications || '—'}</td>}
                       
 
-                      {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && <td className="p-3.5 capitalize font-medium text-praxis-cyan">{item.clubSlug ? item.clubSlug : 'Institutional (Central)'}</td>}
+                      {!['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) && (
+                        <td className="p-3.5 capitalize font-medium text-praxis-cyan">
+                          {item.clubSlug && item.clubSlug !== 'none' ? item.clubSlug : '—'}
+                        </td>
+                      )}
 
                       <td className="p-3.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
@@ -382,12 +425,12 @@ export const AdminLeadership = () => {
                 <div>
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1.5">Member Classification *</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'PRAXIS_PRESIDENT' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Presidents & VPs</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Technical Lead' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'TECHNICAL_LEAD' ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Domain Leads</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Club Coordinator', department: 'CSE Allied' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1" />Faculty Advisor</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Student Coordinator</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman', department: 'Governing Council, SDES' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal', department: 'Academic Leadership, SDES' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President', department: '', clubSlug: null })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'PRAXIS_PRESIDENT' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Presidents & VPs</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Technical Lead', department: '', clubSlug: null })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'TECHNICAL_LEAD' ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Domain Leads</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'CSE-Allied' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1" />Faculty Advisor</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator', department: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Student Coordinator</button>
                   </div>
                 </div>
               )}
@@ -442,7 +485,7 @@ export const AdminLeadership = () => {
                     <div>
                       <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Club Chapter</label>
                       <select disabled={isClubAdmin} value={form.clubSlug || ''} onChange={(e) => setForm({ ...form, clubSlug: e.target.value || null })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs">
-                        {!isClubAdmin && <option value="">Institutional / Central</option>}
+                        {!isClubAdmin && <option value="">None</option>}
                         {clubs.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
                       </select>
                     </div>
