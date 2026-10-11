@@ -314,28 +314,29 @@ export const dataService = {
     if (user) return user;
 
     // Environment Super Admin fallback
-    const envUser = process.env.ADMIN_USERNAME || 'praxis_admin';
+    const envUser = (process.env.ADMIN_USERNAME || 'praxis_admin').trim().toLowerCase();
     const envPass = process.env.ADMIN_PASSWORD || 'praxis_sdes@2026';
-    if (identifier === envUser || identifier === `${envUser}@praxis.sdes.ac.in`) {
+    const cleanId = String(identifier || '').trim().toLowerCase();
+    if (cleanId === envUser || cleanId === `${envUser}@praxis.sdes.ac.in`) {
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(envPass, salt);
       return {
         _id: 'admin-super-root',
         id: 'admin-super-root',
-        username: envUser,
-        email: `${envUser}@praxis.sdes.ac.in`,
+        username: 'praxis_admin',
+        email: 'admin@praxis.sdes.ac.in',
         role: 'SUPER_ADMIN',
-        fullName: 'Chief System Administrator (SDES)',
+        fullName: 'PRAXIS Admin',
         assignedClubId: null,
         passwordHash,
         toObject() {
           return {
             _id: 'admin-super-root',
             id: 'admin-super-root',
-            username: envUser,
-            email: `${envUser}@praxis.sdes.ac.in`,
+            username: 'praxis_admin',
+            email: 'admin@praxis.sdes.ac.in',
             role: 'SUPER_ADMIN',
-            fullName: 'Chief System Administrator (SDES)',
+            fullName: 'PRAXIS Admin',
             assignedClubId: null
           };
         }
@@ -346,14 +347,13 @@ export const dataService = {
 
   async findUserById(id) {
     if (id === 'admin-super-root') {
-      const envUser = process.env.ADMIN_USERNAME || 'praxis_admin';
       return {
         _id: 'admin-super-root',
         id: 'admin-super-root',
-        username: envUser,
-        email: `${envUser}@praxis.sdes.ac.in`,
+        username: 'praxis_admin',
+        email: 'admin@praxis.sdes.ac.in',
         role: 'SUPER_ADMIN',
-        fullName: 'Chief System Administrator (SDES)',
+        fullName: 'PRAXIS Admin',
         assignedClubId: null
       };
     }

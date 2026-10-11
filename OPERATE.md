@@ -62,13 +62,9 @@ npm run dev
 
 Go to [http://localhost:5173/admin/login](http://localhost:5173/admin/login) or use the footer **Portal** link.
 
-| Account Type | Username | Password | Permitted Actions |
-| :--- | :--- | :--- | :--- |
-| **Super Admin** | `superadmin` | `password` | Full management: administrators, clubs, events, gallery, circulars, settings |
-| **Faculty Admin**| `facultyadmin`| `password` | Manage all clubs, events, gallery, leadership, announcements |
-| **Club Admin**   | `genesisadmin`| `password` | Manage **Genesis** chapter only (events, gallery, coordinators) |
-
-*Tip: The login page includes one-click buttons to auto-fill these demo credentials.*
+| Account | Username | Permitted Actions |
+| :--- | :--- | :--- |
+| **Admin** | `praxis_admin` | Full management: clubs, events, gallery, circulars, settings |
 
 ---
 

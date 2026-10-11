@@ -26,7 +26,7 @@ export const AdminLogin = () => {
     if (res.success) {
       navigate('/admin/dashboard');
     } else {
-      setError(res.message || 'Authentication failed. Please verify credentials.');
+      setError(res.message === 'Invalid credentials.' ? 'Invalid username or password.' : (res.message || 'Invalid username or password.'));
     }
   };
 

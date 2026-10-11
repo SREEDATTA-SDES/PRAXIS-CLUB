@@ -92,7 +92,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
         <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-500`} />
         
         {/* Outer Ring */}
-        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500`}>
+        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)]`}>
           {/* Inner Dark Gap Ring */}
           <div className="w-full h-full rounded-full p-[2px] bg-[#07090D]">
             {/* Image Container with Inner Border */}
@@ -101,7 +101,7 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
                 src={person.photoUrl || fallbackPhoto}
                 alt={person.name}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = fallbackPhoto;
@@ -476,43 +476,56 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         </div>
       )}
 
-      {/* Tier 06: Overall Technical Domain Leads & Creative/Non-Technical Domain Leads (DISPLAY ONLY) */}
+      {/* Tier 06 & Tier 07: Head Coordinators (Overall Technical Coordinators & Overall Non-Technical Coordinators) */}
       {(techDomain.length > 0 || creativeDomain.length > 0) && (
-        <div className="space-y-12 pt-10 border-t border-white/10">
-          {/* Technical Domain Leads */}
+        <div className="space-y-10 pt-10 border-t border-white/10">
+          <div className="text-center">
+            <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan block mb-1 font-cinematic flex items-center justify-center gap-2">
+              <Cpu size={15} className="text-praxis-cyan" /> Central Student Command &bull; Domain Leadership
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
+              Head Coordinators
+            </h3>
+            <p className="text-xs text-praxis-cyan/80 font-cinematic uppercase tracking-widest mt-1">
+              Central Technical & Non-Technical Operational Oversight
+            </p>
+            <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-3" />
+          </div>
+
+          {/* Tier 06: Overall Technical Domain Leads */}
           {techDomain.length > 0 && (
             <div className="space-y-4">
               <div className="text-center">
                 <span className="text-xs uppercase font-bold tracking-[0.3em] text-cyan-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
-                  <Cpu size={15} className="text-cyan-400" /> Tier 06A &bull; Overall Technical Domain Leads
+                  <Cpu size={14} className="text-cyan-400" /> Tier 06 &bull; Central Technical Command
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
+                <h4 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
                   Overall Technical Coordinators
-                </h3>
+                </h4>
                 <p className="text-xs text-cyan-400/70 font-cinematic uppercase tracking-widest mt-1">
                   Overseeing Technical Chapters & Inter-Club Engineering Projects
                 </p>
-                <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
+                <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
               </div>
 
               <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
             </div>
           )}
 
-          {/* Creative / Non-Technical Domain Leads */}
+          {/* Tier 07: Creative / Non-Technical Domain Leads */}
           {creativeDomain.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-4 pt-6 border-t border-white/5">
               <div className="text-center">
                 <span className="text-xs uppercase font-bold tracking-[0.3em] text-purple-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
-                  <Palette size={15} className="text-purple-400" /> Tier 06B &bull; Overall Creative & Operations Leads
+                  <Palette size={14} className="text-purple-400" /> Tier 07 &bull; Central Creative & Operations Command
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
+                <h4 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
                   Overall Non-Technical Coordinators
-                </h3>
+                </h4>
                 <p className="text-xs text-purple-400/70 font-cinematic uppercase tracking-widest mt-1">
                   Overseeing Cultural, Sports, Arts, Media & Stage Management
                 </p>
-                <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
+                <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
               </div>
 
               <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" onSelectPerson={null} />
@@ -521,18 +534,18 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         </div>
       )}
 
-      {/* Tier 07: Chapter Leads & Student Coordinators (DISPLAY ONLY) */}
+      {/* Tier 08: Chapter Leads & Student Coordinators (Sub-Coordinators) */}
       {(clubLeads.length > 0 || coordinators.length > 0) && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-secondary block mb-1 font-cinematic">
-              Tier 07 &bull; Chapter Operations
+              Tier 08 &bull; Chapter Operations & Sub-Coordinators
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
-              Club Chapter Leads & Student Coordinators
+              Student Coordinators & Chapter Leads
             </h3>
             <p className="text-xs text-white/50 font-cinematic uppercase tracking-widest mt-1">
-              Execution team across all 8 special-interest chapters
+              Execution teams and sub-coordinators across all 8 special-interest chapters
             </p>
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mx-auto mt-3" />
           </div>

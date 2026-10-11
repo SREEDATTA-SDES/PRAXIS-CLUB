@@ -46,59 +46,28 @@ export const AuthProvider = ({ children }) => {
       }
       throw new Error(res.message || 'Login failed');
     } catch (err) {
-      // Offline / standalone fallback for demo and local testing accounts if backend is not started
+      // Fallback only for the single official admin account
       const u = username.toLowerCase().trim();
       const p = password.trim();
 
-      if ((u === 'praxis_admin' || u === 'admin' || u === 'superadmin') && (p === 'praxis_sdes@2026' || p === 'password' || p === 'admin' || p === '123456')) {
-        const mockUser = {
+      if (u === 'praxis_admin' && p === 'praxis_sdes@2026') {
+        const adminUser = {
           id: 'admin-super',
           username: 'praxis_admin',
           email: 'admin@praxis.sdes.ac.in',
           role: 'SUPER_ADMIN',
-          fullName: 'Chief System Administrator (SDES)',
+          fullName: 'PRAXIS Admin',
           assignedClubId: null
         };
-        const mockToken = 'mock-superadmin-jwt-token';
+        const mockToken = 'praxis-admin-jwt-token';
         setToken(mockToken);
         setAuthToken(mockToken);
-        setUser(mockUser);
-        setStoredUser(mockUser);
-        return { success: true, user: mockUser };
-      } else if (u === 'facultyadmin' && (p === 'password' || p === 'praxis_sdes@2026')) {
-        const mockUser = {
-          id: 'admin-faculty',
-          username: 'facultyadmin',
-          email: 'faculty@praxis.sdes.ac.in',
-          role: 'FACULTY_ADMIN',
-          fullName: 'SDES Faculty In-Charge',
-          assignedClubId: null
-        };
-        const mockToken = 'mock-faculty-jwt-token';
-        setToken(mockToken);
-        setAuthToken(mockToken);
-        setUser(mockUser);
-        setStoredUser(mockUser);
-        return { success: true, user: mockUser };
-      } else if ((u === 'genesisadmin' || u.endsWith('admin')) && (p === 'password' || p === 'praxis_sdes@2026')) {
-        const club = u.replace('admin', '') || 'genesis';
-        const mockUser = {
-          id: `admin-${club}`,
-          username: u,
-          email: `${club}@praxis.sdes.ac.in`,
-          role: 'CLUB_ADMIN',
-          fullName: `${club.toUpperCase()} Chapter Admin`,
-          assignedClubId: club
-        };
-        const mockToken = `mock-${club}-jwt-token`;
-        setToken(mockToken);
-        setAuthToken(mockToken);
-        setUser(mockUser);
-        setStoredUser(mockUser);
-        return { success: true, user: mockUser };
+        setUser(adminUser);
+        setStoredUser(adminUser);
+        return { success: true, user: adminUser };
       }
 
-      return { success: false, message: 'Invalid credentials. Use praxis_admin / praxis_sdes@2026 or superadmin / password' };
+      return { success: false, message: 'Invalid username or password.' };
     }
   };
 

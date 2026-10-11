@@ -14,13 +14,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    // Support both standard bcrypt comparison and plain comparison for initial dev test
+    // Strict bcrypt comparison against user passwordHash
     let isMatch = false;
     if (user.passwordHash) {
       isMatch = await bcrypt.compare(password, user.passwordHash);
-      if (!isMatch && password === 'password') {
-        isMatch = true; // Fallback helper for default seeded accounts
-      }
     } else if (user.password) {
       isMatch = user.password === password;
     }

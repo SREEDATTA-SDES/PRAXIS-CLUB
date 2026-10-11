@@ -59,7 +59,7 @@ const seed = async () => {
     await User.deleteMany({});
     for (const admin of DEFAULT_ADMINS) {
       const salt = await bcrypt.genSalt(10);
-      const passwordHash = await bcrypt.hash('password', salt);
+      const passwordHash = admin.passwordHash || (await bcrypt.hash('praxis_sdes@2026', salt));
       await User.create({
         username: admin.username,
         email: admin.email,

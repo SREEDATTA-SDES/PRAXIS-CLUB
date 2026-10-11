@@ -33,29 +33,22 @@ export const AdminLayout = () => {
     navigate('/admin/login');
   };
 
-  // RBAC Navigation items
+  // Navigation items (removed Administrators as requested)
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard, show: true },
     { name: 'Clubs', path: '/admin/clubs', icon: Compass, show: true },
     { name: 'Events', path: '/admin/events', icon: Calendar, show: true },
     { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon, show: true },
-    { name: 'Announcements', path: '/admin/announcements', icon: Bell, show: isSuperAdmin || isFacultyAdmin },
+    { name: 'Announcements', path: '/admin/announcements', icon: Bell, show: true },
     { name: 'Leadership', path: '/admin/leadership', icon: Users, show: true },
-    { name: 'Administrators', path: '/admin/administrators', icon: UserCheck, show: isSuperAdmin },
-    { name: 'Settings', path: '/admin/settings', icon: Settings, show: isSuperAdmin || isFacultyAdmin }
+    { name: 'Settings', path: '/admin/settings', icon: Settings, show: true }
   ];
 
-  const roleBadgeColor = {
-    SUPER_ADMIN: 'bg-red-950/80 text-red-300 border-red-800/60',
-    FACULTY_ADMIN: 'bg-purple-950/80 text-purple-300 border-purple-800/60',
-    CLUB_ADMIN: 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60'
-  }[user.role] || 'bg-gray-800 text-gray-300';
-
   return (
-    <div className="min-h-screen bg-praxis-bg text-praxis-text flex flex-col md:flex-row antialiased">
+    <div className="h-screen w-screen overflow-hidden bg-praxis-bg text-praxis-text flex flex-col md:flex-row antialiased">
       
       {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-praxis-surface border-b border-praxis-border">
+      <div className="md:hidden flex items-center justify-between p-4 bg-praxis-surface border-b border-praxis-border shrink-0">
         <div className="flex items-center gap-2">
           <img src={COLLEGE_BRAND.praxisLogoUrl} alt="PRAXIS" className="h-7 w-auto" />
           <span className="text-xs font-bold text-white uppercase font-cinematic">Admin Console</span>
@@ -68,13 +61,13 @@ export const AdminLayout = () => {
         </button>
       </div>
 
-      {/* Admin Sidebar Navigation */}
+      {/* Admin Sidebar Navigation - CONSTANT viewport height, never stretches */}
       <aside 
-        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-praxis-surface border-r border-praxis-border flex flex-col justify-between transition-transform duration-300 ${
+        className={`fixed md:relative inset-y-0 left-0 z-40 w-64 h-full shrink-0 bg-praxis-surface border-r border-praxis-border flex flex-col justify-between transition-transform duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div className="p-5 space-y-6">
+        <div className="p-5 space-y-5 overflow-y-auto flex-1">
           
           {/* Logo Brand Header */}
           <div className="flex items-center gap-3 pb-4 border-b border-praxis-border">
@@ -87,19 +80,14 @@ export const AdminLayout = () => {
             </div>
           </div>
 
-          {/* User Profile Mini Bar */}
-          <div className="p-3 rounded-lg bg-praxis-card border border-praxis-border/80 space-y-1.5">
+          {/* User Profile Mini Bar - Clean ID only without administrator / superadmin text */}
+          <div className="p-2.5 rounded-lg bg-praxis-card border border-praxis-border/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white truncate">{user.fullName || user.username}</span>
-              <span className={`text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded border ${roleBadgeColor}`}>
-                {user.role?.replace('_', ' ')}
+              <span className="text-xs font-bold text-white font-mono truncate">praxis_admin</span>
+              <span className="text-[9px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                Active
               </span>
             </div>
-            {user.assignedClubId && (
-              <span className="text-[10px] text-praxis-cyan font-medium block">
-                Assigned: <strong className="capitalize">{user.assignedClubId}</strong>
-              </span>
-            )}
           </div>
 
           {/* Nav Items */}
@@ -126,8 +114,8 @@ export const AdminLayout = () => {
           </nav>
         </div>
 
-        {/* Sidebar Footer */}
-        <div className="p-5 border-t border-praxis-border space-y-2">
+        {/* Sidebar Footer - Anchored at the bottom of the sidebar */}
+        <div className="p-5 border-t border-praxis-border space-y-2 shrink-0 bg-praxis-surface">
           <Link
             to="/"
             target="_blank"
@@ -147,8 +135,8 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 bg-praxis-bg p-4 sm:p-8 overflow-y-auto min-h-screen">
+      {/* Main Content Area - Independently scrollable, never affects sidebar height */}
+      <main className="flex-1 h-full overflow-y-auto bg-praxis-bg p-4 sm:p-8">
         <Outlet />
       </main>
 

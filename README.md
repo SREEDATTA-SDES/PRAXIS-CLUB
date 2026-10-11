@@ -98,12 +98,10 @@ Built following the provided dark cinematic UI reference:
 
 Access route: `/admin/login` *(Subtly accessible via the footer "Portal" link)*
 
-### Default Seed Accounts:
-| Role | Username | Email | Password | Access Scope |
-| :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `superadmin` | `admin@praxis.sdes.ac.in` | `password` | Complete platform control |
-| **Faculty Admin** | `facultyadmin` | `faculty@praxis.sdes.ac.in` | `password` | All clubs, events & circulars |
-| **Club Admin** | `genesisadmin` | `genesis@praxis.sdes.ac.in` | `password` | Genesis chapter only |
+### Default Admin Account:
+| Role | Username | Email | Access Scope |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `praxis_admin` | `admin@praxis.sdes.ac.in` | Complete platform management |
 
 ---
 

@@ -159,29 +159,11 @@ export const DEFAULT_GALLERY = [];
 export const DEFAULT_ADMINS = [
   {
     id: "admin-super",
-    username: "superadmin",
+    username: "praxis_admin",
     email: "admin@praxis.sdes.ac.in",
-    passwordHash: "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // "password"
+    passwordHash: "$2a$10$Guqwix4bx.Bu/5boO5FrZ.gOQbdRhhDqVRmxqnJu9/8zj2PZZ0TBi",
     role: "SUPER_ADMIN",
     assignedClubId: null,
-    fullName: "Chief System Administrator"
-  },
-  {
-    id: "admin-faculty",
-    username: "facultyadmin",
-    email: "faculty@praxis.sdes.ac.in",
-    passwordHash: "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // "password"
-    role: "FACULTY_ADMIN",
-    assignedClubId: null,
-    fullName: "SDES Faculty In-Charge"
-  },
-  {
-    id: "admin-genesis",
-    username: "genesisadmin",
-    email: "genesis@praxis.sdes.ac.in",
-    passwordHash: "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // "password"
-    role: "CLUB_ADMIN",
-    assignedClubId: "genesis",
-    fullName: "Genesis Club Admin"
+    fullName: "PRAXIS Admin"
   }
 ];

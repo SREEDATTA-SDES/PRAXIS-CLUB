@@ -31,9 +31,7 @@ export const AdminUsers = () => {
     } catch (e) {
       // Fallback default admins
       setAdmins([
-        { id: 'admin-super', username: 'superadmin', email: 'admin@praxis.sdes.ac.in', role: 'SUPER_ADMIN', fullName: 'Chief System Administrator' },
-        { id: 'admin-faculty', username: 'facultyadmin', email: 'faculty@praxis.sdes.ac.in', role: 'FACULTY_ADMIN', fullName: 'SDES Faculty In-Charge' },
-        { id: 'admin-genesis', username: 'genesisadmin', email: 'genesis@praxis.sdes.ac.in', role: 'CLUB_ADMIN', assignedClubId: 'genesis', fullName: 'Genesis Club Admin' }
+        { id: 'admin-super', username: 'praxis_admin', email: 'admin@praxis.sdes.ac.in', role: 'SUPER_ADMIN', fullName: 'PRAXIS Admin' }
       ]);
     } finally {
       setLoading(false);
