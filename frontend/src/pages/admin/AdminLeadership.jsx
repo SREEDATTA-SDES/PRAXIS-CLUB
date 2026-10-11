@@ -41,6 +41,57 @@ export const AdminLeadership = () => {
       ['chairman', 'vice-chairman', 'director', 'principal', 'dean', 'hod'].some(k => item.position?.toLowerCase().includes(k) || item.designation?.toLowerCase().includes(k));
   };
 
+  const LEADERSHIP_TABS = [
+    {
+      id: 'MANAGEMENT',
+      label: 'Governing Council',
+      collection: 'leaders_governing_council',
+      roles: ['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'],
+      icon: Award,
+      badgeClass: 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]/50'
+    },
+    {
+      id: 'ACADEMIC_LEAD',
+      label: 'Academic Lead',
+      collection: 'leaders_academic_leadership',
+      roles: ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'],
+      icon: Award,
+      badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+    },
+    {
+      id: 'PRAXIS_PRESIDENT',
+      label: 'Presidents & VPs',
+      collection: 'leaders_presidents',
+      roles: ['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'PRESIDENT', 'VICE_PRESIDENT'],
+      icon: GraduationCap,
+      badgeClass: 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+    },
+    {
+      id: 'TECHNICAL_LEAD',
+      label: 'Domain Leads',
+      collection: 'leaders_domain_leads',
+      roles: ['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD', 'DOMAIN_LEAD', 'TECH_LEAD'],
+      icon: GraduationCap,
+      badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+    },
+    {
+      id: 'FACULTY_COORDINATOR',
+      label: 'Faculty',
+      collection: 'leaders_faculty',
+      roles: ['FACULTY_COORDINATOR', 'FACULTY_HEAD', 'FACULTY_ADVISOR', 'FACULTY'],
+      icon: Shield,
+      badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+    },
+    {
+      id: 'COORDINATOR',
+      label: 'Coordinators',
+      collection: 'leaders_student_coordinators',
+      roles: ['COORDINATOR', 'CLUB_LEAD', 'STUDENT_LEAD', 'MEMBER'],
+      icon: GraduationCap,
+      badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+    }
+  ];
+
   const getLeaderCloudinaryFolder = (roleType, memberCategory) => {
     if (['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(roleType)) {
       return 'praxis_sdes/leaders/governing_council';
@@ -58,6 +109,25 @@ export const AdminLeadership = () => {
       return 'praxis_sdes/leaders/faculty';
     }
     return 'praxis_sdes/leaders/student_coordinators';
+  };
+
+  const getLeaderAtlasCollection = (roleType, memberCategory) => {
+    if (['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(roleType)) {
+      return 'leaders_governing_council';
+    }
+    if (['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(roleType)) {
+      return 'leaders_academic_leadership';
+    }
+    if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(roleType)) {
+      return 'leaders_presidents';
+    }
+    if (['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(roleType)) {
+      return 'leaders_domain_leads';
+    }
+    if (['FACULTY_COORDINATOR', 'FACULTY_HEAD'].includes(roleType) || memberCategory === 'FACULTY') {
+      return 'leaders_faculty';
+    }
+    return 'leaders_student_coordinators';
   };
 
   const openCreateModal = () => {
@@ -102,9 +172,9 @@ export const AdminLeadership = () => {
   const openEditModal = (item) => {
     setEditingId(item.id || item._id);
     let category = 'STUDENT';
-    if (['FACULTY_HEAD', 'FACULTY_COORDINATOR'].includes(item.roleType)) {
+    if (['FACULTY_HEAD', 'FACULTY_COORDINATOR'].includes(item.roleType) || item.collectionName === 'leaders_faculty') {
       category = 'FACULTY';
-    } else if (isDignitaryItem(item)) {
+    } else if (isDignitaryItem(item) || ['leaders_governing_council', 'leaders_academic_leadership'].includes(item.collectionName)) {
       category = 'ADMIN';
     }
 
@@ -135,7 +205,7 @@ export const AdminLeadership = () => {
       effectiveRoleType = 'FACULTY_COORDINATOR';
     } else if (form.memberCategory === 'ADMIN') {
       const pos = form.position.toLowerCase();
-      if (pos.includes('chairman') || pos.includes('director') || pos.includes('council')) {
+      if (form.roleType === 'MANAGEMENT' || pos.includes('chairman') || pos.includes('director') || pos.includes('council')) {
         effectiveRoleType = 'MANAGEMENT';
       } else {
         effectiveRoleType = 'ACADEMIC_LEAD';
@@ -190,19 +260,20 @@ export const AdminLeadership = () => {
     }
   };
 
+  const getTabCount = (tabDef) => {
+    return leadership.filter(item => {
+      if (isClubAdmin && item.clubSlug !== user.assignedClubId) return false;
+      if (item.collectionName && item.collectionName === tabDef.collection) return true;
+      return tabDef.roles.includes(item.roleType);
+    }).length;
+  };
+
+  const currentTabDef = LEADERSHIP_TABS.find(t => t.id === activeTab) || LEADERSHIP_TABS[0];
+
   const visibleLeadership = leadership.filter(item => {
     if (isClubAdmin && item.clubSlug !== user.assignedClubId) return false;
-    
-    // Map existing legacy categories to the 6 exact roles if needed, or just match exactly
-    let role = item.roleType;
-    if (!role) return false;
-    
-    // Fallbacks for legacy items
-    if (role === 'GOVERNING_BODY' || role === 'CHAIRMAN' || role === 'VICE_CHAIRMAN' || role === 'MANAGING_DIRECTOR') role = 'MANAGEMENT';
-    if (role === 'DEAN' || role === 'PRINCIPAL' || role === 'HOD') role = 'ACADEMIC_LEAD';
-    if (role === 'FACULTY_HEAD') role = 'FACULTY_COORDINATOR';
-
-    return role === activeTab;
+    if (item.collectionName && item.collectionName === currentTabDef.collection) return true;
+    return currentTabDef.roles.includes(item.roleType);
   }).sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const toggleSelect = (id) => {
@@ -243,7 +314,7 @@ export const AdminLeadership = () => {
             <Award className="text-[#D4AF37]" size={24} /> Leadership & Coordinators Roster ({leadership.length} Total)
           </h1>
           <p className="text-xs text-praxis-secondary mt-1">
-            Manage the Institutional Dignitaries (with dynamic detail pages) as well as student coordinators & faculty advisors.
+            Connected to 6 MongoDB Atlas collections with live real-time sync across web and administration.
           </p>
         </div>
 
@@ -268,58 +339,42 @@ export const AdminLeadership = () => {
 
       <div className="w-full overflow-x-auto pb-2">
         <div className="flex items-center gap-2 p-1 bg-praxis-card border border-praxis-border rounded-xl w-max">
-          {!isClubAdmin && (
-            <>
+          {LEADERSHIP_TABS.filter(tab => !isClubAdmin || !['MANAGEMENT', 'ACADEMIC_LEAD'].includes(tab.id)).map((tab) => {
+            const Icon = tab.icon;
+            const count = getTabCount(tab);
+            const isActive = activeTab === tab.id;
+            return (
               <button
-                onClick={() => { setActiveTab('MANAGEMENT'); setSelectedIds([]); }}
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setSelectedIds([]); }}
                 className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                  activeTab === 'MANAGEMENT' ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shadow-sm' : 'text-praxis-muted hover:text-white'
+                  isActive ? `${tab.badgeClass} border shadow-sm` : 'text-praxis-muted hover:text-white'
                 }`}
+                title={`MongoDB Collection: ${tab.collection}`}
               >
-                <Award size={12} /> Governing Council
+                <Icon size={12} />
+                <span>{tab.label}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${isActive ? 'bg-black/40 text-white' : 'bg-praxis-elevated text-praxis-secondary'}`}>
+                  {count}
+                </span>
               </button>
-              <button
-                onClick={() => { setActiveTab('ACADEMIC_LEAD'); setSelectedIds([]); }}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                  activeTab === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
-                }`}
-              >
-                <Award size={12} /> Academic Lead
-              </button>
-            </>
-          )}
-          <button
-            onClick={() => { setActiveTab('PRAXIS_PRESIDENT'); setSelectedIds([]); }}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'PRAXIS_PRESIDENT' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
-            }`}
-          >
-            <GraduationCap size={12} /> Presidents & VPs
-          </button>
-          <button
-            onClick={() => { setActiveTab('TECHNICAL_LEAD'); setSelectedIds([]); }}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'TECHNICAL_LEAD' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
-            }`}
-          >
-            <GraduationCap size={12} /> Domain Leads
-          </button>
-          <button
-            onClick={() => { setActiveTab('FACULTY_COORDINATOR'); setSelectedIds([]); }}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'FACULTY_COORDINATOR' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
-            }`}
-          >
-            <Shield size={12} /> Faculty
-          </button>
-          <button
-            onClick={() => { setActiveTab('COORDINATOR'); setSelectedIds([]); }}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              activeTab === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-praxis-muted hover:text-white'
-            }`}
-          >
-            <GraduationCap size={12} /> Coordinators
-          </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Collection Status Banner */}
+      <div className="flex items-center justify-between text-xs text-praxis-secondary bg-praxis-surface/60 border border-praxis-border/60 rounded-lg px-4 py-2">
+        <div className="flex items-center gap-2">
+          <span className="text-praxis-muted">Atlas Collection:</span>
+          <span className="font-mono text-praxis-cyan font-bold bg-praxis-cyan/10 border border-praxis-cyan/20 px-2 py-0.5 rounded text-[11px]">
+            {currentTabDef.collection}
+          </span>
+          <span className="text-praxis-muted">({visibleLeadership.length} loaded)</span>
+        </div>
+        <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>MongoDB Atlas Active</span>
         </div>
       </div>
 
@@ -333,6 +388,7 @@ export const AdminLeadership = () => {
                 </th>
                 <th className="p-3.5">{['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) ? 'Dignitary & Portrait' : 'Member'}</th>
                 <th className="p-3.5">Position / Title</th>
+                <th className="p-3.5">Collection</th>
                 <th className="p-3.5">Reorder</th>
                 {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3.5">Qualifications</th>}
                 {['PRAXIS_PRESIDENT', 'TECHNICAL_LEAD', 'COORDINATOR'].includes(activeTab) && <th className="p-3.5">Class & Hall Ticket</th>}
@@ -373,7 +429,11 @@ export const AdminLeadership = () => {
                         </div>
                       </td>
                       <td className="p-3.5 text-white font-medium">{item.position || item.designation}</td>
-                      
+                      <td className="p-3.5">
+                        <span className="font-mono text-[10px] text-praxis-cyan/90 bg-praxis-cyan/10 border border-praxis-cyan/20 px-2 py-0.5 rounded">
+                          {item.collectionName || currentTabDef.collection}
+                        </span>
+                      </td>
                       <td className="p-3.5">
                         <div className="flex flex-col gap-1 w-fit">
                           <button onClick={() => handleMoveOrder(index, 'up')} disabled={index === 0} className="p-0.5 rounded bg-praxis-elevated hover:bg-praxis-cyan hover:text-black disabled:opacity-30 disabled:hover:bg-praxis-elevated disabled:hover:text-white transition-colors">
@@ -459,6 +519,12 @@ export const AdminLeadership = () => {
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Technical Lead', department: '', clubSlug: null })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'TECHNICAL_LEAD' ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Domain Leads</button>
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'CSE-Allied' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1" />Faculty Advisor</button>
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator', department: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1" />Student Coordinator</button>
+                  </div>
+                  <div className="mt-2 p-2 rounded-lg bg-black/40 border border-praxis-border/60 flex items-center justify-between text-[11px]">
+                    <span className="text-praxis-muted">Target MongoDB Atlas Collection:</span>
+                    <span className="font-mono text-praxis-cyan font-bold bg-praxis-cyan/10 border border-praxis-cyan/20 px-2 py-0.5 rounded text-[10px]">
+                      {getLeaderAtlasCollection(form.roleType, form.memberCategory)}
+                    </span>
                   </div>
                 </div>
               )}

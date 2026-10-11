@@ -2,7 +2,14 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { Club } from '../models/Club.js';
-import { Leader, getLeaderSubModel, getAllLeaderSubModels } from '../models/Leader.js';
+import { 
+  Leader, 
+  getLeaderSubModel, 
+  getAllLeaderSubModels, 
+  getModelByCollectionName,
+  LEADER_COLLECTIONS,
+  LEADER_MODELS 
+} from '../models/Leader.js';
 import { Event } from '../models/Event.js';
 import { Announcement } from '../models/Announcement.js';
 import { Gallery } from '../models/Gallery.js';
@@ -56,59 +63,192 @@ export const dataService = {
     return await Event.findByIdAndDelete(id);
   },
 
-  // === LEADERSHIP ===
-  async getLeadership(filter = {}) {
-    return await Leader.find(filter).sort({ order: 1 });
+  // === LEADERSHIP (6 DEDICATED COLLECTIONS) ===
+  async getLeadership(filter = {}, collectionName = null) {
+    // If a specific collection is requested
+    if (collectionName) {
+      const TargetModel = getModelByCollectionName(collectionName);
+      if (TargetModel) {
+        const docs = await TargetModel.find(filter).sort({ order: 1 }).lean();
+        return docs.map(d => ({
+          ...d,
+          id: d._id ? d._id.toString() : null,
+          collectionName: TargetModel.collection.name
+        }));
+      }
+    }
+
+    // Aggregate from all 6 dedicated collections
+    const subModels = getAllLeaderSubModels();
+    const results = await Promise.all(
+      subModels.map(async (model) => {
+        try {
+          const docs = await model.find(filter).sort({ order: 1 }).lean();
+          return docs.map(d => ({
+            ...d,
+            id: d._id ? d._id.toString() : null,
+            collectionName: model.collection.name
+          }));
+        } catch (err) {
+          console.warn(`Error reading ${model.collection.name}:`, err.message);
+          return [];
+        }
+      })
+    );
+
+    const allLeaders = results.flat();
+
+    // Fallback if all 6 collections are empty: check legacy Leader
+    if (allLeaders.length === 0) {
+      try {
+        const legacyDocs = await Leader.find(filter).sort({ order: 1 }).lean();
+        if (legacyDocs && legacyDocs.length > 0) {
+          return legacyDocs.map(d => ({
+            ...d,
+            id: d._id ? d._id.toString() : null,
+            collectionName: 'leaders'
+          }));
+        }
+      } catch (lErr) {
+        // safe ignore
+      }
+    }
+
+    return allLeaders.sort((a, b) => (a.order || 0) - (b.order || 0));
+  },
+
+  async getLeadershipByCollections(filter = {}) {
+    const subModels = getAllLeaderSubModels();
+    const collections = {};
+    const counts = {};
+
+    await Promise.all(
+      subModels.map(async (model) => {
+        const cName = model.collection.name;
+        try {
+          const docs = await model.find(filter).sort({ order: 1 }).lean();
+          const mapped = docs.map(d => ({
+            ...d,
+            id: d._id ? d._id.toString() : null,
+            collectionName: cName
+          }));
+          collections[cName] = mapped;
+          counts[cName] = mapped.length;
+        } catch (err) {
+          collections[cName] = [];
+          counts[cName] = 0;
+        }
+      })
+    );
+
+    return { collections, counts };
+  },
+
+  async getLeaderById(id) {
+    const subModels = getAllLeaderSubModels();
+    for (const model of subModels) {
+      const doc = await model.findById(id).lean();
+      if (doc) {
+        return {
+          ...doc,
+          id: doc._id ? doc._id.toString() : null,
+          collectionName: model.collection.name
+        };
+      }
+    }
+    const legacy = await Leader.findById(id).lean();
+    if (legacy) {
+      return {
+        ...legacy,
+        id: legacy._id ? legacy._id.toString() : null,
+        collectionName: 'leaders'
+      };
+    }
+    return null;
   },
 
   async createLeader(data) {
-    const l = new Leader(data);
-    const saved = await l.save();
+    const SubModel = getLeaderSubModel(data.roleType);
+    const newDoc = new SubModel(data);
+    const saved = await newDoc.save();
+    const obj = saved.toObject();
+    obj.id = saved._id.toString();
+    obj.collectionName = SubModel.collection.name;
+
     try {
-      const SubModel = getLeaderSubModel(saved.roleType);
-      if (SubModel) {
-        await SubModel.findByIdAndUpdate(saved._id, saved.toObject(), { upsert: true, new: true });
-      }
-    } catch (syncErr) {
-      console.warn('Sub-collection sync error on createLeader:', syncErr);
+      await Leader.findByIdAndUpdate(saved._id, saved.toObject(), { upsert: true, new: true });
+    } catch (e) {
+      // safe ignore
     }
-    return saved;
+
+    return obj;
   },
 
   async updateLeader(id, data) {
-    const oldDoc = await Leader.findById(id);
-    const updated = await Leader.findByIdAndUpdate(id, data, { new: true });
-    if (updated) {
-      try {
-        const NewSubModel = getLeaderSubModel(updated.roleType);
-        // If roleType changed, clean up old sub-collection
-        if (oldDoc && oldDoc.roleType && oldDoc.roleType !== updated.roleType) {
-          const OldSubModel = getLeaderSubModel(oldDoc.roleType);
-          if (OldSubModel) {
-            await OldSubModel.findByIdAndDelete(id);
-          }
-        }
-        if (NewSubModel) {
-          await NewSubModel.findByIdAndUpdate(id, updated.toObject(), { upsert: true, new: true });
-        }
-      } catch (syncErr) {
-        console.warn('Sub-collection sync error on updateLeader:', syncErr);
+    const subModels = getAllLeaderSubModels();
+    let currentModel = null;
+    let existingDoc = null;
+
+    for (const m of subModels) {
+      const found = await m.findById(id);
+      if (found) {
+        currentModel = m;
+        existingDoc = found;
+        break;
       }
     }
-    return updated;
+
+    if (!existingDoc) {
+      const legacy = await Leader.findById(id);
+      if (legacy) {
+        currentModel = Leader;
+        existingDoc = legacy;
+      }
+    }
+
+    if (!existingDoc) {
+      return null;
+    }
+
+    const targetSubModel = data.roleType ? getLeaderSubModel(data.roleType) : currentModel;
+
+    // If roleType moves doc to a different collection
+    if (targetSubModel && currentModel && targetSubModel.collection.name !== currentModel.collection.name) {
+      await currentModel.findByIdAndDelete(id);
+      const updatedData = { ...existingDoc.toObject(), ...data, _id: id };
+      const movedDoc = await targetSubModel.findByIdAndUpdate(id, updatedData, { upsert: true, new: true }).lean();
+      return {
+        ...movedDoc,
+        id: movedDoc._id ? movedDoc._id.toString() : null,
+        collectionName: targetSubModel.collection.name
+      };
+    }
+
+    const updated = await currentModel.findByIdAndUpdate(id, data, { new: true }).lean();
+    return {
+      ...updated,
+      id: updated._id ? updated._id.toString() : null,
+      collectionName: currentModel.collection.name
+    };
   },
 
   async deleteLeader(id) {
-    const deleted = await Leader.findByIdAndDelete(id);
-    try {
-      const allSubModels = getAllLeaderSubModels();
-      for (const SubModel of allSubModels) {
-        await SubModel.findByIdAndDelete(id);
+    const subModels = getAllLeaderSubModels();
+    let deletedDoc = null;
+
+    for (const m of subModels) {
+      const doc = await m.findByIdAndDelete(id);
+      if (doc) {
+        deletedDoc = doc;
+        break;
       }
-    } catch (syncErr) {
-      console.warn('Sub-collection sync error on deleteLeader:', syncErr);
     }
-    return deleted;
+
+    if (!deletedDoc) {
+      deletedDoc = await Leader.findByIdAndDelete(id);
+    }
+
+    return deletedDoc;
   },
 
   // === ANNOUNCEMENTS ===
@@ -244,7 +384,8 @@ export const dataService = {
 
   // Overview Stats for Admin Dashboard
   async getDashboardStats() {
-    const [clubsCount, techCount, nonTechCount, eventsCount, upcomingCount, completedCount, galleryCount, announcementsCount] = await Promise.all([
+    const leaderModels = getAllLeaderSubModels();
+    const [clubsCount, techCount, nonTechCount, eventsCount, upcomingCount, completedCount, galleryCount, announcementsCount, ...leaderCounts] = await Promise.all([
       Club.countDocuments(),
       Club.countDocuments({ category: 'TECHNICAL' }),
       Club.countDocuments({ category: 'NON-TECHNICAL' }),
@@ -252,8 +393,11 @@ export const dataService = {
       Event.countDocuments({ status: 'UPCOMING' }),
       Event.countDocuments({ status: 'COMPLETED' }),
       Gallery.countDocuments(),
-      Announcement.countDocuments()
+      Announcement.countDocuments(),
+      ...leaderModels.map(m => m.countDocuments().catch(() => 0))
     ]);
+
+    const totalLeaders = leaderCounts.reduce((acc, c) => acc + (c || 0), 0);
 
     return {
       totalClubs: clubsCount,
@@ -263,7 +407,8 @@ export const dataService = {
       upcomingEvents: upcomingCount,
       completedEvents: completedCount,
       galleryCount,
-      announcementsCount
+      announcementsCount,
+      totalLeaders
     };
   },
 

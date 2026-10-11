@@ -250,11 +250,20 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators (No modal)
   if (filterClubSlug) {
     const clubFaculty = leadership.filter(
-      l => l.clubSlug === filterClubSlug && (l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR')
+      l => l.clubSlug === filterClubSlug && (
+        l.collectionName === 'leaders_faculty' ||
+        l.roleType === 'FACULTY_HEAD' || 
+        l.roleType === 'FACULTY_COORDINATOR'
+      )
     ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
     const clubStudents = leadership.filter(
-      l => l.clubSlug === filterClubSlug && (l.roleType === 'CLUB_LEAD' || l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD')
+      l => l.clubSlug === filterClubSlug && (
+        l.collectionName === 'leaders_student_coordinators' ||
+        l.roleType === 'CLUB_LEAD' || 
+        l.roleType === 'COORDINATOR' || 
+        l.roleType === 'STUDENT_LEAD'
+      )
     ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return (
@@ -314,29 +323,55 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
     );
   }
 
-  // Global Institutional View (About Page) with the 6 Key Dignitaries Clickable
-  const liveGovMembers = leadership.filter(l => ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
+  // Global Institutional View (About Page) with the 6 Dedicated MongoDB Atlas Collections
+  const liveGovMembers = leadership.filter(l => 
+    l.collectionName === 'leaders_governing_council' ||
+    ['GOVERNING_BODY', 'MANAGEMENT', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(l.roleType)
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const govMembers = liveGovMembers;
 
-  const liveAcadMembers = leadership.filter(l => ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType)).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const liveAcadMembers = leadership.filter(l => 
+    l.collectionName === 'leaders_academic_leadership' ||
+    ['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(l.roleType)
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const acadMembers = liveAcadMembers;
 
-  const facultyMembers = leadership.filter(l => l.roleType === 'FACULTY_HEAD' || l.roleType === 'FACULTY_COORDINATOR').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const facultyMembers = leadership.filter(l => 
+    l.collectionName === 'leaders_faculty' ||
+    l.roleType === 'FACULTY_HEAD' || 
+    l.roleType === 'FACULTY_COORDINATOR'
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  const livePresidents = leadership.filter(l => l.roleType === 'PRAXIS_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const livePresidents = leadership.filter(l => 
+    l.roleType === 'PRAXIS_PRESIDENT' || 
+    (l.collectionName === 'leaders_presidents' && !l.roleType?.includes('VICE'))
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const presidents = livePresidents;
 
-  const liveVicePresidents = leadership.filter(l => l.roleType === 'PRAXIS_VICE_PRESIDENT').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const liveVicePresidents = leadership.filter(l => 
+    l.roleType === 'PRAXIS_VICE_PRESIDENT' || 
+    (l.collectionName === 'leaders_presidents' && l.roleType?.includes('VICE'))
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const vicePresidents = liveVicePresidents;
 
-  const liveTechDomain = leadership.filter(l => l.roleType === 'TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const liveTechDomain = leadership.filter(l => 
+    l.roleType === 'TECHNICAL_LEAD' || 
+    (l.collectionName === 'leaders_domain_leads' && (l.roleType === 'TECHNICAL_LEAD' || !l.roleType?.includes('NON')))
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const techDomain = liveTechDomain;
 
-  const liveCreativeDomain = leadership.filter(l => l.roleType === 'NON_TECHNICAL_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const liveCreativeDomain = leadership.filter(l => 
+    l.roleType === 'NON_TECHNICAL_LEAD' || 
+    (l.collectionName === 'leaders_domain_leads' && l.roleType?.includes('NON'))
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
   const creativeDomain = liveCreativeDomain;
 
   const clubLeads = leadership.filter(l => l.roleType === 'CLUB_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const coordinators = leadership.filter(l => l.roleType === 'COORDINATOR' || l.roleType === 'STUDENT_LEAD').sort((a, b) => (a.order || 0) - (b.order || 0));
+  const coordinators = leadership.filter(l => 
+    l.collectionName === 'leaders_student_coordinators' ||
+    l.roleType === 'COORDINATOR' || 
+    l.roleType === 'STUDENT_LEAD'
+  ).sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
     <div className="space-y-20">

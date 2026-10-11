@@ -10,13 +10,26 @@ cloudinary.config({
 
 export const getLeadership = async (req, res) => {
   try {
-    const { clubSlug, roleType } = req.query;
+    const { clubSlug, roleType, collection } = req.query;
     const filter = {};
     if (clubSlug) filter.clubSlug = clubSlug;
     if (roleType) filter.roleType = roleType;
 
-    const list = await dataService.getLeadership(filter);
+    const list = await dataService.getLeadership(filter, collection);
     return res.json({ success: true, count: list.length, data: list });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getLeadershipCollections = async (req, res) => {
+  try {
+    const { clubSlug } = req.query;
+    const filter = {};
+    if (clubSlug) filter.clubSlug = clubSlug;
+
+    const { collections, counts } = await dataService.getLeadershipByCollections(filter);
+    return res.json({ success: true, collections, counts });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

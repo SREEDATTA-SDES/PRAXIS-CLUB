@@ -22,6 +22,9 @@ const leaderSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+leaderSchema.set('toJSON', { virtuals: true });
+leaderSchema.set('toObject', { virtuals: true });
+
 export const Leader = mongoose.models.Leader || mongoose.model('Leader', leaderSchema);
 
 // Dedicated 6 Collections for MongoDB Atlas
@@ -32,26 +35,54 @@ export const LeaderDomainLead = mongoose.models.LeaderDomainLead || mongoose.mod
 export const LeaderFaculty = mongoose.models.LeaderFaculty || mongoose.model('LeaderFaculty', leaderSchema, 'leaders_faculty');
 export const LeaderStudentCoordinator = mongoose.models.LeaderStudentCoordinator || mongoose.model('LeaderStudentCoordinator', leaderSchema, 'leaders_student_coordinators');
 
+export const LEADER_COLLECTIONS = {
+  GOVERNING_COUNCIL: 'leaders_governing_council',
+  ACADEMIC_LEADERSHIP: 'leaders_academic_leadership',
+  PRESIDENTS: 'leaders_presidents',
+  DOMAIN_LEADS: 'leaders_domain_leads',
+  FACULTY: 'leaders_faculty',
+  STUDENT_COORDINATORS: 'leaders_student_coordinators'
+};
+
+export const LEADER_MODELS = {
+  leaders_governing_council: LeaderGoverningCouncil,
+  leaders_academic_leadership: LeaderAcademicLead,
+  leaders_presidents: LeaderPresident,
+  leaders_domain_leads: LeaderDomainLead,
+  leaders_faculty: LeaderFaculty,
+  leaders_student_coordinators: LeaderStudentCoordinator
+};
+
 /**
  * Returns the matching dedicated Mongoose model for a given roleType
  */
 export const getLeaderSubModel = (roleType) => {
-  if (['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(roleType)) {
+  if (!roleType) return LeaderStudentCoordinator;
+  const upper = String(roleType).toUpperCase();
+  if (['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR'].includes(upper)) {
     return LeaderGoverningCouncil;
   }
-  if (['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(roleType)) {
+  if (['ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(upper)) {
     return LeaderAcademicLead;
   }
-  if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(roleType)) {
+  if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'PRESIDENT', 'VICE_PRESIDENT'].includes(upper)) {
     return LeaderPresident;
   }
-  if (['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(roleType)) {
+  if (['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD', 'DOMAIN_LEAD', 'TECH_LEAD'].includes(upper)) {
     return LeaderDomainLead;
   }
-  if (['FACULTY_COORDINATOR', 'FACULTY_HEAD'].includes(roleType)) {
+  if (['FACULTY_COORDINATOR', 'FACULTY_HEAD', 'FACULTY_ADVISOR', 'FACULTY'].includes(upper)) {
     return LeaderFaculty;
   }
   return LeaderStudentCoordinator;
+};
+
+export const getModelByCollectionName = (name) => {
+  if (!name) return null;
+  const clean = String(name).toLowerCase().trim().replace(/[\s-]/g, '_');
+  if (LEADER_MODELS[clean]) return LEADER_MODELS[clean];
+  if (LEADER_MODELS[`leaders_${clean}`]) return LEADER_MODELS[`leaders_${clean}`];
+  return null;
 };
 
 export const getAllLeaderSubModels = () => [
@@ -62,3 +93,4 @@ export const getAllLeaderSubModels = () => [
   LeaderFaculty,
   LeaderStudentCoordinator
 ];
+
