@@ -52,21 +52,57 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
   };
 
   const sizeStyles = {
-    xl: {
-      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
+    // Tier 1 & 2: Governing Council & Academic Leadership (Wide cards, spacious layout, non-wrapping names)
+    executive: {
+      ringSize: 'w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56',
+      wrapperWidth: 'w-72 sm:w-96 md:w-[420px] max-w-[440px]',
+      titleSize: 'text-xs sm:text-sm md:text-base font-semibold whitespace-normal sm:whitespace-nowrap',
+      nameSize: 'text-lg sm:text-2xl md:text-2xl font-bold font-serif whitespace-normal sm:whitespace-nowrap'
+    },
+    // Tier 4 & 5: Presidents & Vice Presidents (Prominent apex student leaders)
+    presidential: {
+      ringSize: 'w-38 h-38 sm:w-46 sm:h-46 md:w-50 md:h-50',
       wrapperWidth: 'w-64 sm:w-76 md:w-84',
       titleSize: 'text-xs sm:text-sm md:text-base font-semibold',
       nameSize: 'text-base sm:text-xl md:text-2xl font-bold font-serif'
     },
+    // Tier 6 & 7: Head Coordinators (Technical & Non-Technical Domain Leads)
+    headLead: {
+      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
+      wrapperWidth: 'w-64 sm:w-72 md:w-80',
+      titleSize: 'text-xs sm:text-sm font-semibold',
+      nameSize: 'text-base sm:text-lg md:text-xl font-bold'
+    },
+    // Tier 3: Faculty Advisors (Larger than student coordinators)
+    faculty: {
+      ringSize: 'w-34 h-34 sm:w-40 sm:h-40 md:w-44 md:h-44',
+      wrapperWidth: 'w-60 sm:w-72 md:w-76',
+      titleSize: 'text-xs sm:text-sm font-semibold',
+      nameSize: 'text-base sm:text-lg md:text-xl font-bold'
+    },
+    // Tier 8: Student Coordinators & Chapter Leads (Slightly increased)
+    student: {
+      ringSize: 'w-30 h-30 sm:w-36 sm:h-36 md:w-40 md:h-40',
+      wrapperWidth: 'w-56 sm:w-64 md:w-68',
+      titleSize: 'text-xs sm:text-sm font-medium',
+      nameSize: 'text-sm sm:text-base md:text-lg font-bold'
+    },
+    // Backward compatibility aliases
+    xl: {
+      ringSize: 'w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56',
+      wrapperWidth: 'w-72 sm:w-96 md:w-[420px] max-w-[440px]',
+      titleSize: 'text-xs sm:text-sm md:text-base font-semibold whitespace-normal sm:whitespace-nowrap',
+      nameSize: 'text-lg sm:text-2xl md:text-2xl font-bold font-serif whitespace-normal sm:whitespace-nowrap'
+    },
     lg: {
-      ringSize: 'w-32 h-32 sm:w-38 sm:h-38 md:w-42 md:h-42',
-      wrapperWidth: 'w-60 sm:w-72',
+      ringSize: 'w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48',
+      wrapperWidth: 'w-64 sm:w-76 md:w-84',
       titleSize: 'text-xs sm:text-sm font-semibold',
       nameSize: 'text-base sm:text-lg md:text-xl font-bold'
     },
     md: {
-      ringSize: 'w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38',
-      wrapperWidth: 'w-56 sm:w-64',
+      ringSize: 'w-30 h-30 sm:w-36 sm:h-36 md:w-40 md:h-40',
+      wrapperWidth: 'w-56 sm:w-64 md:w-68',
       titleSize: 'text-xs sm:text-sm font-medium',
       nameSize: 'text-sm sm:text-base md:text-lg font-bold'
     }
@@ -84,15 +120,15 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
   return (
     <div 
       onClick={handleClick}
-      className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer hover:-translate-y-1.5' : 'cursor-default'}`}
+      className={`flex flex-col items-center text-center px-3 py-3 shrink-0 ${currentSize.wrapperWidth} select-none group transition-all duration-300 ${onSelectPerson ? 'cursor-pointer' : 'cursor-default'}`}
     >
-      {/* 1. Circular Portrait with Themed Double-Ring Border */}
-      <div className="relative mb-3 flex items-center justify-center">
+      {/* 1. Circular Portrait with Themed Double-Ring Border & Frame Lift Effect (No Inner Image Zoom) */}
+      <div className="relative mb-3 flex items-center justify-center transition-all duration-300 ease-out group-hover:-translate-y-2 group-hover:scale-105">
         {/* Ambient Glow Behind */}
-        <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-500`} />
+        <div className={`absolute -inset-2 rounded-full bg-gradient-to-tr ${currentTheme.glow} blur-lg opacity-70 group-hover:opacity-100 group-hover:blur-xl transition-all duration-300`} />
         
         {/* Outer Ring */}
-        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)]`}>
+        <div className={`relative ${currentSize.ringSize} rounded-full p-[3px] bg-gradient-to-b ${currentTheme.ring} shadow-[0_10px_30px_rgba(0,0,0,0.85)] group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.95)] transition-shadow duration-300`}>
           {/* Inner Dark Gap Ring */}
           <div className="w-full h-full rounded-full p-[2px] bg-[#07090D]">
             {/* Image Container with Inner Border */}
@@ -159,7 +195,15 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
 /**
  * Auto-Moving Horizontal Scroll Row
  */
-export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = false, theme = 'gold', size = 'md', onSelectPerson }) => {
+export const HorizontalAutoScrollRow = ({ 
+  items, 
+  speed = 0.8, 
+  centerIfFits = false, 
+  theme = 'gold', 
+  size = 'md', 
+  spacing = 'space-x-3 sm:space-x-6',
+  onSelectPerson 
+}) => {
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isInteractingRef = useRef(false);
@@ -226,7 +270,7 @@ export const HorizontalAutoScrollRow = ({ items, speed = 0.8, centerIfFits = fal
         } ${centerIfFits && !canScroll ? 'justify-center' : 'justify-start'}`}
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        <div className="flex items-start shrink-0 space-x-2 sm:space-x-4">
+        <div className={`flex items-start shrink-0 ${spacing}`}>
           {items.map((person, idx) => (
             <GoldPortraitCard 
               key={`${person.id || person._id || idx}-${idx}`} 
@@ -284,7 +328,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubFaculty.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="xl" onSelectPerson={null} />
+            <HorizontalAutoScrollRow items={clubFaculty} speed={0.8} centerIfFits={true} theme="emerald" size="faculty" spacing="space-x-4 sm:space-x-6" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -309,7 +353,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
           </div>
 
           {clubStudents.length > 0 ? (
-            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
+            <HorizontalAutoScrollRow items={clubStudents} speed={0.9} centerIfFits={true} theme="cyan" size="student" spacing="space-x-4 sm:space-x-6" onSelectPerson={null} />
           ) : (
             <div className="p-8 rounded-2xl liquid-glass border border-white/10 text-center">
               <p className="text-xs text-white/50 uppercase tracking-widest font-cinematic">
@@ -376,7 +420,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
   return (
     <div className="space-y-20">
       
-      {/* Tier 01: Governing Council (Vice-Chairman on Left, Chairman in Center, Managing Director on Right) - PROMINENT XL SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
+      {/* Tier 01: Governing Council (Vice-Chairman on Left, Chairman in Center, Managing Director on Right) - PROMINENT EXECUTIVE SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
       {govMembers.length > 0 && (
         <div className="space-y-6">
           <div className="text-center">
@@ -392,11 +436,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={govMembers} speed={0.6} centerIfFits={true} theme="gold" size="xl" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={govMembers} speed={0.6} centerIfFits={true} theme="gold" size="executive" spacing="space-x-8 sm:space-x-12 md:space-x-16" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
-      {/* Tier 02: Academic Leadership (Dean, Principal, HOD) - PROMINENT XL SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
+      {/* Tier 02: Academic Leadership (Dean, Principal, HOD) - PROMINENT EXECUTIVE SIZE & GOLD THEME (CLICKABLE DETAIL MODAL) */}
       {acadMembers.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -412,7 +456,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={acadMembers} speed={0.7} centerIfFits={true} theme="gold" size="xl" onSelectPerson={setSelectedDignitary} />
+          <HorizontalAutoScrollRow items={acadMembers} speed={0.7} centerIfFits={true} theme="gold" size="executive" spacing="space-x-8 sm:space-x-12 md:space-x-16" onSelectPerson={setSelectedDignitary} />
         </div>
       )}
 
@@ -432,11 +476,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="lg" onSelectPerson={null} />
+          <HorizontalAutoScrollRow items={facultyMembers} speed={0.8} theme="emerald" size="faculty" spacing="space-x-4 sm:space-x-6" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Tier 04: PRAXIS Main Club Student Presidents - PROMINENT LG SIZE & GOLD THEME (DISPLAY ONLY) */}
+      {/* Tier 04: PRAXIS Main Club Student Presidents - PROMINENT PRESIDENTIAL SIZE & GOLD THEME (DISPLAY ONLY) */}
       {presidents.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -452,11 +496,11 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="lg" onSelectPerson={null} />
+          <HorizontalAutoScrollRow items={presidents} speed={0.8} centerIfFits={true} theme="gold" size="presidential" spacing="space-x-6 sm:space-x-8" onSelectPerson={null} />
         </div>
       )}
 
-      {/* Tier 05: PRAXIS Main Club Student Vice Presidents - PROMINENT LG SIZE & CYAN THEME (DISPLAY ONLY) */}
+      {/* Tier 05: PRAXIS Main Club Student Vice Presidents - PROMINENT PRESIDENTIAL SIZE & CYAN THEME (DISPLAY ONLY) */}
       {vicePresidents.length > 0 && (
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
@@ -472,7 +516,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-praxis-cyan to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
+          <HorizontalAutoScrollRow items={vicePresidents} speed={0.8} centerIfFits={true} theme="cyan" size="presidential" spacing="space-x-6 sm:space-x-8" onSelectPerson={null} />
         </div>
       )}
 
@@ -508,7 +552,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="lg" onSelectPerson={null} />
+              <HorizontalAutoScrollRow items={techDomain} speed={0.8} centerIfFits={true} theme="cyan" size="headLead" spacing="space-x-6 sm:space-x-8" onSelectPerson={null} />
             </div>
           )}
 
@@ -528,7 +572,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
                 <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-2" />
               </div>
 
-              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="lg" onSelectPerson={null} />
+              <HorizontalAutoScrollRow items={creativeDomain} speed={0.8} centerIfFits={true} theme="purple" size="headLead" spacing="space-x-6 sm:space-x-8" onSelectPerson={null} />
             </div>
           )}
         </div>
@@ -550,7 +594,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mx-auto mt-3" />
           </div>
 
-          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="md" onSelectPerson={null} />
+          <HorizontalAutoScrollRow items={[...clubLeads, ...coordinators]} speed={1.0} theme="cyan" size="student" spacing="space-x-4 sm:space-x-6" onSelectPerson={null} />
         </div>
       )}
 

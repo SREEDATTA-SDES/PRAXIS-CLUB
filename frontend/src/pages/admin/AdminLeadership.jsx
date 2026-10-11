@@ -15,6 +15,7 @@ export const AdminLeadership = () => {
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [previewDignitary, setPreviewDignitary] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const DEFAULT_STUDENT_CLASS = 'CSE (AIML) /3rd YEAR';
 
   const initialForm = {
     name: '',
@@ -23,7 +24,7 @@ export const AdminLeadership = () => {
     position: 'Chairman',
     designation: '',
     department: '',
-    yearClass: '',
+    yearClass: isClubAdmin ? DEFAULT_STUDENT_CLASS : '',
     section: '',
     rollNumber: '',
     qualifications: '',
@@ -183,6 +184,7 @@ export const AdminLeadership = () => {
       roleType: isClubAdmin ? 'COORDINATOR' : role,
       position: pos,
       department: dept,
+      yearClass: cat === 'STUDENT' ? DEFAULT_STUDENT_CLASS : '',
       clubSlug: isClubAdmin ? user.assignedClubId : null
     });
     setModalOpen(true);
@@ -255,9 +257,13 @@ export const AdminLeadership = () => {
     let effectiveQual = form.qualifications;
     let effectiveClubSlug = form.clubSlug;
 
+    let effectiveYearClass = form.yearClass?.trim();
     if (form.memberCategory === 'STUDENT') {
       effectiveDept = '';
       effectiveQual = '';
+      if (!effectiveYearClass) {
+        effectiveYearClass = DEFAULT_STUDENT_CLASS;
+      }
       if (['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType)) {
         effectiveClubSlug = null;
       }
@@ -267,6 +273,7 @@ export const AdminLeadership = () => {
       ...form,
       department: effectiveDept,
       qualifications: effectiveQual,
+      yearClass: effectiveYearClass,
       clubSlug: effectiveClubSlug,
       roleType: effectiveRoleType
     };
@@ -705,12 +712,12 @@ export const AdminLeadership = () => {
                 <div className="space-y-3">
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1.5">Member Classification *</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman', department: 'Governing Council, SDES' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal', department: 'Academic Leadership, SDES' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President', department: '', clubSlug: null })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(form.roleType) ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-purple-400" />Presidents & VPs</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Overall Technical Coordinator', department: '', clubSlug: null })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Cpu size={16} className="mx-auto mb-1 text-blue-400" />Head Coordinators</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'CSE-Allied' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1 text-emerald-400" />Faculty Advisor</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator', department: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-cyan-400" />Student Coordinator</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman', department: 'Governing Council, SDES', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal', department: 'Academic Leadership, SDES', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President', department: '', clubSlug: null, yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(form.roleType) ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-purple-400" />Presidents & VPs</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Overall Technical Coordinator', department: '', clubSlug: null, yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Cpu size={16} className="mx-auto mb-1 text-blue-400" />Head Coordinators</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'CSE-Allied', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1 text-emerald-400" />Faculty Advisor</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator', department: '', yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-cyan-400" />Student Coordinator</button>
                   </div>
 
                   {/* Explicit Interactive Selection Box for Presidents vs Vice Presidents */}
@@ -884,8 +891,17 @@ export const AdminLeadership = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className={['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) ? 'col-span-2' : ''}>
-                      <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">Class / Year</label>
-                      <input type="text" value={form.yearClass} onChange={(e) => setForm({ ...form, yearClass: e.target.value })} className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs" />
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block uppercase text-praxis-muted font-bold tracking-wider">Class / Year</label>
+                        <span className="text-[10px] text-praxis-cyan font-mono">Default: {DEFAULT_STUDENT_CLASS}</span>
+                      </div>
+                      <input 
+                        type="text" 
+                        value={form.yearClass} 
+                        placeholder={DEFAULT_STUDENT_CLASS} 
+                        onChange={(e) => setForm({ ...form, yearClass: e.target.value })} 
+                        className="w-full p-2 rounded bg-praxis-card border border-praxis-border text-white text-xs font-mono focus:border-praxis-cyan focus:outline-none" 
+                      />
                     </div>
                     {!['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) && (
                       <div>
