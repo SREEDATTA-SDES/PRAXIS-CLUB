@@ -60,15 +60,17 @@ export const AdminEvents = () => {
     const newFeaturedState = !evt.featured;
     await updateEvent(eventId, { ...evt, featured: newFeaturedState });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let result;
     if (editingId) {
-      await updateEvent(editingId, form);
+      result = await updateEvent(editingId, form);
     } else {
-      await addEvent(form);
+      result = await addEvent(form);
     }
-    setModalOpen(false);
+    if (result?.success) {
+      setModalOpen(false);
+    }
   };
 
   const handleDelete = async () => {

@@ -95,12 +95,15 @@ export const AdminLeadership = () => {
       roleType: effectiveRoleType
     };
 
+    let result;
     if (editingId) {
-      await updateLeader(editingId, payload);
+      result = await updateLeader(editingId, payload);
     } else {
-      await addLeader({ ...payload, order: leadership.length + 1 });
+      result = await addLeader({ ...payload, order: leadership.length + 1 });
     }
-    setModalOpen(false);
+    if (result?.success) {
+      setModalOpen(false);
+    }
   };
 
   const handleDelete = async () => {

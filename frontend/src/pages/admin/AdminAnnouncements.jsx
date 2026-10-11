@@ -41,12 +41,15 @@ export const AdminAnnouncements = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let result;
     if (editingId) {
-      await updateAnnouncement(editingId, form);
+      result = await updateAnnouncement(editingId, form);
     } else {
-      await addAnnouncement(form);
+      result = await addAnnouncement(form);
     }
-    setModalOpen(false);
+    if (result?.success) {
+      setModalOpen(false);
+    }
   };
 
   const handleDelete = async () => {

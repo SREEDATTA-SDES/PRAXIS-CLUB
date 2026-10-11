@@ -26,9 +26,10 @@ export const AdminGallery = () => {
       alert('Title and Image are required.');
       return;
     }
-    await addGalleryItem(form);
-    setModalOpen(false);
-    setForm({
+    const result = await addGalleryItem(form);
+    if (result?.success) {
+      setModalOpen(false);
+      setForm({
       title: '',
       imageUrl: '',
       caption: '',
