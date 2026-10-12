@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette, Search, GripVertical, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { ImageUpload } from '../../components/ImageUpload';
 import { DignitaryProfileModal } from '../../components/DignitaryProfileModal';
 
 export const AdminLeadership = () => {
-  const { leadership, clubs, addLeader, updateLeader, deleteLeader } = useData();
+  const { leadership, clubs, addLeader, updateLeader, reorderLeaders, deleteLeader } = useData();
   const { user, canManageClub, isClubAdmin } = useAuth();
 
   const [activeTab, setActiveTab] = useState('MANAGEMENT');
@@ -17,6 +17,12 @@ export const AdminLeadership = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [dropPosition, setDropPosition] = useState(null); // 'top' | 'bottom'
+  const [doubleClickedLeader, setDoubleClickedLeader] = useState(null);
+  const [targetPosInput, setTargetPosInput] = useState('1');
   const DEFAULT_STUDENT_CLASS = 'CSE (AIML) /3rd YEAR';
 
   const initialForm = {
@@ -417,6 +423,67 @@ export const AdminLeadership = () => {
     }
   };
 
+  const handleJumpToPosition = async (list, fromIndex, toIndex) => {
+    if (fromIndex === toIndex || toIndex < 0 || toIndex >= list.length) return;
+    const newList = [...list];
+    const [moved] = newList.splice(fromIndex, 1);
+    newList.splice(toIndex, 0, moved);
+    await reorderLeaders(newList);
+    if (doubleClickedLeader) {
+      setDoubleClickedLeader({ item: moved, index: toIndex, items: newList });
+      setTargetPosInput((toIndex + 1).toString());
+    }
+  };
+
+  const handleDragStart = (e, item, index) => {
+    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedIndex(index);
+    setDraggedItem(item);
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offset = e.clientY - rect.top;
+    const pos = offset < rect.height / 2 ? 'top' : 'bottom';
+    setDragOverIndex(index);
+    setDropPosition(pos);
+  };
+
+  const handleDragLeave = () => {
+    // Retain target for stability
+  };
+
+  const handleDrop = async (e, targetIndex, items) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === undefined) return;
+    let newIndex = dropPosition === 'top' ? targetIndex : targetIndex + 1;
+    if (draggedIndex < newIndex) {
+      newIndex--;
+    }
+    if (newIndex >= 0 && newIndex < items.length && newIndex !== draggedIndex) {
+      await handleJumpToPosition(items, draggedIndex, newIndex);
+    }
+    setDraggedIndex(null);
+    setDraggedItem(null);
+    setDragOverIndex(null);
+    setDropPosition(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDraggedItem(null);
+    setDragOverIndex(null);
+    setDropPosition(null);
+  };
+
+  const handleRowDoubleClick = (item, index, items) => {
+    setDoubleClickedLeader({ item, index, items });
+    setTargetPosInput('1');
+  };
+
   const renderLeaderTable = (items, title, subtitle, defaultRole, addLabel, SectionIcon = Award, badgeTheme = 'bg-blue-500/20 text-blue-300 border-blue-500/40') => {
     const isAllSelected = items.length > 0 && items.every(i => selectedIds.includes(i.id || i._id));
 
@@ -457,6 +524,78 @@ export const AdminLeadership = () => {
           )}
         </div>
 
+        {/* Active Double-Click Quick Reorder Toolbar */}
+        {doubleClickedLeader && items.some(i => (i.id || i._id) === (doubleClickedLeader.item.id || doubleClickedLeader.item._id)) && (
+          <div className="flex flex-wrap items-center justify-between p-3 bg-praxis-cyan/15 border-b border-praxis-cyan/40 gap-3 text-xs animate-fade-in">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-praxis-cyan animate-ping" />
+              <span className="text-white font-bold">Selected Leader:</span>
+              <span className="text-praxis-cyan font-bold font-mono">{doubleClickedLeader.item.name}</span>
+              <span className="text-praxis-secondary text-[11px]">
+                (Current Position: #{doubleClickedLeader.index + 1} of {items.length})
+              </span>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => handleJumpToPosition(items, doubleClickedLeader.index, 0)}
+                className="px-3 py-1 rounded bg-praxis-cyan text-black font-bold uppercase tracking-wider hover:bg-cyan-300 transition-all flex items-center gap-1 shadow-sm text-[11px]"
+                title="Send directly to Position #1"
+              >
+                <ChevronsUp size={13} /> Move to #1 (Top)
+              </button>
+              <button
+                onClick={() => handleJumpToPosition(items, doubleClickedLeader.index, items.length - 1)}
+                className="px-3 py-1 rounded bg-praxis-elevated text-praxis-secondary font-bold uppercase tracking-wider hover:text-white transition-all flex items-center gap-1 text-[11px]"
+                title="Send to the bottom"
+              >
+                <ChevronsDown size={13} /> Move to Bottom
+              </button>
+              <div className="flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded border border-praxis-cyan/30">
+                <span className="text-praxis-muted text-[11px]">Go to #:</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={items.length}
+                  value={targetPosInput}
+                  onChange={(e) => setTargetPosInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const p = parseInt(targetPosInput, 10);
+                      if (!isNaN(p)) handleJumpToPosition(items, doubleClickedLeader.index, p - 1);
+                    }
+                  }}
+                  className="w-12 bg-praxis-card border border-praxis-border text-center text-white font-bold rounded py-0.5 text-xs focus:border-praxis-cyan focus:outline-none font-mono"
+                />
+                <button
+                  onClick={() => {
+                    const p = parseInt(targetPosInput, 10);
+                    if (!isNaN(p)) handleJumpToPosition(items, doubleClickedLeader.index, p - 1);
+                  }}
+                  className="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px]"
+                >
+                  Move
+                </button>
+              </div>
+              <button
+                onClick={() => setDoubleClickedLeader(null)}
+                className="px-2.5 py-1 rounded bg-praxis-card hover:bg-praxis-elevated text-praxis-muted hover:text-white text-xs border border-praxis-border"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Live Drag & Drop Target Helper */}
+        {draggedIndex !== null && dragOverIndex !== null && (
+          <div className="bg-praxis-cyan/10 border-b border-praxis-cyan/30 px-4 py-1.5 text-[11px] font-mono text-praxis-cyan flex items-center justify-between">
+            <span>
+              Moving <strong className="text-white">{draggedItem?.name}</strong> → Releasing will insert at <strong>Position #{dropPosition === 'top' ? dragOverIndex + 1 : dragOverIndex + 2}</strong>
+            </span>
+            <span className="text-praxis-muted text-[10px]">Release mouse to drop</span>
+          </div>
+        )}
+
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-xs whitespace-nowrap">
             <thead className="bg-black/30 border-b border-praxis-border/60 text-praxis-muted uppercase tracking-wider text-[11px]">
@@ -472,7 +611,7 @@ export const AdminLeadership = () => {
                 <th className="p-3">{['MANAGEMENT', 'ACADEMIC_LEAD'].includes(activeTab) ? 'Dignitary & Portrait' : 'Member'}</th>
                 <th className="p-3">Position / Title</th>
                 <th className="p-3">Collection</th>
-                <th className="p-3">Reorder</th>
+                <th className="p-3">Position / Reorder</th>
                 {['MANAGEMENT', 'ACADEMIC_LEAD', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3">Qualifications</th>}
                 {['PRESIDENTS', 'DOMAIN_LEADS', 'COORDINATOR'].includes(activeTab) && <th className="p-3">Class & Hall Ticket</th>}
                 {['COORDINATOR', 'FACULTY_COORDINATOR'].includes(activeTab) && <th className="p-3">Club/Chapter</th>}
@@ -505,14 +644,39 @@ export const AdminLeadership = () => {
                   const canEdit = !item.clubSlug || canManageClub(item.clubSlug);
                   const isDignitary = isDignitaryItem(item);
                   const isSelected = selectedIds.includes(id);
+                  const isDoubleClicked = doubleClickedLeader && (doubleClickedLeader.item.id === id || doubleClickedLeader.item._id === id);
+                  const isDraggingThis = draggedIndex === index;
+                  const isHoveredTarget = dragOverIndex === index;
 
                   return (
-                    <tr key={id} className={`hover:bg-praxis-elevated/30 transition-colors ${isSelected ? 'bg-praxis-cyan/10' : ''}`}>
+                    <tr
+                      key={id}
+                      draggable={true}
+                      onDragStart={(e) => handleDragStart(e, item, index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, index, items)}
+                      onDragEnd={handleDragEnd}
+                      onDoubleClick={() => handleRowDoubleClick(item, index, items)}
+                      title="Double-click to select & quick-jump, or grab handle to drag & drop"
+                      className={`transition-all duration-150 relative cursor-pointer select-none ${
+                        isSelected ? 'bg-praxis-cyan/10' : 'hover:bg-praxis-elevated/40'
+                      } ${
+                        isDoubleClicked ? 'ring-2 ring-praxis-cyan bg-praxis-cyan/20' : ''
+                      } ${
+                        isDraggingThis ? 'opacity-30 bg-praxis-cyan/5 border-dashed border-2 border-praxis-cyan/60 scale-[0.99]' : ''
+                      } ${
+                        isHoveredTarget && dropPosition === 'top' ? 'border-t-4 border-praxis-cyan shadow-[0_0_14px_rgba(0,229,255,0.85)] bg-praxis-cyan/10' : ''
+                      } ${
+                        isHoveredTarget && dropPosition === 'bottom' ? 'border-b-4 border-praxis-cyan shadow-[0_0_14px_rgba(0,229,255,0.85)] bg-praxis-cyan/10' : ''
+                      }`}
+                    >
                       <td className="p-3 text-center">
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleSelect(id)}
+                          onClick={(e) => e.stopPropagation()}
                           className="w-4 h-4 rounded bg-black/40 border-praxis-border"
                         />
                       </td>
@@ -524,7 +688,14 @@ export const AdminLeadership = () => {
                             <div className="w-9 h-9 rounded-full bg-praxis-elevated flex items-center justify-center text-praxis-cyan font-bold shrink-0">{item.name?.charAt(0)}</div>
                           )}
                           <div>
-                            <span className="font-bold text-white block text-sm">{item.name}</span>
+                            <span className="font-bold text-white block text-sm flex items-center gap-1.5">
+                              {item.name}
+                              {isDoubleClicked && (
+                                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-praxis-cyan text-black font-bold uppercase tracking-wider font-mono">
+                                  Selected
+                                </span>
+                              )}
+                            </span>
                             <span className="text-[10px] text-praxis-muted">{item.qualifications || item.yearClass || 'Member'}</span>
                           </div>
                         </div>
@@ -536,21 +707,53 @@ export const AdminLeadership = () => {
                         </span>
                       </td>
                       <td className="p-3">
-                        <div className="flex flex-col gap-1 w-fit">
-                          <button
-                            onClick={() => handleMoveOrder(items, index, 'up')}
-                            disabled={index === 0}
-                            className="p-0.5 rounded bg-praxis-elevated hover:bg-praxis-cyan hover:text-black disabled:opacity-30 disabled:hover:bg-praxis-elevated disabled:hover:text-white transition-colors"
+                        <div className="flex items-center gap-1.5 w-fit" onClick={(e) => e.stopPropagation()}>
+                          {/* Drag Handle */}
+                          <div
+                            className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-praxis-elevated text-praxis-muted hover:text-praxis-cyan transition-colors"
+                            title="Drag to reorder position"
                           >
-                            <ArrowUp size={13} />
-                          </button>
-                          <button
-                            onClick={() => handleMoveOrder(items, index, 'down')}
-                            disabled={index === items.length - 1}
-                            className="p-0.5 rounded bg-praxis-elevated hover:bg-praxis-cyan hover:text-black disabled:opacity-30 disabled:hover:bg-praxis-elevated disabled:hover:text-white transition-colors"
+                            <GripVertical size={15} />
+                          </div>
+
+                          {/* Position Badge */}
+                          <span
+                            className="font-mono text-[11px] font-bold text-white bg-black/60 px-1.5 py-0.5 rounded border border-white/10"
+                            title={`Position #${index + 1}`}
                           >
-                            <ArrowDown size={13} />
-                          </button>
+                            #{index + 1}
+                          </span>
+
+                          {/* Instant Move to #1 (Top) button */}
+                          {index > 0 && (
+                            <button
+                              onClick={() => handleJumpToPosition(items, index, 0)}
+                              className="p-1 rounded bg-praxis-elevated text-praxis-cyan hover:bg-praxis-cyan hover:text-black transition-colors"
+                              title="Move directly to #1 (Top of list)"
+                            >
+                              <ChevronsUp size={13} />
+                            </button>
+                          )}
+
+                          {/* Step nudges */}
+                          <div className="flex flex-col gap-0.5">
+                            <button
+                              onClick={() => handleMoveOrder(items, index, 'up')}
+                              disabled={index === 0}
+                              className="p-0.5 rounded bg-praxis-elevated hover:bg-praxis-cyan hover:text-black disabled:opacity-20 disabled:hover:bg-praxis-elevated disabled:hover:text-white transition-colors"
+                              title="Move Up 1 step"
+                            >
+                              <ArrowUp size={11} />
+                            </button>
+                            <button
+                              onClick={() => handleMoveOrder(items, index, 'down')}
+                              disabled={index === items.length - 1}
+                              className="p-0.5 rounded bg-praxis-elevated hover:bg-praxis-cyan hover:text-black disabled:opacity-20 disabled:hover:bg-praxis-elevated disabled:hover:text-white transition-colors"
+                              title="Move Down 1 step"
+                            >
+                              <ArrowDown size={11} />
+                            </button>
+                          </div>
                         </div>
                       </td>
 

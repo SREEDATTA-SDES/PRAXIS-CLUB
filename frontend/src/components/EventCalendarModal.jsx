@@ -5,7 +5,7 @@ import {
   Clock, MapPin, Tag, ExternalLink, Sparkles 
 } from 'lucide-react';
 
-export const EventCalendarModal = ({ events = [], onClose }) => {
+export const EventCalendarModal = ({ events = [], eventCalendarPdfUrl = '', onClose }) => {
   const [downloadSuccess, setDownloadSuccess] = useState(null);
 
   // Sort events chronologically (earliest to latest)
@@ -394,26 +394,61 @@ export const EventCalendarModal = ({ events = [], onClose }) => {
               </button>
 
               {/* Option 2: PDF / Print */}
-              <button
-                type="button"
-                onClick={handlePrintPDF}
+              <div
                 className="group p-4 rounded-2xl liquid-glass border border-white/20 hover:border-blue-400 hover:bg-blue-500/10 transition-all text-left flex flex-col justify-between shadow-lg"
               >
-                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <Printer size={18} />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Printer size={18} />
+                  </div>
+                  {eventCalendarPdfUrl && (
+                    <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+                      OFFICIAL PDF
+                    </span>
+                  )}
                 </div>
                 <div>
                   <h4 className="text-xs font-black uppercase tracking-wider text-white">
-                    Official PDF / Print
+                    {eventCalendarPdfUrl ? 'Official PDF Calendar' : 'Official PDF / Print'}
                   </h4>
                   <p className="text-[10px] text-praxis-secondary mt-1 leading-snug">
-                    Printable schedule with SDES letterhead
+                    {eventCalendarPdfUrl 
+                      ? 'Administration official calendar document' 
+                      : 'Printable schedule with SDES letterhead'}
                   </p>
                 </div>
-                <div className="mt-3 text-[10px] uppercase font-bold text-blue-400 flex items-center gap-1">
-                  <Printer size={11} /> Print / Save PDF
+                <div className="mt-3 flex items-center gap-2">
+                  {eventCalendarPdfUrl ? (
+                    <>
+                      <a
+                        href={eventCalendarPdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] uppercase font-bold text-praxis-cyan hover:underline flex items-center gap-1"
+                      >
+                        <Download size={11} /> Download PDF
+                      </a>
+                      <span className="text-white/20 text-[10px]">•</span>
+                      <button
+                        type="button"
+                        onClick={handlePrintPDF}
+                        className="text-[10px] uppercase font-bold text-white/50 hover:text-white flex items-center gap-1"
+                        title="Print dynamically generated schedule"
+                      >
+                        <Printer size={10} /> Print
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handlePrintPDF}
+                      className="text-[10px] uppercase font-bold text-blue-400 flex items-center gap-1"
+                    >
+                      <Printer size={11} /> Print / Save PDF
+                    </button>
+                  )}
                 </div>
-              </button>
+              </div>
 
               {/* Option 3: CSV Schedule */}
               <button

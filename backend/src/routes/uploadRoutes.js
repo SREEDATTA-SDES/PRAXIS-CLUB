@@ -19,16 +19,17 @@ const router = express.Router();
  */
 router.post('/', async (req, res) => {
   try {
-    const { image, folder = 'praxis_sdes' } = req.body;
+    const fileData = req.body.image || req.body.file;
+    const { folder = 'praxis_sdes' } = req.body;
 
-    if (!image) {
+    if (!fileData) {
       return res.status(400).json({
         success: false,
-        message: 'No image data provided. Please provide a base64 image or file.'
+        message: 'No file or image data provided. Please provide a base64 file or image.'
       });
     }
 
-    const uploadResponse = await cloudinary.uploader.upload(image, {
+    const uploadResponse = await cloudinary.uploader.upload(fileData, {
       folder,
       resource_type: 'auto'
     });

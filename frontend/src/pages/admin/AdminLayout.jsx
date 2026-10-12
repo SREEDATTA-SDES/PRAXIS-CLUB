@@ -45,25 +45,37 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-praxis-bg text-praxis-text flex flex-col md:flex-row antialiased">
+    <div className="h-[100dvh] w-full overflow-hidden bg-praxis-bg text-praxis-text flex flex-col md:flex-row antialiased select-none overscroll-none">
       
-      {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-praxis-surface border-b border-praxis-border shrink-0">
+      {/* Mobile Top Bar - CONSTANT fixed position, isolated from content scrolling */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-30 h-14 bg-praxis-surface/95 backdrop-blur-md border-b border-praxis-border px-4 flex items-center justify-between shrink-0 shadow-lg">
         <div className="flex items-center gap-2">
-          <img src={COLLEGE_BRAND.praxisLogoUrl} alt="PRAXIS" className="h-7 w-auto" />
-          <span className="text-xs font-bold text-white uppercase font-cinematic">Admin Console</span>
+          <img src={COLLEGE_BRAND.praxisLogoUrl} alt="PRAXIS" className="h-7 w-auto object-contain" />
+          <span className="text-xs font-bold text-white uppercase font-cinematic tracking-wider">Admin Console</span>
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 text-praxis-secondary hover:text-white"
+          className="p-2 rounded-lg bg-praxis-elevated text-praxis-secondary hover:text-white transition-colors"
+          aria-label="Toggle menu"
         >
-          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
-      </div>
+      </header>
+
+      {/* Mobile Top Bar Spacer to prevent layout shift */}
+      <div className="h-14 shrink-0 md:hidden" aria-hidden="true" />
+
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 md:hidden animate-fade-in transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Admin Sidebar Navigation - CONSTANT viewport height, never stretches */}
       <aside 
-        className={`fixed md:relative inset-y-0 left-0 z-40 w-64 h-full shrink-0 bg-praxis-surface border-r border-praxis-border flex flex-col justify-between transition-transform duration-300 ${
+        className={`fixed md:relative inset-y-0 left-0 z-50 w-64 h-full shrink-0 bg-praxis-surface border-r border-praxis-border flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -136,7 +148,7 @@ export const AdminLayout = () => {
       </aside>
 
       {/* Main Content Area - Independently scrollable, never affects sidebar height */}
-      <main className="flex-1 h-full overflow-y-auto bg-praxis-bg p-4 sm:p-8">
+      <main className="flex-1 h-full overflow-y-auto overscroll-contain bg-praxis-bg p-4 sm:p-8">
         <Outlet />
       </main>
 

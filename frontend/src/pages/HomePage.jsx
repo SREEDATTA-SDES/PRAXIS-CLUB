@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, CheckCircle, Compass, Shield, Award } from 'lucide-react';
+import { ArrowRight, CheckCircle, Compass, Shield, Award, Star } from 'lucide-react';
 import { SpatialHero } from '../components/SpatialHero';
 import { ClubCard } from '../components/ClubCard';
 import { EventCard } from '../components/EventCard';
@@ -34,7 +34,11 @@ export const HomePage = ({ onOpenLightbox }) => {
   const featuredEvents = events.filter(e => e.featured || e.isHighlighted);
   const remainingUpcoming = events.filter(e => e.status === 'UPCOMING' && !e.featured && !e.isHighlighted);
   const upcomingEvents = (featuredEvents.length > 0 ? [...featuredEvents, ...remainingUpcoming] : events.filter(e => e.status === 'UPCOMING')).slice(0, 3);
-  const previewGallery = gallery.slice(0, 6);
+  
+  // Prioritize gallery items marked as featured/highlighted with star by admin
+  const featuredGallery = gallery.filter(g => g.featured || g.isHighlighted);
+  const remainingGallery = gallery.filter(g => !g.featured && !g.isHighlighted);
+  const previewGallery = (featuredGallery.length > 0 ? [...featuredGallery, ...remainingGallery] : gallery).slice(0, 6);
 
   // Parallax Values
   const yManifesto = useTransform(scrollYProgress, [0, 0.2], [100, 0]);
@@ -257,6 +261,13 @@ export const HomePage = ({ onOpenLightbox }) => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 transition-opacity duration-500" />
+
+                {item.featured && (
+                  <span className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/50 text-amber-300 text-[10px] font-bold uppercase tracking-wider font-mono shadow-lg">
+                    <Star size={11} className="fill-amber-400 text-amber-400" />
+                    <span>Featured Moment</span>
+                  </span>
+                )}
 
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                   <span className="text-[9px] uppercase font-bold text-praxis-cyan tracking-[0.3em] mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">

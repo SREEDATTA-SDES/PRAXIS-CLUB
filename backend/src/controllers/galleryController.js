@@ -36,6 +36,56 @@ export const createGalleryItem = async (req, res) => {
   }
 };
 
+export const updateGalleryItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existing = await dataService.getGalleryItemById(id);
+    if (!existing) {
+      return res.status(404).json({ success: false, message: 'Gallery item not found.' });
+    }
+
+    // Role check for CLUB_ADMIN
+    if (req.user.role === 'CLUB_ADMIN' && existing.clubSlug !== req.user.assignedClubId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden. You may only edit gallery items in your assigned club.'
+      });
+    }
+
+    const updateData = { ...req.body };
+    if (updateData.albumName) {
+      updateData.folderSlug = updateData.albumName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    }
+
+    const updated = await dataService.updateGalleryItem(id, updateData);
+    return res.json({ success: true, message: 'Gallery item updated successfully', data: updated });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const updateGalleryAlbum = async (req, res) => {
+  try {
+    const { oldAlbumName, newAlbumName, category, clubSlug, date } = req.body;
+    if (!oldAlbumName || !newAlbumName) {
+      return res.status(400).json({ success: false, message: 'oldAlbumName and newAlbumName are required.' });
+    }
+
+    // Role check for CLUB_ADMIN
+    if (req.user.role === 'CLUB_ADMIN' && clubSlug && clubSlug !== req.user.assignedClubId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden. You may only edit albums in your assigned club.'
+      });
+    }
+
+    await dataService.renameGalleryAlbum(oldAlbumName, newAlbumName, { category, clubSlug, date });
+    return res.json({ success: true, message: 'Album updated successfully' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const deleteGalleryItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -45,3 +95,4 @@ export const deleteGalleryItem = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+

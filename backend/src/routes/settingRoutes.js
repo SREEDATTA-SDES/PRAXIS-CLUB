@@ -5,6 +5,6 @@ import { verifyToken, requireRole } from '../middleware/auth.js';
 const router = Router();
 
 router.get('/', getSettings);
-router.put('/', verifyToken, requireRole(['SUPER_ADMIN', 'FACULTY_ADMIN']), updateSettings);
+router.put('/', verifyToken, requireRole(['SUPER_ADMIN', 'FACULTY_ADMIN', 'CLUB_ADMIN']), updateSettings);
 
 export default router;

@@ -15,6 +15,7 @@ const settingSchema = new mongoose.Schema({
   facebookUrl: { type: String, default: '' },
   whatsappUrl: { type: String, default: '' },
   googleMapsUrl: { type: String, default: '' },
+  eventCalendarPdfUrl: { type: String, default: '' },
   updatedAt: { type: Date, default: Date.now }
 });
 

@@ -72,6 +72,21 @@ export const updateLeader = async (req, res) => {
   }
 };
 
+export const reorderLeaders = async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return res.status(400).json({ success: false, message: 'Items array is required.' });
+    }
+
+    await dataService.reorderLeaders(items);
+    return res.json({ success: true, message: 'Leaders reordered successfully' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 export const deleteLeader = async (req, res) => {
   try {
     const { id } = req.params;

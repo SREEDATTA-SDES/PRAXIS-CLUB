@@ -120,6 +120,48 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const updateGalleryItem = async (id, itemData) => {
+    try {
+      const res = await apiRequest(`/api/gallery/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(itemData)
+      });
+      setGallery(prev => prev.map(g => (g.id === id || g._id === id ? res.data : g)));
+      showToast('Gallery image updated successfully');
+      return { success: true, data: res.data };
+    } catch (err) {
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
+    }
+  };
+
+  const renameGalleryAlbum = async (oldAlbumName, newAlbumName, extraData = {}) => {
+    try {
+      await apiRequest('/api/gallery/album/rename', {
+        method: 'PUT',
+        body: JSON.stringify({ oldAlbumName, newAlbumName, ...extraData })
+      });
+      setGallery(prev => prev.map(g => {
+        if ((g.albumName || '').trim() === oldAlbumName.trim()) {
+          return {
+            ...g,
+            albumName: newAlbumName,
+            folderSlug: newAlbumName.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+            ...(extraData.category ? { category: extraData.category } : {}),
+            ...(extraData.clubSlug ? { clubSlug: extraData.clubSlug } : {}),
+            ...(extraData.date ? { date: extraData.date } : {})
+          };
+        }
+        return g;
+      }));
+      showToast('Album details updated');
+      return { success: true };
+    } catch (err) {
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
+    }
+  };
+
   const deleteGalleryItem = async (id) => {
     try {
       await apiRequest(`/api/gallery/${id}`, { method: 'DELETE' });
@@ -234,6 +276,39 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const reorderLeaders = async (orderedList) => {
+    try {
+      const orderMap = new Map();
+      orderedList.forEach((it, idx) => orderMap.set(it.id || it._id, idx + 1));
+      setLeadership(prev => prev.map(l => {
+        const id = l.id || l._id;
+        return orderMap.has(id) ? { ...l, order: orderMap.get(id) } : l;
+      }));
+
+      await apiRequest('/api/leadership/reorder', {
+        method: 'PUT',
+        body: JSON.stringify({
+          items: orderedList.map((it, idx) => ({ id: it.id || it._id, order: idx + 1 }))
+        })
+      });
+      showToast('Order updated successfully');
+      return { success: true };
+    } catch (err) {
+      try {
+        await Promise.all(
+          orderedList.map((it, idx) =>
+            updateLeader(it.id || it._id, { ...it, order: idx + 1 })
+          )
+        );
+        showToast('Order updated successfully');
+        return { success: true };
+      } catch (fallbackErr) {
+        showToast(err.message || 'Failed to update order', 'error');
+        return { success: false, message: err.message };
+      }
+    }
+  };
+
   // === SETTINGS ACTIONS ===
   const updateSettings = async (data) => {
     try {
@@ -266,6 +341,8 @@ export const DataProvider = ({ children }) => {
       updateEvent,
       deleteEvent,
       addGalleryItem,
+      updateGalleryItem,
+      renameGalleryAlbum,
       deleteGalleryItem,
       addAnnouncement,
       updateAnnouncement,
@@ -273,6 +350,7 @@ export const DataProvider = ({ children }) => {
       updateClub,
       addLeader,
       updateLeader,
+      reorderLeaders,
       deleteLeader,
       updateSettings
     }}>

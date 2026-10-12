@@ -56,11 +56,13 @@ export const dataService = {
   },
 
   async updateEvent(id, data) {
-    return await Event.findByIdAndUpdate(id, data, { new: true });
+    const filter = mongoose.isValidObjectId(id) ? { _id: id } : { slug: id };
+    return await Event.findOneAndUpdate(filter, data, { new: true });
   },
 
   async deleteEvent(id) {
-    return await Event.findByIdAndDelete(id);
+    const filter = mongoose.isValidObjectId(id) ? { _id: id } : { slug: id };
+    return await Event.findOneAndDelete(filter);
   },
 
   // === LEADERSHIP (6 DEDICATED COLLECTIONS) ===
@@ -251,6 +253,27 @@ export const dataService = {
     return deletedDoc;
   },
 
+  async reorderLeaders(items) {
+    const subModels = getAllLeaderSubModels();
+    for (const item of items) {
+      const { id, order } = item;
+      if (!id || order === undefined) continue;
+
+      let updated = false;
+      for (const model of subModels) {
+        const res = await model.findByIdAndUpdate(id, { order }, { new: true });
+        if (res) {
+          updated = true;
+          break;
+        }
+      }
+      if (!updated) {
+        await Leader.findByIdAndUpdate(id, { order });
+      }
+    }
+    return true;
+  },
+
   // === ANNOUNCEMENTS ===
   async getAnnouncements(filter = {}) {
     let q = Announcement.find(filter);
@@ -280,6 +303,10 @@ export const dataService = {
     return await Gallery.find(filter).sort({ date: -1, order: 1, createdAt: 1 });
   },
 
+  async getGalleryItemById(id) {
+    return await Gallery.findById(id);
+  },
+
   async createGalleryItem(data) {
     const g = new Gallery(data);
     return await g.save();
@@ -287,6 +314,18 @@ export const dataService = {
 
   async updateGalleryItem(id, data) {
     return await Gallery.findByIdAndUpdate(id, data, { new: true });
+  },
+
+  async renameGalleryAlbum(oldAlbumName, newAlbumName, extraData = {}) {
+    const filter = { albumName: oldAlbumName };
+    const update = {
+      albumName: newAlbumName,
+      folderSlug: newAlbumName.toLowerCase().replace(/[^a-z0-9]/g, '_')
+    };
+    if (extraData.category) update.category = extraData.category;
+    if (extraData.clubSlug) update.clubSlug = extraData.clubSlug;
+    if (extraData.date) update.date = extraData.date;
+    return await Gallery.updateMany(filter, { $set: update });
   },
 
   async deleteGalleryItem(id) {

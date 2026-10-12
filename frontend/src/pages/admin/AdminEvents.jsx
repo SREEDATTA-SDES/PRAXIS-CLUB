@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Calendar, MapPin, ExternalLink, X, Save, AlertTriangle, Images, Star } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, MapPin, ExternalLink, X, Save, AlertTriangle, Images, Star, FileText } from 'lucide-react';
 import { ImageUpload, MultiImageUpload } from '../../components/ImageUpload';
+import { PdfUpload } from '../../components/PdfUpload';
 
 export const AdminEvents = () => {
-  const { events, clubs, addEvent, updateEvent, deleteEvent } = useData();
+  const { events, clubs, settings, updateSettings, addEvent, updateEvent, deleteEvent } = useData();
   const { user, canManageClub, isClubAdmin } = useAuth();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -106,6 +107,53 @@ export const AdminEvents = () => {
           <Plus size={15} />
           <span>Create New Event</span>
         </button>
+      </div>
+
+      {/* Official Semester Event Calendar Management */}
+      <div className="rounded-xl bg-praxis-card border border-praxis-border p-5 shadow-lg space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-praxis-border/60">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-praxis-cyan/20 text-praxis-cyan flex items-center justify-center shrink-0 border border-praxis-cyan/40">
+              <Calendar size={20} />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold uppercase text-white font-display tracking-wider flex items-center gap-2 flex-wrap">
+                <span>Official Semester Event Calendar PDF</span>
+                {settings?.eventCalendarPdfUrl ? (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    Active Uploaded Document
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    Dynamic Fallback Active
+                  </span>
+                )}
+              </h2>
+              <p className="text-[11px] text-praxis-secondary mt-0.5">
+                Upload your official semester event schedule PDF document. Students will download this exact file on the public Events page.
+              </p>
+            </div>
+          </div>
+          {settings?.eventCalendarPdfUrl && (
+            <a
+              href={settings.eventCalendarPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-lg bg-praxis-elevated hover:bg-praxis-cyan hover:text-black text-praxis-cyan text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shrink-0 w-fit"
+            >
+              <ExternalLink size={13} />
+              <span>Test Public Link</span>
+            </a>
+          )}
+        </div>
+
+        <PdfUpload
+          value={settings?.eventCalendarPdfUrl || ''}
+          onChange={async (newUrl) => {
+            await updateSettings({ eventCalendarPdfUrl: newUrl });
+          }}
+          label="Upload or Replace Official Calendar Document (.pdf)"
+        />
       </div>
 
       {/* Events Table */}

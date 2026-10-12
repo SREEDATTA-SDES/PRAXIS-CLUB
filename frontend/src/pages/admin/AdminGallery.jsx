@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Trash2, Image as ImageIcon, X, AlertTriangle, ExternalLink, Folder, FolderOpen, Layers, LayoutGrid } from 'lucide-react';
+import { Plus, Edit, Trash2, Image as ImageIcon, X, AlertTriangle, ExternalLink, Folder, FolderOpen, Layers, LayoutGrid, Star } from 'lucide-react';
 import { ImageUpload, MultiImageUpload } from '../../components/ImageUpload';
 
 export const AdminGallery = () => {
-  const { gallery, clubs, addGalleryItem, deleteGalleryItem } = useData();
+  const { gallery, clubs, addGalleryItem, updateGalleryItem, renameGalleryAlbum, deleteGalleryItem } = useData();
   const { user, canManageClub, isClubAdmin } = useAuth();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [uploadMode, setUploadMode] = useState('multi'); // 'single' | 'multi'
   const [multiPhotos, setMultiPhotos] = useState([]);
   const [adminViewMode, setAdminViewMode] = useState('folders'); // 'folders' | 'grid'
   const [selectedAdminAlbum, setSelectedAdminAlbum] = useState(null);
+  const [renameAlbumModalOpen, setRenameAlbumModalOpen] = useState(false);
+  const [renameAlbumForm, setRenameAlbumForm] = useState({
+    oldAlbumName: '',
+    newAlbumName: '',
+    category: 'NONE',
+    clubSlug: 'others',
+    date: ''
+  });
 
   const initialForm = {
     title: '',
@@ -22,17 +31,106 @@ export const AdminGallery = () => {
     category: 'NONE',
     clubSlug: isClubAdmin && user.assignedClubId ? user.assignedClubId : 'others',
     albumName: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    featured: false
   };
 
   const [form, setForm] = useState(initialForm);
 
   const albumCloudinaryFolder = `praxis_sdes/gallery/${(form.albumName || 'general').toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
 
-  const handleCreate = async (e) => {
+  const openCreateModal = (prefillAlbum = null) => {
+    setEditingItem(null);
+    setUploadMode('multi');
+    setMultiPhotos([]);
+    if (prefillAlbum) {
+      setForm({
+        ...initialForm,
+        albumName: prefillAlbum.name || '',
+        clubSlug: prefillAlbum.clubSlug || (isClubAdmin && user.assignedClubId ? user.assignedClubId : 'others'),
+        category: prefillAlbum.category || 'NONE',
+        date: prefillAlbum.date || new Date().toISOString().split('T')[0]
+      });
+    } else {
+      setForm(initialForm);
+    }
+    setModalOpen(true);
+  };
+
+  const openEditModal = (img) => {
+    setEditingItem(img);
+    setUploadMode('single');
+    setMultiPhotos([]);
+    setForm({
+      title: img.title || '',
+      imageUrl: img.imageUrl || '',
+      caption: img.caption || '',
+      category: img.category || 'NONE',
+      clubSlug: img.clubSlug || 'others',
+      albumName: img.albumName || '',
+      date: img.date || new Date().toISOString().split('T')[0],
+      featured: !!img.featured
+    });
+    setModalOpen(true);
+  };
+
+  const toggleFeatured = async (img, e) => {
+    if (e) e.stopPropagation();
+    const id = img.id || img._id;
+    const newFeaturedState = !img.featured;
+    await updateGalleryItem(id, { ...img, featured: newFeaturedState });
+    if (selectedAdminAlbum) {
+      setSelectedAdminAlbum(prev => prev ? {
+        ...prev,
+        items: prev.items.map(it => (it.id === id || it._id === id) ? { ...it, featured: newFeaturedState } : it)
+      } : null);
+    }
+  };
+
+  const openRenameAlbumModal = (album) => {
+    setRenameAlbumForm({
+      oldAlbumName: album.name,
+      newAlbumName: album.name,
+      category: album.category || 'NONE',
+      clubSlug: album.clubSlug || 'others',
+      date: album.date || new Date().toISOString().split('T')[0]
+    });
+    setRenameAlbumModalOpen(true);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title) {
       alert('Title is required.');
+      return;
+    }
+
+    if (editingItem) {
+      if (!form.imageUrl) {
+        alert('Please provide an image.');
+        return;
+      }
+      const result = await updateGalleryItem(editingItem.id || editingItem._id, {
+        ...form,
+        order: editingItem.order || 1,
+        date: form.date || new Date().toISOString().split('T')[0]
+      });
+      if (result?.success) {
+        if (selectedAdminAlbum) {
+          setSelectedAdminAlbum(prev => {
+            if (!prev) return null;
+            const updatedItems = prev.items.map(it =>
+              (it.id === (editingItem.id || editingItem._id) || it._id === (editingItem.id || editingItem._id))
+                ? { ...it, ...form }
+                : it
+            );
+            return { ...prev, items: updatedItems };
+          });
+        }
+        setModalOpen(false);
+        setEditingItem(null);
+        setForm(initialForm);
+      }
       return;
     }
 
@@ -69,6 +167,35 @@ export const AdminGallery = () => {
       setModalOpen(false);
       setForm(initialForm);
       setMultiPhotos([]);
+    }
+  };
+
+  const handleRenameAlbumSubmit = async (e) => {
+    e.preventDefault();
+    if (!renameAlbumForm.newAlbumName.trim()) {
+      alert('Album name is required.');
+      return;
+    }
+    const res = await renameGalleryAlbum(
+      renameAlbumForm.oldAlbumName,
+      renameAlbumForm.newAlbumName.trim(),
+      {
+        category: renameAlbumForm.category,
+        clubSlug: renameAlbumForm.clubSlug,
+        date: renameAlbumForm.date
+      }
+    );
+    if (res?.success) {
+      if (selectedAdminAlbum && selectedAdminAlbum.name === renameAlbumForm.oldAlbumName) {
+        setSelectedAdminAlbum(prev => prev ? {
+          ...prev,
+          name: renameAlbumForm.newAlbumName.trim(),
+          category: renameAlbumForm.category,
+          clubSlug: renameAlbumForm.clubSlug,
+          date: renameAlbumForm.date
+        } : null);
+      }
+      setRenameAlbumModalOpen(false);
     }
   };
 
@@ -146,7 +273,7 @@ export const AdminGallery = () => {
           </div>
 
           <button
-            onClick={() => { setModalOpen(true); setMultiPhotos([]); }}
+            onClick={() => openCreateModal()}
             className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-praxis-glow to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-cinematic-blue transition-all"
           >
             <Plus size={15} />
@@ -188,7 +315,16 @@ export const AdminGallery = () => {
                     </h4>
                     <p className="text-[10px] text-praxis-muted capitalize">{album.category} • Click to manage</p>
                   </div>
-                  <FolderOpen size={16} className="text-praxis-cyan shrink-0" />
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openRenameAlbumModal(album); }}
+                      className="p-1 rounded hover:bg-praxis-elevated text-praxis-secondary hover:text-praxis-cyan transition-colors"
+                      title="Edit Album / Rename Folder"
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <FolderOpen size={16} className="text-praxis-cyan" />
+                  </div>
                 </div>
               </div>
             );
@@ -213,15 +349,21 @@ export const AdminGallery = () => {
                 </h3>
               </div>
             </div>
-            <button
-              onClick={() => {
-                setForm({ ...initialForm, albumName: selectedAdminAlbum.name, clubSlug: selectedAdminAlbum.clubSlug, category: selectedAdminAlbum.category });
-                setModalOpen(true);
-              }}
-              className="px-3 py-1.5 rounded-lg bg-praxis-cyan/20 border border-praxis-cyan/40 text-praxis-cyan text-xs font-bold uppercase tracking-wider hover:bg-praxis-cyan hover:text-black transition-all"
-            >
-              + Add Photos to this Folder
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => openRenameAlbumModal(selectedAdminAlbum)}
+                className="px-3 py-1.5 rounded-lg bg-praxis-elevated border border-praxis-border text-praxis-secondary text-xs font-bold uppercase tracking-wider hover:text-white hover:border-praxis-cyan transition-all flex items-center gap-1.5"
+                title="Edit Folder Name & Details"
+              >
+                <Edit size={13} /> Edit Album Details
+              </button>
+              <button
+                onClick={() => openCreateModal(selectedAdminAlbum)}
+                className="px-3 py-1.5 rounded-lg bg-praxis-cyan/20 border border-praxis-cyan/40 text-praxis-cyan text-xs font-bold uppercase tracking-wider hover:bg-praxis-cyan hover:text-black transition-all flex items-center gap-1.5"
+              >
+                <Plus size={13} /> Add Photos to this Folder
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -236,12 +378,41 @@ export const AdminGallery = () => {
                     <h4 className="text-xs font-bold text-white truncate">{img.title}</h4>
                     {img.caption && <p className="text-[10px] text-praxis-muted line-clamp-1">{img.caption}</p>}
                     <div className="pt-2 border-t border-praxis-border/50 flex items-center justify-between text-[10px] text-praxis-muted">
-                      <span>{img.date || 'Recent'}</span>
-                      {canDelete && (
-                        <button onClick={() => setDeleteConfirmId(img.id || img._id)} className="text-red-400 hover:text-red-300 flex items-center gap-1">
-                          <Trash2 size={12} /> Delete
+                      <div className="flex items-center gap-2">
+                        <span>{img.date || 'Recent'}</span>
+                        <button
+                          onClick={(e) => toggleFeatured(img, e)}
+                          className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase transition-all ${
+                            img.featured
+                              ? 'bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm'
+                              : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border'
+                          }`}
+                          title="Click to toggle Homepage Highlight (Star)"
+                        >
+                          <Star size={10} className={img.featured ? 'fill-amber-400 text-amber-400' : 'text-praxis-muted'} />
+                          <span>{img.featured ? 'Featured' : 'Standard'}</span>
                         </button>
-                      )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {canDelete && (
+                          <button
+                            onClick={() => openEditModal(img)}
+                            className="text-praxis-cyan hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                            title="Edit Photo Details"
+                          >
+                            <Edit size={12} /> Edit
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => setDeleteConfirmId(img.id || img._id)}
+                            className="text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+                            title="Delete Photo"
+                          >
+                            <Trash2 size={12} /> Delete
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -279,15 +450,41 @@ export const AdminGallery = () => {
                   )}
 
                   <div className="pt-2 border-t border-praxis-border/50 flex items-center justify-between text-[10px] text-praxis-muted">
-                    <span>{img.date || 'Recent'}</span>
-                    {canDelete && (
+                    <div className="flex items-center gap-2">
+                      <span>{img.date || 'Recent'}</span>
                       <button
-                        onClick={() => setDeleteConfirmId(img.id || img._id)}
-                        className="text-red-400 hover:text-red-300 flex items-center gap-1"
+                        onClick={(e) => toggleFeatured(img, e)}
+                        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase transition-all ${
+                          img.featured
+                            ? 'bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm'
+                            : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border'
+                        }`}
+                        title="Click to toggle Homepage Highlight (Star)"
                       >
-                        <Trash2 size={12} /> Delete
+                        <Star size={10} className={img.featured ? 'fill-amber-400 text-amber-400' : 'text-praxis-muted'} />
+                        <span>{img.featured ? 'Featured' : 'Standard'}</span>
                       </button>
-                    )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {canDelete && (
+                        <button
+                          onClick={() => openEditModal(img)}
+                          className="text-praxis-cyan hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                          title="Edit Photo Details"
+                        >
+                          <Edit size={12} /> Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => setDeleteConfirmId(img.id || img._id)}
+                          className="text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+                          title="Delete Photo"
+                        >
+                          <Trash2 size={12} /> Delete
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -302,14 +499,14 @@ export const AdminGallery = () => {
           <div className="w-full max-w-lg bg-praxis-surface border border-praxis-border rounded-xl shadow-2xl overflow-hidden text-xs max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between p-4 bg-praxis-card border-b border-praxis-border">
               <h3 className="text-sm font-bold uppercase text-white font-display flex items-center gap-2">
-                <Folder size={16} className="text-praxis-cyan" /> Add Photos to Album / Folder
+                <Folder size={16} className="text-praxis-cyan" /> {editingItem ? 'Edit Photo & Album Details' : 'Add Photos to Album / Folder'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-praxis-muted hover:text-white">
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="p-5 space-y-4 overflow-y-auto">
+            <form onSubmit={handleSubmit} className="p-5 space-y-4 overflow-y-auto">
               
               {/* Album / Folder Name */}
               <div>
@@ -343,52 +540,69 @@ export const AdminGallery = () => {
                 />
               </div>
 
-              {/* Upload Mode Selector */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block uppercase text-praxis-muted font-bold tracking-wider text-[10px]">
-                    Photo Upload Mode
-                  </label>
-                  <div className="flex items-center gap-2 text-[10px]">
-                    <button
-                      type="button"
-                      onClick={() => setUploadMode('multi')}
-                      className={`px-2 py-0.5 rounded transition-colors ${
-                        uploadMode === 'multi' ? 'bg-praxis-cyan/20 text-praxis-cyan font-bold' : 'text-praxis-muted'
-                      }`}
-                    >
-                      Multi-Photo Album (1-6 Photos)
-                    </button>
-                    <span className="text-white/20">|</span>
-                    <button
-                      type="button"
-                      onClick={() => setUploadMode('single')}
-                      className={`px-2 py-0.5 rounded transition-colors ${
-                        uploadMode === 'single' ? 'bg-praxis-cyan/20 text-praxis-cyan font-bold' : 'text-praxis-muted'
-                      }`}
-                    >
-                      Single Photo / URL
-                    </button>
+              {/* Upload Mode Selector (Only when creating) */}
+              {!editingItem && (
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block uppercase text-praxis-muted font-bold tracking-wider text-[10px]">
+                      Photo Upload Mode
+                    </label>
+                    <div className="flex items-center gap-2 text-[10px]">
+                      <button
+                        type="button"
+                        onClick={() => setUploadMode('multi')}
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          uploadMode === 'multi' ? 'bg-praxis-cyan/20 text-praxis-cyan font-bold' : 'text-praxis-muted'
+                        }`}
+                      >
+                        Multi-Photo Album (1-6 Photos)
+                      </button>
+                      <span className="text-white/20">|</span>
+                      <button
+                        type="button"
+                        onClick={() => setUploadMode('single')}
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          uploadMode === 'single' ? 'bg-praxis-cyan/20 text-praxis-cyan font-bold' : 'text-praxis-muted'
+                        }`}
+                      >
+                        Single Photo / URL
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {uploadMode === 'multi' ? (
-                  <MultiImageUpload
-                    values={multiPhotos}
-                    onChange={(urls) => setMultiPhotos(urls)}
-                    label="Upload Album Photos (Select multiple files)"
-                    folder={albumCloudinaryFolder}
-                    maxImages={8}
-                  />
-                ) : (
+                  {uploadMode === 'multi' ? (
+                    <MultiImageUpload
+                      values={multiPhotos}
+                      onChange={(urls) => setMultiPhotos(urls)}
+                      label="Upload Album Photos (Select multiple files)"
+                      folder={albumCloudinaryFolder}
+                      maxImages={8}
+                    />
+                  ) : (
+                    <ImageUpload
+                      value={form.imageUrl}
+                      onChange={(url) => setForm({ ...form, imageUrl: url })}
+                      label="Photo Upload"
+                      folder={albumCloudinaryFolder}
+                    />
+                  )}
+                </div>
+              )}
+
+              {/* In Edit mode, show photo preview & replacement */}
+              {editingItem && (
+                <div>
+                  <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                    Photo Image *
+                  </label>
                   <ImageUpload
                     value={form.imageUrl}
                     onChange={(url) => setForm({ ...form, imageUrl: url })}
-                    label="Photo Upload"
+                    label="Replace or Upload Image"
                     folder={albumCloudinaryFolder}
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -453,6 +667,31 @@ export const AdminGallery = () => {
                 />
               </div>
 
+              {/* Homepage Highlight Toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg bg-praxis-card border border-praxis-border">
+                <div>
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Star size={13} className={form.featured ? 'fill-amber-400 text-amber-400' : 'text-praxis-muted'} />
+                    <span>Homepage Highlight (Star)</span>
+                  </span>
+                  <span className="text-[10px] text-praxis-muted block mt-0.5">
+                    Display this photo prominently in the Visual Archives section on the Homepage
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, featured: !form.featured })}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all ${
+                    form.featured
+                      ? 'bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm'
+                      : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border'
+                  }`}
+                >
+                  <Star size={12} className={form.featured ? 'fill-amber-400 text-amber-400' : 'text-praxis-muted'} />
+                  <span>{form.featured ? 'Featured' : 'Standard'}</span>
+                </button>
+              </div>
+
               <div className="flex justify-end gap-2 pt-3 border-t border-praxis-border">
                 <button
                   type="button"
@@ -465,7 +704,7 @@ export const AdminGallery = () => {
                   type="submit"
                   className="px-5 py-2 rounded bg-praxis-glow hover:bg-blue-600 text-white uppercase font-bold tracking-wider"
                 >
-                  Save to Album
+                  {editingItem ? 'Save Changes' : 'Save to Album'}
                 </button>
               </div>
             </form>
@@ -496,6 +735,103 @@ export const AdminGallery = () => {
                 Delete Photo
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rename / Edit Album Modal */}
+      {renameAlbumModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-praxis-surface border border-praxis-border rounded-xl shadow-2xl overflow-hidden text-xs">
+            <div className="flex items-center justify-between p-4 bg-praxis-card border-b border-praxis-border">
+              <h3 className="text-sm font-bold uppercase text-white font-display flex items-center gap-2">
+                <Edit size={16} className="text-praxis-cyan" /> Edit Album Details / Rename Folder
+              </h3>
+              <button onClick={() => setRenameAlbumModalOpen(false)} className="text-praxis-muted hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleRenameAlbumSubmit} className="p-5 space-y-4">
+              <div>
+                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                  Folder / Album Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={renameAlbumForm.newAlbumName}
+                  onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, newAlbumName: e.target.value })}
+                  placeholder="e.g. Establishing PRAXIS / Hackathons"
+                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs font-semibold"
+                />
+                <span className="text-[10px] text-praxis-muted mt-1 block">
+                  Renaming updates all photos currently grouped under this album.
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                    Club Chapter
+                  </label>
+                  <select
+                    disabled={isClubAdmin}
+                    value={renameAlbumForm.clubSlug}
+                    onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, clubSlug: e.target.value })}
+                    className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
+                  >
+                    <option value="others">Others / Establishment</option>
+                    {clubs.map(c => (
+                      <option key={c.slug} value={c.slug}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={renameAlbumForm.category}
+                    onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, category: e.target.value })}
+                    className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
+                  >
+                    <option value="NONE">NONE</option>
+                    <option value="TECHNICAL">TECHNICAL</option>
+                    <option value="NON-TECHNICAL">NON-TECHNICAL</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                  Event / Occasion Date
+                </label>
+                <input
+                  type="date"
+                  value={renameAlbumForm.date}
+                  onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, date: e.target.value })}
+                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs font-mono"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-praxis-border">
+                <button
+                  type="button"
+                  onClick={() => setRenameAlbumModalOpen(false)}
+                  className="px-4 py-2 rounded bg-praxis-card text-praxis-secondary uppercase font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded bg-praxis-glow hover:bg-blue-600 text-white uppercase font-bold tracking-wider"
+                >
+                  Update Album
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
