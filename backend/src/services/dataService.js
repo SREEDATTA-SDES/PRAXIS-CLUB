@@ -14,12 +14,44 @@ import { Event } from '../models/Event.js';
 import { Announcement } from '../models/Announcement.js';
 import { Gallery } from '../models/Gallery.js';
 import { Setting } from '../models/Setting.js';
+import { EventCalendarPdf } from '../models/EventCalendarPdf.js';
 
+// Fast In-Memory Cache to eliminate repeated multi-collection Atlas roundtrips
+const memCache = new Map();
+const CACHE_TTL_MS = 60 * 1000;
+
+const getMemCache = (key) => {
+  const item = memCache.get(key);
+  if (!item) return null;
+  if (Date.now() > item.expiry) {
+    memCache.delete(key);
+    return null;
+  }
+  return item.data;
+};
+
+const setMemCache = (key, data, ttlMs = CACHE_TTL_MS) => {
+  memCache.set(key, { data, expiry: Date.now() + ttlMs });
+};
+
+export const clearDataCache = (prefix = null) => {
+  if (!prefix) {
+    memCache.clear();
+  } else {
+    for (const key of memCache.keys()) {
+      if (key.startsWith(prefix)) memCache.delete(key);
+    }
+  }
+};
 
 export const dataService = {
   // === CLUBS ===
   async getClubs() {
-    return await Club.find().sort({ order: 1 });
+    const cached = getMemCache('clubs');
+    if (cached) return cached;
+    const res = await Club.find().sort({ order: 1 });
+    setMemCache('clubs', res);
+    return res;
   },
 
   async getClubBySlug(slug) {
@@ -67,16 +99,22 @@ export const dataService = {
 
   // === LEADERSHIP (6 DEDICATED COLLECTIONS) ===
   async getLeadership(filter = {}, collectionName = null) {
+    const cacheKey = `leadership_${JSON.stringify(filter)}_${collectionName || 'all'}`;
+    const cached = getMemCache(cacheKey);
+    if (cached) return cached;
+
     // If a specific collection is requested
     if (collectionName) {
       const TargetModel = getModelByCollectionName(collectionName);
       if (TargetModel) {
         const docs = await TargetModel.find(filter).sort({ order: 1 }).lean();
-        return docs.map(d => ({
+        const res = docs.map(d => ({
           ...d,
           id: d._id ? d._id.toString() : null,
           collectionName: TargetModel.collection.name
         }));
+        setMemCache(cacheKey, res);
+        return res;
       }
     }
 
@@ -116,7 +154,9 @@ export const dataService = {
       }
     }
 
-    return allLeaders.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const sorted = allLeaders.sort((a, b) => (a.order || 0) - (b.order || 0));
+    setMemCache(cacheKey, sorted);
+    return sorted;
   },
 
   async getLeadershipByCollections(filter = {}) {
@@ -170,6 +210,7 @@ export const dataService = {
   },
 
   async createLeader(data) {
+    clearDataCache('leadership');
     const SubModel = getLeaderSubModel(data.roleType);
     const newDoc = new SubModel(data);
     const saved = await newDoc.save();
@@ -187,6 +228,7 @@ export const dataService = {
   },
 
   async updateLeader(id, data) {
+    clearDataCache('leadership');
     const subModels = getAllLeaderSubModels();
     let currentModel = null;
     let existingDoc = null;
@@ -235,6 +277,7 @@ export const dataService = {
   },
 
   async deleteLeader(id) {
+    clearDataCache('leadership');
     const subModels = getAllLeaderSubModels();
     let deletedDoc = null;
 
@@ -254,6 +297,7 @@ export const dataService = {
   },
 
   async reorderLeaders(items) {
+    clearDataCache('leadership');
     const subModels = getAllLeaderSubModels();
     for (const item of items) {
       const { id, order } = item;
@@ -317,6 +361,7 @@ export const dataService = {
   },
 
   async renameGalleryAlbum(oldAlbumName, newAlbumName, extraData = {}) {
+    clearDataCache('gallery');
     const filter = { albumName: oldAlbumName };
     const update = {
       albumName: newAlbumName,
@@ -325,6 +370,9 @@ export const dataService = {
     if (extraData.category) update.category = extraData.category;
     if (extraData.clubSlug) update.clubSlug = extraData.clubSlug;
     if (extraData.date) update.date = extraData.date;
+    if (extraData.caption !== undefined || extraData.description !== undefined) {
+      update.caption = extraData.caption !== undefined ? extraData.caption : extraData.description;
+    }
     return await Gallery.updateMany(filter, { $set: update });
   },
 
@@ -342,7 +390,50 @@ export const dataService = {
   },
 
   async updateSettings(data) {
+    clearDataCache('settings');
     return await Setting.findOneAndUpdate({}, { ...data, lastUpdated: new Date() }, { new: true, upsert: true });
+  },
+
+  // === EVENT CALENDAR PDF (Dedicated Collection: event_calendar_pdf) ===
+  async getEventCalendarPdf() {
+    const cached = getMemCache('event_calendar_pdf');
+    if (cached) return cached;
+    let doc = await EventCalendarPdf.findOne().sort({ createdAt: -1 });
+    if (!doc) {
+      // Fallback check in Setting
+      const setting = await Setting.findOne();
+      if (setting?.eventCalendarPdfUrl) {
+        doc = {
+          pdfUrl: setting.eventCalendarPdfUrl,
+          fileName: 'Semester_Event_Calendar_2026.pdf',
+          title: 'Semester Event Calendar 2026',
+          semester: 'Academic Semester 2026',
+          uploadedAt: setting.lastUpdated || new Date()
+        };
+      }
+    }
+    if (doc) setMemCache('event_calendar_pdf', doc);
+    return doc;
+  },
+
+  async saveEventCalendarPdf(data) {
+    const doc = await EventCalendarPdf.create({
+      pdfUrl: data.pdfUrl,
+      publicId: data.publicId || '',
+      fileName: data.fileName || 'Semester_Event_Calendar_2026.pdf',
+      title: data.title || 'Semester Event Calendar 2026',
+      semester: data.semester || 'Academic Semester 2026',
+      uploadedBy: data.uploadedBy || 'Admin'
+    });
+    // Also keep setting.eventCalendarPdfUrl synced
+    await Setting.findOneAndUpdate(
+      {},
+      { eventCalendarPdfUrl: data.pdfUrl, lastUpdated: new Date() },
+      { upsert: true }
+    );
+    clearDataCache('event_calendar_pdf');
+    clearDataCache('settings');
+    return doc;
   },
 
   // === ADMIN / USERS ===

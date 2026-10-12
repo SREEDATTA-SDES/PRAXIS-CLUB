@@ -66,7 +66,7 @@ export const updateGalleryItem = async (req, res) => {
 
 export const updateGalleryAlbum = async (req, res) => {
   try {
-    const { oldAlbumName, newAlbumName, category, clubSlug, date } = req.body;
+    const { oldAlbumName, newAlbumName, category, clubSlug, date, caption, description } = req.body;
     if (!oldAlbumName || !newAlbumName) {
       return res.status(400).json({ success: false, message: 'oldAlbumName and newAlbumName are required.' });
     }
@@ -79,7 +79,12 @@ export const updateGalleryAlbum = async (req, res) => {
       });
     }
 
-    await dataService.renameGalleryAlbum(oldAlbumName, newAlbumName, { category, clubSlug, date });
+    await dataService.renameGalleryAlbum(oldAlbumName, newAlbumName, { 
+      category, 
+      clubSlug, 
+      date, 
+      caption: caption !== undefined ? caption : description 
+    });
     return res.json({ success: true, message: 'Album updated successfully' });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

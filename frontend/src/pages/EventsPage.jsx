@@ -7,7 +7,8 @@ import { useData } from '../context/DataContext';
 import { Search, Calendar, Download } from 'lucide-react';
 
 export const EventsPage = ({ onOpenLightbox }) => {
-  const { events, settings } = useData();
+  const { events, settings, eventCalendarPdf } = useData();
+  const pdfUrl = eventCalendarPdf?.pdfUrl || settings?.eventCalendarPdfUrl || '';
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -76,21 +77,22 @@ export const EventsPage = ({ onOpenLightbox }) => {
                   )}
                 </h3>
                 <p className="text-[11px] text-praxis-secondary">
-                  {settings?.eventCalendarPdfUrl 
-                    ? 'Official PDF calendar uploaded by administration. Download or sync with Google/Apple Calendar.'
-                    : 'Download the complete semester schedule for Google Calendar, Apple Calendar, or export as PDF.'}
+                  {pdfUrl 
+                    ? 'Official PDF calendar uploaded by administration. Direct PDF download available.'
+                    : 'View official semester schedule and upcoming department event dates.'}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2.5 shrink-0 flex-wrap justify-center">
-              {settings?.eventCalendarPdfUrl ? (
+              {pdfUrl ? (
                 <>
                   <a
-                    href={settings.eventCalendarPdfUrl}
+                    href={pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2.5 rounded-full bg-gradient-to-r from-praxis-cyan to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-praxis-bg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all shrink-0 hover:scale-105"
+                    download="Semester_Event_Calendar_2026.pdf"
+                    className="px-5 py-2.5 rounded-full bg-gradient-to-r from-praxis-cyan to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-praxis-bg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all shrink-0 hover:scale-105"
                   >
                     <Download size={14} />
                     <span>Download Official PDF</span>
@@ -98,11 +100,11 @@ export const EventsPage = ({ onOpenLightbox }) => {
                   <button
                     type="button"
                     onClick={() => setShowCalendarModal(true)}
-                    className="px-3.5 py-2.5 rounded-full liquid-glass border border-white/20 hover:border-praxis-cyan/50 text-white/90 hover:text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all hover:bg-white/5"
-                    title="Export to iCal / Google Calendar / CSV"
+                    className="px-4 py-2.5 rounded-full liquid-glass border border-white/20 hover:border-praxis-cyan/50 text-white/90 hover:text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all hover:bg-white/5"
+                    title="View Schedule Details"
                   >
                     <Calendar size={13} />
-                    <span>Sync / More</span>
+                    <span>Schedule Details</span>
                   </button>
                 </>
               ) : (
@@ -112,8 +114,7 @@ export const EventsPage = ({ onOpenLightbox }) => {
                   className="px-5 py-2.5 rounded-full bg-gradient-to-r from-praxis-cyan to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-praxis-bg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all shrink-0 hover:scale-105"
                 >
                   <Calendar size={14} />
-                  <Download size={13} />
-                  <span>Download Event Calendar</span>
+                  <span>View Event Calendar</span>
                 </button>
               )}
             </div>
@@ -222,7 +223,7 @@ export const EventsPage = ({ onOpenLightbox }) => {
       {showCalendarModal && (
         <EventCalendarModal
           events={events}
-          eventCalendarPdfUrl={settings?.eventCalendarPdfUrl}
+          eventCalendarPdfUrl={pdfUrl}
           onClose={() => setShowCalendarModal(false)}
         />
       )}

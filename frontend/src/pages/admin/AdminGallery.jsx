@@ -21,7 +21,8 @@ export const AdminGallery = () => {
     newAlbumName: '',
     category: 'NONE',
     clubSlug: 'others',
-    date: ''
+    date: '',
+    caption: ''
   });
 
   const initialForm = {
@@ -93,7 +94,8 @@ export const AdminGallery = () => {
       newAlbumName: album.name,
       category: album.category || 'NONE',
       clubSlug: album.clubSlug || 'others',
-      date: album.date || new Date().toISOString().split('T')[0]
+      date: album.date || new Date().toISOString().split('T')[0],
+      caption: album.caption || (album.items && album.items[0]?.caption) || ''
     });
     setRenameAlbumModalOpen(true);
   };
@@ -182,7 +184,9 @@ export const AdminGallery = () => {
       {
         category: renameAlbumForm.category,
         clubSlug: renameAlbumForm.clubSlug,
-        date: renameAlbumForm.date
+        date: renameAlbumForm.date,
+        caption: renameAlbumForm.caption?.trim() || '',
+        description: renameAlbumForm.caption?.trim() || ''
       }
     );
     if (res?.success) {
@@ -192,7 +196,8 @@ export const AdminGallery = () => {
           name: renameAlbumForm.newAlbumName.trim(),
           category: renameAlbumForm.category,
           clubSlug: renameAlbumForm.clubSlug,
-          date: renameAlbumForm.date
+          date: renameAlbumForm.date,
+          caption: renameAlbumForm.caption?.trim() || ''
         } : null);
       }
       setRenameAlbumModalOpen(false);
@@ -219,8 +224,11 @@ export const AdminGallery = () => {
         category: item.category,
         clubSlug: item.clubSlug,
         date: item.date,
+        caption: item.caption || '',
         items: []
       };
+    } else if (!acc[key].caption && item.caption) {
+      acc[key].caption = item.caption;
     }
     acc[key].items.push(item);
     return acc;
@@ -313,7 +321,9 @@ export const AdminGallery = () => {
                     <h4 className="text-xs font-bold text-white uppercase tracking-wider truncate group-hover:text-praxis-cyan transition-colors">
                       {album.name}
                     </h4>
-                    <p className="text-[10px] text-praxis-muted capitalize">{album.category} • Click to manage</p>
+                    <p className="text-[10px] text-praxis-muted capitalize truncate">
+                      {album.caption ? album.caption : `${album.category} • Click to manage`}
+                    </p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
@@ -347,6 +357,11 @@ export const AdminGallery = () => {
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
                   <FolderOpen size={16} className="text-praxis-cyan" /> {selectedAdminAlbum.name} ({selectedAdminAlbum.items.length} Photos)
                 </h3>
+                {selectedAdminAlbum.caption && (
+                  <p className="text-[11px] text-praxis-muted mt-0.5 line-clamp-2 max-w-xl">
+                    {selectedAdminAlbum.caption}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -814,6 +829,22 @@ export const AdminGallery = () => {
                   onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, date: e.target.value })}
                   className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs font-mono"
                 />
+              </div>
+
+              <div>
+                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                  Album Description / Caption (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={renameAlbumForm.caption || ''}
+                  onChange={(e) => setRenameAlbumForm({ ...renameAlbumForm, caption: e.target.value })}
+                  placeholder="Enter details, description, or memory caption for this album folder..."
+                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs leading-relaxed"
+                />
+                <span className="text-[10px] text-praxis-muted mt-1 block">
+                  This description will appear on the folder in the public gallery and album archives.
+                </span>
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-praxis-border">

@@ -194,7 +194,54 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
 };
 
 /**
- * Auto-Moving Horizontal Scroll Row
+ * Shimmer Loading Skeleton for Leadership Directory
+ */
+export const LeadershipLoadingSkeleton = () => (
+  <div className="space-y-16 animate-pulse">
+    {/* Tier 1 Skeleton */}
+    <div className="space-y-6">
+      <div className="text-center space-y-2">
+        <div className="w-32 h-3 bg-[#D4AF37]/30 rounded-full mx-auto" />
+        <div className="w-64 h-8 bg-white/10 rounded-lg mx-auto" />
+        <div className="w-48 h-3 bg-white/5 rounded-full mx-auto" />
+      </div>
+      <div className="flex justify-center gap-8 py-4 overflow-hidden">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="flex flex-col items-center space-y-3 w-64 shrink-0">
+            <div className="w-44 h-44 rounded-full bg-gradient-to-tr from-[#D4AF37]/20 via-white/5 to-transparent border border-[#D4AF37]/30 p-2">
+              <div className="w-full h-full rounded-full bg-praxis-surface/80" />
+            </div>
+            <div className="w-28 h-3 bg-[#D4AF37]/30 rounded-full" />
+            <div className="w-36 h-5 bg-white/20 rounded" />
+            <div className="w-24 h-3 bg-white/10 rounded-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Tier 2 Skeleton */}
+    <div className="space-y-6 pt-10 border-t border-white/5">
+      <div className="text-center space-y-2">
+        <div className="w-32 h-3 bg-emerald-400/30 rounded-full mx-auto" />
+        <div className="w-72 h-8 bg-white/10 rounded-lg mx-auto" />
+      </div>
+      <div className="flex justify-center gap-6 py-4 overflow-hidden">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="flex flex-col items-center space-y-3 w-56 shrink-0">
+            <div className="w-32 h-32 rounded-full bg-emerald-950/40 border border-emerald-400/30 p-2">
+              <div className="w-full h-full rounded-full bg-praxis-surface/80" />
+            </div>
+            <div className="w-24 h-3 bg-emerald-400/30 rounded-full" />
+            <div className="w-32 h-4 bg-white/20 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/**
+ * Auto-Moving Horizontal Scroll Row with Seamless Infinite Loop (No Jump / No Snap)
  */
 export const HorizontalAutoScrollRow = ({ 
   items, 
@@ -210,12 +257,21 @@ export const HorizontalAutoScrollRow = ({
   const isInteractingRef = useRef(false);
   const [canScroll, setCanScroll] = useState(false);
 
+  // If items length is small, repeat more times so buffer is wide enough on 4K/widescreens
+  const repeatCount = (!items || items.length === 0) ? 1 : items.length <= 2 ? 4 : items.length <= 4 ? 3 : 2;
+
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el) return;
+    if (!el || !items || items.length === 0) return;
+
+    let singleSetWidth = 0;
 
     const checkOverflow = () => {
-      setCanScroll(el.scrollWidth > el.clientWidth + 5);
+      // Calculate width of one logical set
+      singleSetWidth = el.scrollWidth / (canScroll ? repeatCount : 1);
+      const overflows = singleSetWidth > el.clientWidth + 5;
+      setCanScroll(overflows || !centerIfFits);
+      singleSetWidth = el.scrollWidth / repeatCount;
     };
 
     checkOverflow();
@@ -229,15 +285,25 @@ export const HorizontalAutoScrollRow = ({
       const dt = Math.min(now - lastTime, 50);
       lastTime = now;
 
-      if (!isHoveredRef.current && !isInteractingRef.current && el.scrollWidth > el.clientWidth + 5) {
+      // Only scroll if content is wide enough to scroll
+      if (!isHoveredRef.current && !isInteractingRef.current && canScroll && singleSetWidth > 0) {
         scrollPos += (speed * (dt / 16.67));
 
-        if (scrollPos >= el.scrollWidth - el.clientWidth - 1) {
-          scrollPos = 0;
+        // Seamless wrap-around modulo reset (0 visual jump)
+        if (scrollPos >= singleSetWidth) {
+          scrollPos -= singleSetWidth;
         }
 
         el.scrollLeft = scrollPos;
       } else {
+        // Track manual user drag or touch scroll
+        if (canScroll && singleSetWidth > 0) {
+          if (el.scrollLeft >= singleSetWidth * (repeatCount - 1)) {
+            el.scrollLeft -= singleSetWidth;
+          } else if (el.scrollLeft <= 0) {
+            el.scrollLeft += singleSetWidth;
+          }
+        }
         scrollPos = el.scrollLeft;
       }
 
@@ -250,9 +316,24 @@ export const HorizontalAutoScrollRow = ({
       window.removeEventListener('resize', checkOverflow);
       cancelAnimationFrame(animId);
     };
-  }, [items, speed]);
+  }, [items, speed, canScroll, repeatCount, centerIfFits]);
 
   if (!items || items.length === 0) return null;
+
+  // Duplicate items array to create seamless ribbon when scrolling
+  const displayItems = canScroll
+    ? Array.from({ length: repeatCount }).flatMap((_, setIdx) => 
+        items.map((person, origIdx) => ({
+          ...person,
+          _displayKey: `set-${setIdx}-${person.id || person._id || origIdx}-${origIdx}`,
+          _origIdx: origIdx
+        }))
+      )
+    : items.map((person, idx) => ({
+        ...person,
+        _displayKey: `single-${person.id || person._id || idx}-${idx}`,
+        _origIdx: idx
+      }));
 
   return (
     <div 
@@ -261,7 +342,7 @@ export const HorizontalAutoScrollRow = ({
       onMouseLeave={() => { isHoveredRef.current = false; }}
       onTouchStart={() => { isInteractingRef.current = true; }}
       onTouchEnd={() => { 
-        setTimeout(() => { isInteractingRef.current = false; }, 1200); 
+        setTimeout(() => { isInteractingRef.current = false; }, 1000); 
       }}
     >
       <div 
@@ -272,11 +353,11 @@ export const HorizontalAutoScrollRow = ({
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className={`flex items-start shrink-0 ${spacing}`}>
-          {items.map((person, idx) => (
+          {displayItems.map((person) => (
             <GoldPortraitCard 
-              key={`${person.id || person._id || idx}-${idx}`} 
+              key={person._displayKey} 
               person={person} 
-              index={idx}
+              index={person._origIdx}
               theme={theme}
               size={size}
               onSelectPerson={onSelectPerson}
@@ -289,8 +370,32 @@ export const HorizontalAutoScrollRow = ({
 };
 
 export const LeadershipSection = ({ filterClubSlug = null }) => {
-  const { leadership } = useData();
+  const { leadership, loading, refreshData } = useData();
   const [selectedDignitary, setSelectedDignitary] = useState(null);
+
+  // If loading and leadership is empty, show glowing shimmer skeleton
+  if (loading && (!leadership || leadership.length === 0)) {
+    return <LeadershipLoadingSkeleton />;
+  }
+
+  // If not loading but leadership list is completely empty, show informative card
+  if (!loading && (!leadership || leadership.length === 0)) {
+    return (
+      <div className="p-12 rounded-3xl liquid-glass border border-white/10 text-center space-y-4 max-w-xl mx-auto">
+        <Sparkles className="w-10 h-10 text-praxis-cyan mx-auto animate-pulse" />
+        <h4 className="text-lg font-bold uppercase text-white font-display">Leadership Directory Syncing</h4>
+        <p className="text-xs text-white/60 font-cinematic uppercase tracking-widest leading-relaxed">
+          Loading institutional council members and student coordinators.
+        </p>
+        <button
+          onClick={() => refreshData && refreshData()}
+          className="px-4 py-2 rounded-xl bg-praxis-cyan/20 border border-praxis-cyan/40 text-praxis-cyan text-xs font-bold uppercase tracking-wider hover:bg-praxis-cyan hover:text-black transition-all"
+        >
+          Refresh Directory
+        </button>
+      </div>
+    );
+  }
 
   // If viewing specific club details page: Divide clearly into Faculty Coordinators & Student Coordinators (No modal)
   if (filterClubSlug) {

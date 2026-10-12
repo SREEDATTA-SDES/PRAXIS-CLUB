@@ -258,6 +258,11 @@ export const GalleryPage = ({ onOpenLightbox }) => {
                     <p className="text-xs text-praxis-secondary mt-0.5">
                       {currentAlbumData.items.length} High-Resolution Photographs in this collection
                     </p>
+                    {currentAlbumData.caption && (
+                      <p className="text-xs text-white/70 mt-1 max-w-2xl font-cinematic leading-relaxed">
+                        {currentAlbumData.caption}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

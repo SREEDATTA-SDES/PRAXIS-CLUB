@@ -98,3 +98,32 @@ export const deleteEvent = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getCalendarPdf = async (req, res) => {
+  try {
+    const record = await dataService.getEventCalendarPdf();
+    return res.json({ success: true, data: record });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const uploadCalendarPdf = async (req, res) => {
+  try {
+    const { pdfUrl, fileName, title, semester, publicId } = req.body;
+    if (!pdfUrl) {
+      return res.status(400).json({ success: false, message: 'pdfUrl is required.' });
+    }
+    const record = await dataService.saveEventCalendarPdf({
+      pdfUrl,
+      fileName,
+      title,
+      semester,
+      publicId,
+      uploadedBy: req.user?.username || req.user?.fullName || 'Admin'
+    });
+    return res.status(201).json({ success: true, message: 'Event calendar PDF saved successfully', data: record });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};

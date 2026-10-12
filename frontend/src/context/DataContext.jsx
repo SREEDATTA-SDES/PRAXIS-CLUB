@@ -4,13 +4,29 @@ import { apiRequest } from '../services/api';
 
 const DataContext = createContext(null);
 
+const getCache = (key, fallback) => {
+  try {
+    const raw = localStorage.getItem(`praxis_cache_${key}`);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
+const setCache = (key, data) => {
+  try {
+    localStorage.setItem(`praxis_cache_${key}`, JSON.stringify(data));
+  } catch (e) {}
+};
+
 export const DataProvider = ({ children }) => {
-  const [clubs, setClubs] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [gallery, setGallery] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
-  const [leadership, setLeadership] = useState([]);
-  const [settings, setSettings] = useState(COLLEGE_BRAND);
+  const [clubs, setClubs] = useState(() => getCache('clubs', []));
+  const [events, setEvents] = useState(() => getCache('events', []));
+  const [gallery, setGallery] = useState(() => getCache('gallery', []));
+  const [announcements, setAnnouncements] = useState(() => getCache('announcements', []));
+  const [leadership, setLeadership] = useState(() => getCache('leadership', []));
+  const [settings, setSettings] = useState(() => getCache('settings', COLLEGE_BRAND));
+  const [eventCalendarPdf, setEventCalendarPdf] = useState(() => getCache('eventCalendarPdf', null));
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -22,32 +38,49 @@ export const DataProvider = ({ children }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [clubsRes, eventsRes, galleryRes, annRes, leadRes, setRes] = await Promise.allSettled([
+      const [clubsRes, eventsRes, galleryRes, annRes, leadRes, setRes, calPdfRes] = await Promise.allSettled([
         apiRequest('/api/clubs'),
         apiRequest('/api/events'),
         apiRequest('/api/gallery'),
         apiRequest('/api/announcements'),
         apiRequest('/api/leadership'),
-        apiRequest('/api/settings')
+        apiRequest('/api/settings'),
+        apiRequest('/api/events/calendar-pdf')
       ]);
 
       if (clubsRes.status === 'fulfilled' && clubsRes.value?.data) {
         setClubs(clubsRes.value.data);
+        setCache('clubs', clubsRes.value.data);
       }
       if (eventsRes.status === 'fulfilled' && eventsRes.value?.data) {
         setEvents(eventsRes.value.data);
+        setCache('events', eventsRes.value.data);
       }
       if (galleryRes.status === 'fulfilled' && galleryRes.value?.data) {
         setGallery(galleryRes.value.data);
+        setCache('gallery', galleryRes.value.data);
       }
       if (annRes.status === 'fulfilled' && annRes.value?.data) {
         setAnnouncements(annRes.value.data);
+        setCache('announcements', annRes.value.data);
       }
       if (leadRes.status === 'fulfilled' && leadRes.value?.data) {
         setLeadership(leadRes.value.data);
+        setCache('leadership', leadRes.value.data);
       }
       if (setRes.status === 'fulfilled' && setRes.value?.data) {
-        setSettings(prev => ({ ...prev, ...setRes.value.data }));
+        setSettings(prev => {
+          const updated = { ...prev, ...setRes.value.data };
+          setCache('settings', updated);
+          return updated;
+        });
+      }
+      if (calPdfRes.status === 'fulfilled' && calPdfRes.value?.data) {
+        setEventCalendarPdf(calPdfRes.value.data);
+        setCache('eventCalendarPdf', calPdfRes.value.data);
+        if (calPdfRes.value.data?.pdfUrl) {
+          setSettings(prev => ({ ...prev, eventCalendarPdfUrl: calPdfRes.value.data.pdfUrl }));
+        }
       }
     } catch (e) {
       console.log('Using default local dataset state.');
@@ -59,6 +92,26 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Synchronize any state changes to cache
+  useEffect(() => {
+    if (clubs.length > 0) setCache('clubs', clubs);
+  }, [clubs]);
+  useEffect(() => {
+    if (events.length > 0) setCache('events', events);
+  }, [events]);
+  useEffect(() => {
+    if (gallery.length > 0) setCache('gallery', gallery);
+  }, [gallery]);
+  useEffect(() => {
+    if (announcements.length > 0) setCache('announcements', announcements);
+  }, [announcements]);
+  useEffect(() => {
+    if (leadership.length > 0) setCache('leadership', leadership);
+  }, [leadership]);
+  useEffect(() => {
+    setCache('settings', settings);
+  }, [settings]);
 
   // === EVENT ACTIONS ===
   const addEvent = async (eventData) => {
@@ -137,23 +190,34 @@ export const DataProvider = ({ children }) => {
 
   const renameGalleryAlbum = async (oldAlbumName, newAlbumName, extraData = {}) => {
     try {
+      const payload = {
+        oldAlbumName,
+        newAlbumName,
+        ...extraData,
+        caption: extraData.caption !== undefined ? extraData.caption : extraData.description
+      };
       await apiRequest('/api/gallery/album/rename', {
         method: 'PUT',
-        body: JSON.stringify({ oldAlbumName, newAlbumName, ...extraData })
+        body: JSON.stringify(payload)
       });
-      setGallery(prev => prev.map(g => {
-        if ((g.albumName || '').trim() === oldAlbumName.trim()) {
-          return {
-            ...g,
-            albumName: newAlbumName,
-            folderSlug: newAlbumName.toLowerCase().replace(/[^a-z0-9]/g, '_'),
-            ...(extraData.category ? { category: extraData.category } : {}),
-            ...(extraData.clubSlug ? { clubSlug: extraData.clubSlug } : {}),
-            ...(extraData.date ? { date: extraData.date } : {})
-          };
-        }
-        return g;
-      }));
+      setGallery(prev => {
+        const next = prev.map(g => {
+          if ((g.albumName || '').trim() === oldAlbumName.trim()) {
+            return {
+              ...g,
+              albumName: newAlbumName,
+              folderSlug: newAlbumName.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+              ...(extraData.category ? { category: extraData.category } : {}),
+              ...(extraData.clubSlug ? { clubSlug: extraData.clubSlug } : {}),
+              ...(extraData.date ? { date: extraData.date } : {}),
+              ...(extraData.caption !== undefined ? { caption: extraData.caption } : (extraData.description !== undefined ? { caption: extraData.description } : {}))
+            };
+          }
+          return g;
+        });
+        setCache('gallery', next);
+        return next;
+      });
       showToast('Album details updated');
       return { success: true };
     } catch (err) {
@@ -325,6 +389,26 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  // === EVENT CALENDAR PDF ACTIONS ===
+  const updateEventCalendarPdf = async (pdfData) => {
+    try {
+      const res = await apiRequest('/api/events/calendar-pdf', {
+        method: 'POST',
+        body: JSON.stringify(pdfData)
+      });
+      setEventCalendarPdf(res.data);
+      setCache('eventCalendarPdf', res.data);
+      if (res.data?.pdfUrl) {
+        setSettings(prev => ({ ...prev, eventCalendarPdfUrl: res.data.pdfUrl }));
+      }
+      showToast('Semester Event Calendar PDF saved successfully');
+      return { success: true, data: res.data };
+    } catch (err) {
+      showToast(err.message || 'Action failed', 'error');
+      return { success: false, message: err.message };
+    }
+  };
+
   return (
     <DataContext.Provider value={{
       clubs,
@@ -352,7 +436,9 @@ export const DataProvider = ({ children }) => {
       updateLeader,
       reorderLeaders,
       deleteLeader,
-      updateSettings
+      updateSettings,
+      eventCalendarPdf,
+      updateEventCalendarPdf
     }}>
       {children}
       {toast && (

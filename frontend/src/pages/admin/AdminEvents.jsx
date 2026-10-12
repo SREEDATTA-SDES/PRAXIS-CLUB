@@ -6,7 +6,7 @@ import { ImageUpload, MultiImageUpload } from '../../components/ImageUpload';
 import { PdfUpload } from '../../components/PdfUpload';
 
 export const AdminEvents = () => {
-  const { events, clubs, settings, updateSettings, addEvent, updateEvent, deleteEvent } = useData();
+  const { events, clubs, settings, updateSettings, addEvent, updateEvent, deleteEvent, eventCalendarPdf, updateEventCalendarPdf } = useData();
   const { user, canManageClub, isClubAdmin } = useAuth();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -148,9 +148,19 @@ export const AdminEvents = () => {
         </div>
 
         <PdfUpload
-          value={settings?.eventCalendarPdfUrl || ''}
+          value={eventCalendarPdf?.pdfUrl || settings?.eventCalendarPdfUrl || ''}
+          folder="praxis_sdes/event_calendar_pdf"
           onChange={async (newUrl) => {
-            await updateSettings({ eventCalendarPdfUrl: newUrl });
+            if (newUrl) {
+              await updateEventCalendarPdf({
+                pdfUrl: newUrl,
+                fileName: 'Semester_Event_Calendar_2026.pdf',
+                title: 'Semester Event Calendar 2026',
+                semester: 'Academic Semester 2026'
+              });
+            } else {
+              await updateSettings({ eventCalendarPdfUrl: '' });
+            }
           }}
           label="Upload or Replace Official Calendar Document (.pdf)"
         />

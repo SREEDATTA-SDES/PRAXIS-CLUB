@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette, Search, GripVertical, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, X, AlertTriangle, GraduationCap, Shield, Award, Eye, Sparkles, Quote, ArrowUp, ArrowDown, CheckSquare, Cpu, Palette, Search, GripVertical, ChevronsUp, ChevronsDown, Printer, FileDown } from 'lucide-react';
 import { ImageUpload } from '../../components/ImageUpload';
 import { DignitaryProfileModal } from '../../components/DignitaryProfileModal';
 
@@ -17,6 +17,8 @@ export const AdminLeadership = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedClubFilter, setSelectedClubFilter] = useState('ALL');
+  const [selectedYearFilter, setSelectedYearFilter] = useState('ALL');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
@@ -24,6 +26,24 @@ export const AdminLeadership = () => {
   const [doubleClickedLeader, setDoubleClickedLeader] = useState(null);
   const [targetPosInput, setTargetPosInput] = useState('1');
   const DEFAULT_STUDENT_CLASS = 'CSE (AIML) /3rd YEAR';
+
+  const OFFICIAL_CLUBS = [
+    { slug: 'genesis', name: 'Genesis', color: 'border-purple-500/40 text-purple-300' },
+    { slug: 'innovex', name: 'Innovex', color: 'border-red-500/40 text-red-300' },
+    { slug: 'ai-club', name: 'AI Club', color: 'border-emerald-500/40 text-emerald-300' },
+    { slug: 'visual-vibes', name: 'Visual Vibes', color: 'border-cyan-500/40 text-cyan-300' },
+    { slug: 'd-talks', name: 'D-Talks', color: 'border-pink-500/40 text-pink-300' },
+    { slug: 'lakshya', name: 'Lakshya', color: 'border-amber-500/40 text-amber-300' },
+    { slug: 'creative-art', name: 'Creative Art', color: 'border-rose-500/40 text-rose-300' },
+    { slug: 'swara', name: 'Swara', color: 'border-orange-500/40 text-orange-300' }
+  ];
+
+  const YEAR_OPTIONS = [
+    { id: 'ALL', label: 'All Years' },
+    { id: '2ND', label: '2nd Year' },
+    { id: '3RD', label: '3rd Year' },
+    { id: '4TH', label: '4th Year' }
+  ];
 
   const initialForm = {
     name: '',
@@ -395,11 +415,30 @@ export const AdminLeadership = () => {
     return false;
   }).sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  const filteredPresidents = presidentsList.filter(matchesSearch);
-  const filteredVicePresidents = vicePresidentsList.filter(matchesSearch);
-  const filteredTech = techList.filter(matchesSearch);
-  const filteredNonTech = nonTechList.filter(matchesSearch);
-  const filteredVisible = visibleLeadership.filter(matchesSearch);
+  const matchesClub = (item) => {
+    if (selectedClubFilter === 'ALL') return true;
+    const slug = (item.clubSlug || '').toLowerCase().trim();
+    return slug === selectedClubFilter.toLowerCase().trim();
+  };
+
+  const matchesYear = (item) => {
+    if (selectedYearFilter === 'ALL') return true;
+    const yc = (item.yearClass || '').toLowerCase();
+    if (selectedYearFilter === '2ND') return yc.includes('2nd') || yc.includes('2 nd') || yc.includes('ii');
+    if (selectedYearFilter === '3RD') return yc.includes('3rd') || yc.includes('3 rd') || yc.includes('iii');
+    if (selectedYearFilter === '4TH') return yc.includes('4th') || yc.includes('4 th') || yc.includes('iv');
+    return false;
+  };
+
+  const matchesAllFilters = (item) => {
+    return matchesSearch(item) && matchesClub(item) && matchesYear(item);
+  };
+
+  const filteredPresidents = presidentsList.filter(matchesAllFilters);
+  const filteredVicePresidents = vicePresidentsList.filter(matchesAllFilters);
+  const filteredTech = techList.filter(matchesAllFilters);
+  const filteredNonTech = nonTechList.filter(matchesAllFilters);
+  const filteredVisible = visibleLeadership.filter(matchesAllFilters);
 
   const toggleSelect = (id) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -479,9 +518,680 @@ export const AdminLeadership = () => {
     setDropPosition(null);
   };
 
-  const handleRowDoubleClick = (item, index, items) => {
-    setDoubleClickedLeader({ item, index, items });
-    setTargetPosInput('1');
+  // Official Printable PDF Generators (No Photos, Grouped by Club)
+  const handleDownloadStudentRosterPDF = () => {
+    const studentRoles = ['COORDINATOR', 'CLUB_LEAD', 'STUDENT_LEAD', 'MEMBER'];
+    const studentMembers = leadership.filter(item => {
+      const role = String(item.roleType || '').toUpperCase();
+      const cat = String(item.memberCategory || '').toUpperCase();
+      return (
+        cat === 'STUDENT' ||
+        studentRoles.includes(role) ||
+        item.collectionName === 'leaders_student_coordinators'
+      );
+    });
+
+    // Group students club by club
+    const clubGroups = OFFICIAL_CLUBS.map(club => {
+      const members = studentMembers.filter(m => {
+        const slug = (m.clubSlug || '').toLowerCase().trim();
+        return slug === club.slug.toLowerCase();
+      }).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || ''));
+      return {
+        slug: club.slug,
+        name: club.name,
+        members
+      };
+    });
+
+    const unassigned = studentMembers.filter(m => {
+      const slug = (m.clubSlug || '').toLowerCase().trim();
+      return !slug || slug === 'none' || slug === 'all' || !OFFICIAL_CLUBS.some(c => c.slug.toLowerCase() === slug);
+    }).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || ''));
+
+    if (unassigned.length > 0) {
+      clubGroups.push({
+        slug: 'central',
+        name: 'Central / General Coordinators',
+        members: unassigned
+      });
+    }
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to open the Student Coordinators PDF.');
+      return;
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>Official Student Coordinators Roster - PRAXIS SDES</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+          @page {
+            size: A4 portrait;
+            margin: 14mm 12mm 14mm 12mm;
+          }
+          * { box-sizing: border-box; }
+          body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 24px;
+            color: #0F172A;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.4;
+          }
+          .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F1F5F9;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #CBD5E1;
+          }
+          .btn {
+            background: #0284C7;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          .btn-close {
+            background: #64748B;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2.5px solid #0369A1;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+          }
+          .college-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0C4A6E;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 3px 0;
+          }
+          .affiliation {
+            font-size: 10px;
+            color: #475569;
+            font-weight: 500;
+            margin: 0 0 4px 0;
+          }
+          .dept {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0284C7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+          }
+          .roster-title {
+            display: inline-block;
+            background: #E0F2FE;
+            color: #0369A1;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 5px 16px;
+            border-radius: 6px;
+            border: 1px solid #BAE6FD;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          .meta-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            font-size: 10px;
+            color: #64748B;
+            font-weight: 600;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 18px;
+          }
+          .club-block {
+            margin-bottom: 22px;
+            page-break-inside: avoid;
+          }
+          .club-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0F172A;
+            color: #ffffff;
+            padding: 7px 12px;
+            border-radius: 6px 6px 0 0;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+          }
+          .club-tag {
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            border: 1px solid #CBD5E1;
+            border-top: none;
+          }
+          th {
+            background: #F8FAFC;
+            color: #334155;
+            text-align: left;
+            padding: 7px 10px;
+            font-weight: 700;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #CBD5E1;
+            border-right: 1px solid #E2E8F0;
+          }
+          th:last-child { border-right: none; }
+          td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #E2E8F0;
+            border-right: 1px solid #E2E8F0;
+            vertical-align: middle;
+            color: #1E293B;
+          }
+          td:last-child { border-right: none; }
+          tr:nth-child(even) td {
+            background-color: #F8FAFC;
+          }
+          .roll-badge {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #0369A1;
+            letter-spacing: 0.5px;
+          }
+          .empty-row td {
+            text-align: center;
+            color: #94A3B8;
+            font-style: italic;
+            padding: 10px;
+          }
+          .footer-sign {
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+            padding-top: 24px;
+            border-top: 1px dashed #CBD5E1;
+          }
+          .sign-col {
+            text-align: center;
+            width: 170px;
+          }
+          .sign-line {
+            border-bottom: 1px solid #94A3B8;
+            margin-bottom: 6px;
+            height: 35px;
+          }
+          .sign-title {
+            font-weight: 700;
+            font-size: 10px;
+            color: #1E293B;
+            text-transform: uppercase;
+          }
+          .sign-sub {
+            font-size: 9px;
+            color: #64748B;
+          }
+          @media print {
+            body { padding: 0; }
+            .action-bar { display: none !important; }
+            .club-block { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="action-bar">
+          <div>
+            <strong>PRAXIS SDES Official Student Roster</strong> &bull; Grouped by Club (No photos)
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+            <button class="btn btn-close" onclick="window.close()">Close</button>
+          </div>
+        </div>
+
+        <div class="header">
+          <div class="college-name">Sree Dattha Institute of Engineering and Science</div>
+          <div class="affiliation">Affiliated to JNTUH &bull; Approved by AICTE &bull; Sheriguda, Ibrahimpatnam, Hyderabad</div>
+          <div class="dept">Department of Computer Science & Engineering (Allied Branches)</div>
+          <div class="roster-title">PRAXIS CLUB &bull; OFFICIAL STUDENT COORDINATORS ROSTER</div>
+        </div>
+
+        <div class="meta-info">
+          <span><strong>Total Student Coordinators:</strong> ${studentMembers.length}</span>
+          <span><strong>Academic Year:</strong> 2025&ndash;2026</span>
+          <span><strong>Generated On:</strong> ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+
+        ${clubGroups.map(group => `
+          <div class="club-block">
+            <div class="club-header">
+              <span>${group.name}</span>
+              <span class="club-tag">${group.members.length} Coordinators</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 35px;">#</th>
+                  <th>Student Name</th>
+                  <th style="width: 150px;">Hall Ticket / Roll No.</th>
+                  <th style="width: 180px;">Class &amp; Year</th>
+                  <th style="width: 140px;">Position / Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${group.members.length === 0 ? `
+                  <tr class="empty-row">
+                    <td colspan="5">No student coordinators currently appointed for this club chapter.</td>
+                  </tr>
+                ` : group.members.map((m, idx) => `
+                  <tr>
+                    <td style="text-align: center; font-weight: 700;">${idx + 1}</td>
+                    <td><strong>${m.name}</strong></td>
+                    <td><span class="roll-badge">${m.rollNumber || '&mdash;'}</span></td>
+                    <td>${m.yearClass || '&mdash;'}</td>
+                    <td>${m.position || m.designation || 'Coordinator'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `).join('')}
+
+        <div class="footer-sign">
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Student General Secretary</div>
+            <div class="sign-sub">PRAXIS Club SDES</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Faculty Coordinator</div>
+            <div class="sign-sub">CSE (AIML &amp; Allied)</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Head of Department</div>
+            <div class="sign-sub">CSE Allied Branches</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Principal / Director</div>
+            <div class="sign-sub">SDES Hyderabad</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 350);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+  };
+
+  const handleDownloadFacultyRosterPDF = () => {
+    const facultyRoles = ['FACULTY_COORDINATOR', 'FACULTY_HEAD', 'FACULTY_ADVISOR', 'FACULTY'];
+    const facultyMembers = leadership.filter(item => {
+      const role = String(item.roleType || '').toUpperCase();
+      const cat = String(item.memberCategory || '').toUpperCase();
+      return (
+        cat === 'FACULTY' ||
+        facultyRoles.includes(role) ||
+        item.collectionName === 'leaders_faculty'
+      );
+    });
+
+    const clubGroups = OFFICIAL_CLUBS.map(club => {
+      const members = facultyMembers.filter(m => {
+        const slug = (m.clubSlug || '').toLowerCase().trim();
+        return slug === club.slug.toLowerCase();
+      }).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || ''));
+      return {
+        slug: club.slug,
+        name: club.name,
+        members
+      };
+    });
+
+    const unassigned = facultyMembers.filter(m => {
+      const slug = (m.clubSlug || '').toLowerCase().trim();
+      return !slug || slug === 'none' || slug === 'all' || !OFFICIAL_CLUBS.some(c => c.slug.toLowerCase() === slug);
+    }).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || ''));
+
+    if (unassigned.length > 0) {
+      clubGroups.push({
+        slug: 'central',
+        name: 'Central / Department Advisory Board',
+        members: unassigned
+      });
+    }
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to open the Faculty Advisors PDF.');
+      return;
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>Official Faculty Advisors & Coordinators Roster - PRAXIS SDES</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+          @page {
+            size: A4 portrait;
+            margin: 14mm 12mm 14mm 12mm;
+          }
+          * { box-sizing: border-box; }
+          body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 24px;
+            color: #0F172A;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.4;
+          }
+          .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F1F5F9;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #CBD5E1;
+          }
+          .btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          .btn-close {
+            background: #64748B;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2.5px solid #059669;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+          }
+          .college-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #064E3B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 3px 0;
+          }
+          .affiliation {
+            font-size: 10px;
+            color: #475569;
+            font-weight: 500;
+            margin: 0 0 4px 0;
+          }
+          .dept {
+            font-size: 12px;
+            font-weight: 700;
+            color: #059669;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+          }
+          .roster-title {
+            display: inline-block;
+            background: #D1FAE5;
+            color: #065F46;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 5px 16px;
+            border-radius: 6px;
+            border: 1px solid #A7F3D0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          .meta-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            font-size: 10px;
+            color: #64748B;
+            font-weight: 600;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 18px;
+          }
+          .club-block {
+            margin-bottom: 22px;
+            page-break-inside: avoid;
+          }
+          .club-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #064E3B;
+            color: #ffffff;
+            padding: 7px 12px;
+            border-radius: 6px 6px 0 0;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+          }
+          .club-tag {
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            border: 1px solid #CBD5E1;
+            border-top: none;
+          }
+          th {
+            background: #F8FAFC;
+            color: #334155;
+            text-align: left;
+            padding: 7px 10px;
+            font-weight: 700;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #CBD5E1;
+            border-right: 1px solid #E2E8F0;
+          }
+          th:last-child { border-right: none; }
+          td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #E2E8F0;
+            border-right: 1px solid #E2E8F0;
+            vertical-align: middle;
+            color: #1E293B;
+          }
+          td:last-child { border-right: none; }
+          tr:nth-child(even) td {
+            background-color: #F8FAFC;
+          }
+          .empty-row td {
+            text-align: center;
+            color: #94A3B8;
+            font-style: italic;
+            padding: 10px;
+          }
+          .footer-sign {
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+            padding-top: 24px;
+            border-top: 1px dashed #CBD5E1;
+          }
+          .sign-col {
+            text-align: center;
+            width: 170px;
+          }
+          .sign-line {
+            border-bottom: 1px solid #94A3B8;
+            margin-bottom: 6px;
+            height: 35px;
+          }
+          .sign-title {
+            font-weight: 700;
+            font-size: 10px;
+            color: #1E293B;
+            text-transform: uppercase;
+          }
+          .sign-sub {
+            font-size: 9px;
+            color: #64748B;
+          }
+          @media print {
+            body { padding: 0; }
+            .action-bar { display: none !important; }
+            .club-block { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="action-bar">
+          <div>
+            <strong>PRAXIS SDES Official Faculty Roster</strong> &bull; Grouped by Club (No photos)
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+            <button class="btn btn-close" onclick="window.close()">Close</button>
+          </div>
+        </div>
+
+        <div class="header">
+          <div class="college-name">Sree Dattha Institute of Engineering and Science</div>
+          <div class="affiliation">Affiliated to JNTUH &bull; Approved by AICTE &bull; Sheriguda, Ibrahimpatnam, Hyderabad</div>
+          <div class="dept">Department of Computer Science & Engineering (Allied Branches)</div>
+          <div class="roster-title">PRAXIS CLUB &bull; OFFICIAL FACULTY ADVISORS &amp; COORDINATORS ROSTER</div>
+        </div>
+
+        <div class="meta-info">
+          <span><strong>Total Faculty Advisors:</strong> ${facultyMembers.length}</span>
+          <span><strong>Academic Year:</strong> 2025&ndash;2026</span>
+          <span><strong>Generated On:</strong> ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+
+        ${clubGroups.map(group => `
+          <div class="club-block">
+            <div class="club-header">
+              <span>${group.name}</span>
+              <span class="club-tag">${group.members.length} Advisors</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 35px;">#</th>
+                  <th>Faculty Name</th>
+                  <th style="width: 160px;">Designation</th>
+                  <th style="width: 140px;">Department</th>
+                  <th style="width: 130px;">Qualifications</th>
+                  <th style="width: 140px;">Assigned Club Chapter</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${group.members.length === 0 ? `
+                  <tr class="empty-row">
+                    <td colspan="6">No faculty advisors currently assigned for this club chapter.</td>
+                  </tr>
+                ` : group.members.map((m, idx) => `
+                  <tr>
+                    <td style="text-align: center; font-weight: 700;">${idx + 1}</td>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.position || m.designation || 'Faculty Advisor'}</td>
+                    <td>${m.department || 'CSE Allied'}</td>
+                    <td>${m.qualifications || '&mdash;'}</td>
+                    <td><strong>${group.name}</strong></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `).join('')}
+
+        <div class="footer-sign">
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Faculty In-Charge</div>
+            <div class="sign-sub">CSE (AIML &amp; Allied)</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Head of Department</div>
+            <div class="sign-sub">CSE Allied Branches</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Dean Academics</div>
+            <div class="sign-sub">SDES Hyderabad</div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-line"></div>
+            <div class="sign-title">Principal / Director</div>
+            <div class="sign-sub">SDES Hyderabad</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 350);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
   };
 
   const renderLeaderTable = (items, title, subtitle, defaultRole, addLabel, SectionIcon = Award, badgeTheme = 'bg-blue-500/20 text-blue-300 border-blue-500/40') => {
@@ -513,15 +1223,39 @@ export const AdminLeadership = () => {
               {subtitle && <p className="text-[10px] text-praxis-muted mt-0.5">{subtitle}</p>}
             </div>
           </div>
-          {addLabel && (
-            <button
-              onClick={() => openCreateModal(defaultRole)}
-              className="px-3 py-1.5 rounded-lg bg-praxis-elevated hover:bg-praxis-cyan hover:text-black text-white text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all w-fit"
-            >
-              <Plus size={13} />
-              <span>{addLabel}</span>
-            </button>
-          )}
+          <div className="flex items-center gap-2 flex-wrap">
+            {activeTab === 'COORDINATOR' && (
+              <button
+                type="button"
+                onClick={handleDownloadStudentRosterPDF}
+                className="px-3 py-1.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-500 hover:text-black border border-cyan-500/40 text-cyan-300 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                title="Download printable Student Coordinators roster grouped by Club (No images)"
+              >
+                <Printer size={13} />
+                <span>Download PDF Roster</span>
+              </button>
+            )}
+            {activeTab === 'FACULTY_COORDINATOR' && (
+              <button
+                type="button"
+                onClick={handleDownloadFacultyRosterPDF}
+                className="px-3 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-500 hover:text-black border border-emerald-500/40 text-emerald-300 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                title="Download printable Faculty Advisors roster grouped by Club (No images)"
+              >
+                <Printer size={13} />
+                <span>Download PDF Roster</span>
+              </button>
+            )}
+            {addLabel && (
+              <button
+                onClick={() => openCreateModal(defaultRole)}
+                className="px-3 py-1.5 rounded-lg bg-praxis-elevated hover:bg-praxis-cyan hover:text-black text-white text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all w-fit cursor-pointer"
+              >
+                <Plus size={13} />
+                <span>{addLabel}</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Active Double-Click Quick Reorder Toolbar */}
@@ -818,7 +1552,29 @@ export const AdminLeadership = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {activeTab === 'COORDINATOR' && (
+            <button
+              type="button"
+              onClick={handleDownloadStudentRosterPDF}
+              className="px-4 py-2.5 rounded-lg bg-cyan-900/40 hover:bg-cyan-500 hover:text-black border border-cyan-500/50 text-cyan-300 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-lg cursor-pointer"
+              title="Download printable roster of Student Coordinators grouped by Club (No photos)"
+            >
+              <Printer size={15} />
+              <span>Download Student Coordinators PDF</span>
+            </button>
+          )}
+          {activeTab === 'FACULTY_COORDINATOR' && (
+            <button
+              type="button"
+              onClick={handleDownloadFacultyRosterPDF}
+              className="px-4 py-2.5 rounded-lg bg-emerald-900/40 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-300 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-lg cursor-pointer"
+              title="Download printable roster of Faculty Advisors grouped by Club (No photos)"
+            >
+              <Printer size={15} />
+              <span>Download Faculty Advisors PDF</span>
+            </button>
+          )}
           {selectedIds.length > 0 && (
             <button
               onClick={handleMultiDelete}
@@ -829,7 +1585,7 @@ export const AdminLeadership = () => {
           )}
           <button
             onClick={() => openCreateModal()}
-            className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-praxis-glow to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-cinematic-blue transition-all"
+            className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-praxis-glow to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-cinematic-blue transition-all cursor-pointer"
           >
             <Plus size={15} />
             <span>Add Member / Dignitary</span>
@@ -908,23 +1664,109 @@ export const AdminLeadership = () => {
         </div>
       </div>
 
+      {/* Quick Filters: 8 Clubs & 2nd/3rd Years */}
+      <div className="bg-praxis-card border border-praxis-border p-3.5 rounded-xl shadow-lg space-y-3">
+        {/* Row 1: Club Chapter Filter */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-praxis-muted shrink-0 w-24">
+            Filter Club (8):
+          </span>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-wrap">
+            <button
+              type="button"
+              onClick={() => setSelectedClubFilter('ALL')}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                selectedClubFilter === 'ALL'
+                  ? 'bg-praxis-cyan text-black font-extrabold shadow-sm'
+                  : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border/60'
+              }`}
+            >
+              All Clubs
+            </button>
+            {OFFICIAL_CLUBS.map(club => {
+              const isSelected = selectedClubFilter.toLowerCase() === club.slug.toLowerCase();
+              return (
+                <button
+                  key={club.slug}
+                  type="button"
+                  onClick={() => setSelectedClubFilter(isSelected ? 'ALL' : club.slug)}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
+                    isSelected
+                      ? 'bg-praxis-cyan/20 border-praxis-cyan text-praxis-cyan shadow-sm font-extrabold ring-1 ring-praxis-cyan/50'
+                      : `bg-praxis-surface/60 ${club.color} hover:bg-praxis-elevated`
+                  }`}
+                >
+                  {club.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Row 2: Academic Year Filter */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-praxis-border/40">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-praxis-muted shrink-0 w-24">
+            Academic Year:
+          </span>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-wrap">
+            {YEAR_OPTIONS.map(yr => {
+              const isSelected = selectedYearFilter === yr.id;
+              return (
+                <button
+                  key={yr.id}
+                  type="button"
+                  onClick={() => setSelectedYearFilter(isSelected && yr.id !== 'ALL' ? 'ALL' : yr.id)}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-400 text-black font-extrabold shadow-sm'
+                      : 'bg-praxis-surface text-praxis-muted hover:text-white border border-praxis-border/60'
+                  }`}
+                >
+                  {yr.label}
+                </button>
+              );
+            })}
+
+            {(selectedClubFilter !== 'ALL' || selectedYearFilter !== 'ALL') && (
+              <button
+                type="button"
+                onClick={() => { setSelectedClubFilter('ALL'); setSelectedYearFilter('ALL'); }}
+                className="ml-auto px-2.5 py-1 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-red-300 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all cursor-pointer"
+              >
+                <X size={12} /> Clear Filters
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Collection Status Banner */}
       <div className="flex items-center justify-between text-xs text-praxis-secondary bg-praxis-surface/60 border border-praxis-border/60 rounded-lg px-4 py-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-praxis-muted">Atlas Collection:</span>
           <span className="font-mono text-praxis-cyan font-bold bg-praxis-cyan/10 border border-praxis-cyan/20 px-2 py-0.5 rounded text-[11px]">
             {currentTabDef.collection}
           </span>
           <span className="text-praxis-muted">
-            ({activeTab === 'PRESIDENTS' ? filteredPresidents.length + filteredVicePresidents.length : activeTab === 'DOMAIN_LEADS' ? filteredTech.length + filteredNonTech.length : filteredVisible.length} {searchQuery ? 'matching' : 'loaded'})
+            ({activeTab === 'PRESIDENTS' ? filteredPresidents.length + filteredVicePresidents.length : activeTab === 'DOMAIN_LEADS' ? filteredTech.length + filteredNonTech.length : filteredVisible.length} {searchQuery || selectedClubFilter !== 'ALL' || selectedYearFilter !== 'ALL' ? 'matching' : 'loaded'})
           </span>
           {searchQuery && (
             <span className="text-[11px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">
-              Filter: "{searchQuery}"
+              Search: "{searchQuery}"
+            </span>
+          )}
+          {selectedClubFilter !== 'ALL' && (
+            <span className="text-[11px] font-mono bg-praxis-cyan/10 text-praxis-cyan border border-praxis-cyan/30 px-2 py-0.5 rounded">
+              Club: {selectedClubFilter}
+            </span>
+          )}
+          {selectedYearFilter !== 'ALL' && (
+            <span className="text-[11px] font-mono bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">
+              Year: {selectedYearFilter === '2ND' ? '2nd Year' : selectedYearFilter === '3RD' ? '3rd Year' : '4th Year'}
             </span>
           )}
         </div>
-        <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1.5">
+        <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1.5 shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>MongoDB Atlas Active</span>
         </div>
