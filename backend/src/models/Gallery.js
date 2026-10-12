@@ -5,7 +5,8 @@ const gallerySchema = new mongoose.Schema({
   imageUrl: { type: String, required: true },
   photos: [{ type: String }], // Optional multiple photos in this album entry
   caption: { type: String, default: '' },
-  category: { type: String, enum: ['TECHNICAL', 'NON-TECHNICAL'], required: true },
+  order: { type: Number, default: 0 },
+  category: { type: String, enum: ['TECHNICAL', 'NON-TECHNICAL', 'NONE'], default: 'NONE', required: true },
   clubSlug: { type: String, required: true },
   albumName: { type: String, default: 'General' },
   folderSlug: { type: String, default: '' },

@@ -19,9 +19,10 @@ export const AdminGallery = () => {
     title: '',
     imageUrl: '',
     caption: '',
-    category: 'TECHNICAL',
+    category: 'NONE',
     clubSlug: isClubAdmin && user.assignedClubId ? user.assignedClubId : 'others',
-    albumName: ''
+    albumName: '',
+    date: new Date().toISOString().split('T')[0]
   };
 
   const [form, setForm] = useState(initialForm);
@@ -40,7 +41,11 @@ export const AdminGallery = () => {
         alert('Please provide an image.');
         return;
       }
-      const result = await addGalleryItem(form);
+      const result = await addGalleryItem({
+        ...form,
+        order: 1,
+        date: form.date || new Date().toISOString().split('T')[0]
+      });
       if (result?.success) {
         setModalOpen(false);
         setForm(initialForm);
@@ -56,7 +61,9 @@ export const AdminGallery = () => {
         await addGalleryItem({
           ...form,
           title: allUrls.length > 1 ? `${form.title} (Photo ${i + 1})` : form.title,
-          imageUrl: allUrls[i]
+          imageUrl: allUrls[i],
+          order: i + 1,
+          date: form.date || new Date().toISOString().split('T')[0]
         });
       }
       setModalOpen(false);
@@ -84,6 +91,7 @@ export const AdminGallery = () => {
         name: key,
         category: item.category,
         clubSlug: item.clubSlug,
+        date: item.date,
         items: []
       };
     }
@@ -92,6 +100,15 @@ export const AdminGallery = () => {
   }, {});
 
   const albumList = Object.values(groupedAlbums);
+  // Sort items within each album by order ascending so Photo 1 is first
+  albumList.forEach(album => {
+    album.items.sort((a, b) => {
+      const orderA = a.order !== undefined && a.order !== null ? a.order : 9999;
+      const orderB = b.order !== undefined && b.order !== null ? b.order : 9999;
+      if (orderA !== orderB) return orderA - orderB;
+      return (a.title || '').localeCompare(b.title || '');
+    });
+  });
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -400,10 +417,27 @@ export const AdminGallery = () => {
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs"
                   >
+                    <option value="NONE">NONE (Institutional / General)</option>
                     <option value="TECHNICAL">TECHNICAL</option>
                     <option value="NON-TECHNICAL">NON-TECHNICAL</option>
                   </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1">
+                  Event / Capture Date *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={form.date}
+                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                  className="w-full p-2.5 rounded bg-praxis-card border border-praxis-border text-white text-xs font-mono"
+                />
+                <span className="text-[10px] text-praxis-muted mt-1 block">
+                  Defaults to current date. Change this if uploading photos for past events (e.g. Establishment Day).
+                </span>
               </div>
 
               <div>

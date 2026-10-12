@@ -86,7 +86,8 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
                       src={person.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name || 'Dignitary')}&background=random&color=fff&size=400&font-size=0.4`}
                       alt={person.name}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover rounded-full"
+                      draggable="false"
+                      className="w-full h-full object-cover rounded-full pointer-events-none select-none"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name || 'Dignitary')}&background=0D1117&color=fff&size=400&font-size=0.4`;

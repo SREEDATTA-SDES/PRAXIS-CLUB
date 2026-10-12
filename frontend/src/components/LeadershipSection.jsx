@@ -137,7 +137,8 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
                 src={person.photoUrl || fallbackPhoto}
                 alt={person.name}
                 referrerPolicy="no-referrer"
-                className="w-full h-full aspect-square object-cover object-center rounded-full block"
+                draggable="false"
+                className="w-full h-full aspect-square object-cover object-center rounded-full block pointer-events-none select-none"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = fallbackPhoto;

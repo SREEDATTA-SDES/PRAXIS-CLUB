@@ -43,7 +43,7 @@ export const GalleryPage = ({ onOpenLightbox }) => {
       if (!groups[albumKey]) {
         groups[albumKey] = {
           name: albumKey,
-          category: item.category || 'TECHNICAL',
+          category: item.category || 'NONE',
           clubSlug: item.clubSlug || 'praxis',
           date: item.date || 'Recent',
           caption: item.caption || '',
@@ -59,6 +59,7 @@ export const GalleryPage = ({ onOpenLightbox }) => {
             ...item,
             id: `${item.id || item._id}_${pIdx}`,
             imageUrl: photoUrl,
+            order: item.order !== undefined && item.order !== null ? item.order : (pIdx + 1),
             title: `${item.title} (${pIdx + 1}/${item.photos.length})`
           });
         });
@@ -67,7 +68,21 @@ export const GalleryPage = ({ onOpenLightbox }) => {
       }
     });
 
-    return Object.values(groups);
+    const albumList = Object.values(groups);
+    // Sort items within each album by order ascending so Photo 1 is first
+    albumList.forEach(album => {
+      album.items.sort((a, b) => {
+        const orderA = a.order !== undefined && a.order !== null ? a.order : 9999;
+        const orderB = b.order !== undefined && b.order !== null ? b.order : 9999;
+        if (orderA !== orderB) return orderA - orderB;
+        return (a.title || '').localeCompare(b.title || '');
+      });
+      if (album.items.length > 0) {
+        album.coverImage = album.items[0].imageUrl;
+      }
+    });
+
+    return albumList;
   }, [filteredGallery]);
 
   // Items for the actively opened folder / album
@@ -148,7 +163,7 @@ export const GalleryPage = ({ onOpenLightbox }) => {
 
               {/* Category Tabs */}
               <div className="flex items-center justify-between sm:justify-center p-1 liquid-glass rounded-full border border-white/10 w-full sm:w-auto overflow-hidden">
-                {['ALL', 'TECHNICAL', 'NON-TECHNICAL'].map(cat => (
+                {['ALL', 'TECHNICAL', 'NON-TECHNICAL', 'NONE'].map(cat => (
                   <button
                     key={cat}
                     onClick={() => { setCategoryFilter(cat); setSelectedAlbum(null); }}

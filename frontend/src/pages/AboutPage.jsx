@@ -50,7 +50,8 @@ export const AboutPage = () => {
               <img
                 src={COLLEGE_BRAND.bannerLogoUrl}
                 alt="Sree Dattha Institute of Engineering & Science"
-                className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl h-auto object-contain drop-shadow-[0_15px_40px_rgba(255,255,255,0.15)]"
+                draggable="false"
+                className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl h-auto object-contain drop-shadow-[0_15px_40px_rgba(255,255,255,0.15)] pointer-events-none select-none"
               />
             </div>
 

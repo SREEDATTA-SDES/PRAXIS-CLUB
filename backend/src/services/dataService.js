@@ -277,7 +277,7 @@ export const dataService = {
 
   // === GALLERY ===
   async getGallery(filter = {}) {
-    return await Gallery.find(filter).sort({ order: 1, createdAt: -1 });
+    return await Gallery.find(filter).sort({ date: -1, order: 1, createdAt: 1 });
   },
 
   async createGalleryItem(data) {

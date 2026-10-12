@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { EventCard } from '../components/EventCard';
 import { EventDetailModal } from '../components/EventDetailModal';
+import { EventCalendarModal } from '../components/EventCalendarModal';
 import { useData } from '../context/DataContext';
-import { Search } from 'lucide-react';
+import { Search, Calendar, Download } from 'lucide-react';
 
 export const EventsPage = ({ onOpenLightbox }) => {
   const { events } = useData();
@@ -11,6 +12,7 @@ export const EventsPage = ({ onOpenLightbox }) => {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
   
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -56,8 +58,35 @@ export const EventsPage = ({ onOpenLightbox }) => {
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-20 max-w-5xl mx-auto"
+          className="relative z-20 max-w-5xl mx-auto space-y-4"
         >
+          {/* Semester Event Calendar Action Banner */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl sm:rounded-3xl liquid-glass border border-praxis-cyan/30 shadow-lg">
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <div className="w-10 h-10 rounded-xl bg-praxis-cyan/20 border border-praxis-cyan/40 text-praxis-cyan flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                <Calendar size={20} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+                  Official Semester Event Calendar (2026)
+                </h3>
+                <p className="text-[11px] text-praxis-secondary">
+                  Download the complete semester schedule for Google Calendar, Apple Calendar, or export as PDF.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowCalendarModal(true)}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-praxis-cyan to-blue-600 hover:from-blue-600 hover:to-praxis-cyan text-praxis-bg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all shrink-0 hover:scale-105"
+            >
+              <Calendar size={14} />
+              <Download size={13} />
+              <span>Download Event Calendar</span>
+            </button>
+          </div>
+
           <div className="liquid-glass-elevated p-4 sm:p-6 md:p-8 rounded-3xl sm:rounded-[2.5rem] flex flex-col lg:flex-row items-center gap-4 sm:gap-6 border-white/20">
             
             {/* Search Box */}
@@ -154,6 +183,14 @@ export const EventsPage = ({ onOpenLightbox }) => {
           event={selectedEvent}
           onClose={() => setSelectedEvent(null)}
           onOpenLightbox={onOpenLightbox}
+        />
+      )}
+
+      {/* Semester Event Calendar Download Modal */}
+      {showCalendarModal && (
+        <EventCalendarModal
+          events={events}
+          onClose={() => setShowCalendarModal(false)}
         />
       )}
     </div>
