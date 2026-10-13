@@ -25,6 +25,7 @@ const run = async () => {
         $or: [
           { department: 'CSE-Allied' },
           { department: { $regex: /CSE-Allied/i } },
+          { department: 'Asst. Prof.' },
           { department: '' },
           { department: null }
         ]
@@ -51,11 +52,12 @@ const run = async () => {
           $or: [
             { department: 'CSE-Allied' },
             { department: { $regex: /CSE-Allied/i } },
+            { department: 'Asst. Prof.' },
             { department: '' },
             { department: null }
           ]
         },
-        { $set: { department: 'Asst. Prof.' } }
+        { $set: { department: 'Asst. Prof. CSE-Allied' } }
       );
       console.log('Main Leader (Faculty) updated:', mainFacultyRes);
     }

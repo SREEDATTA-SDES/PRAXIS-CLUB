@@ -181,10 +181,10 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
             displayDept = null;
           }
 
-          // 2. For faculty coordinator, in place of "CSE-Allied", keep "Asst. Prof."
+          // 2. For faculty coordinator, in place of "CSE-Allied", keep "Asst. Prof. CSE-Allied"
           if (isFacultyRole) {
-            if (!displayDept || displayDept === 'CSE-Allied' || displayDept?.includes('CSE-Allied')) {
-              displayDept = 'Asst. Prof.';
+            if (!displayDept || displayDept === 'CSE-Allied') {
+              displayDept = 'Asst. Prof. CSE-Allied';
             }
           }
 
@@ -550,7 +550,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic">
-              Tier 01 &bull; Institutional Governance
+              Institutional Governance
             </span>
             <h3 className="text-2xl sm:text-4xl font-bold uppercase text-white font-display tracking-wider">
               Governing Council
@@ -570,7 +570,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-white/80 block mb-1 font-cinematic">
-              Tier 02 &bull; Academic Leadership
+              Academic Leadership
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               Dean, Principal & Department Head
@@ -590,7 +590,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-emerald-400 block mb-1 font-cinematic">
-              Tier 03 &bull; Faculty Mentorship & Advisors
+              Faculty Mentorship & Advisors
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               Faculty Advisors & Coordinators (All Chapters)
@@ -610,7 +610,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-[#D4AF37] block mb-1 font-cinematic flex items-center justify-center gap-2">
-              <Award size={15} className="text-[#D4AF37]" /> Tier 04 &bull; Student Command
+              <Award size={15} className="text-[#D4AF37]" /> Student Command
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               PRAXIS Student Presidents
@@ -630,7 +630,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-cyan block mb-1 font-cinematic flex items-center justify-center gap-2">
-              <Shield size={15} className="text-praxis-cyan" /> Tier 05 &bull; Operational Council
+              <Shield size={15} className="text-praxis-cyan" /> Operational Council
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               PRAXIS Student Vice Presidents
@@ -666,7 +666,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="space-y-4">
               <div className="text-center">
                 <span className="text-xs uppercase font-bold tracking-[0.3em] text-cyan-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
-                  <Cpu size={14} className="text-cyan-400" /> Tier 06 &bull; Central Technical Command
+                  <Cpu size={14} className="text-cyan-400" /> Central Technical Command
                 </span>
                 <h4 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
                   Overall Technical Coordinators
@@ -686,7 +686,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
             <div className="space-y-4 pt-6 border-t border-white/5">
               <div className="text-center">
                 <span className="text-xs uppercase font-bold tracking-[0.3em] text-purple-400 block mb-1 font-cinematic flex items-center justify-center gap-2">
-                  <Palette size={14} className="text-purple-400" /> Tier 07 &bull; Central Creative & Operations Command
+                  <Palette size={14} className="text-purple-400" /> Central Creative & Operations Command
                 </span>
                 <h4 className="text-xl sm:text-2xl font-bold uppercase text-white font-display tracking-wider">
                   Overall Non-Technical Coordinators
@@ -708,7 +708,7 @@ export const LeadershipSection = ({ filterClubSlug = null }) => {
         <div className="space-y-6 pt-10 border-t border-white/10">
           <div className="text-center">
             <span className="text-xs uppercase font-bold tracking-[0.3em] text-praxis-secondary block mb-1 font-cinematic">
-              Tier 08 &bull; Chapter Operations & Sub-Coordinators
+              Chapter Operations & Sub-Coordinators
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold uppercase text-white font-display tracking-wider">
               Student Coordinators & Chapter Leads
