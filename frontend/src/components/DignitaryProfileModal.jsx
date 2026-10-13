@@ -115,7 +115,7 @@ export const DignitaryProfileModal = ({ person, onClose }) => {
 
                 <div className="flex items-center justify-center sm:justify-start gap-2 pt-1 text-white/50 text-xs font-cinematic">
                   <Building2 size={13} className="text-white/40" />
-                  <span>{person.department || COLLEGE_BRAND.name}</span>
+                  <span>{(!person.department || person.department.includes('Governing Council') || person.department.includes('Academic Leadership')) ? COLLEGE_BRAND.name : person.department}</span>
                 </div>
               </div>
             </div>

@@ -170,15 +170,15 @@ export const AdminLeadership = () => {
     if (role === 'MANAGEMENT') {
       cat = 'ADMIN';
       pos = 'Chairman';
-      dept = 'Governing Council, SDES';
+      dept = '';
     } else if (role === 'ACADEMIC_LEAD') {
       cat = 'ADMIN';
       pos = 'Principal';
-      dept = 'Academic Leadership, SDES';
+      dept = '';
     } else if (role === 'FACULTY_COORDINATOR') {
       cat = 'FACULTY';
       pos = 'Faculty Advisor';
-      dept = 'CSE-Allied';
+      dept = 'Asst. Prof.';
     } else if (role === 'PRESIDENTS' || role === 'PRAXIS_PRESIDENT') {
       cat = 'STUDENT';
       pos = 'President';
@@ -249,7 +249,7 @@ export const AdminLeadership = () => {
       roleType: role,
       position: item.position || item.designation || '',
       designation: item.designation || '',
-      department: item.department || (category === 'ADMIN' ? 'Governing Council, SDES' : ''),
+      department: (item.department && !item.department.includes('Governing Council')) ? item.department : (category === 'FACULTY' ? 'Asst. Prof.' : ''),
       yearClass: item.yearClass || '',
       section: item.section || '',
       rollNumber: item.rollNumber || '',
@@ -1854,11 +1854,11 @@ export const AdminLeadership = () => {
                 <div className="space-y-3">
                   <label className="block uppercase text-praxis-muted font-bold tracking-wider mb-1.5">Member Classification *</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman', department: 'Governing Council, SDES', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal', department: 'Academic Leadership, SDES', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'MANAGEMENT', position: 'Chairman', department: '', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'MANAGEMENT' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Governing Council</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'ADMIN', roleType: 'ACADEMIC_LEAD', position: 'Principal', department: '', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'ACADEMIC_LEAD' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Award size={16} className="mx-auto mb-1 text-[#D4AF37]" />Academic Leadership</button>
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'PRAXIS_PRESIDENT', position: 'President', department: '', clubSlug: null, yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT'].includes(form.roleType) ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-purple-400" />Presidents & VPs</button>
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'TECHNICAL_LEAD', position: 'Overall Technical Coordinator', department: '', clubSlug: null, yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${['TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD'].includes(form.roleType) ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Cpu size={16} className="mx-auto mb-1 text-blue-400" />Head Coordinators</button>
-                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'CSE-Allied', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1 text-emerald-400" />Faculty Advisor</button>
+                    <button type="button" onClick={() => setForm({ ...form, memberCategory: 'FACULTY', roleType: 'FACULTY_COORDINATOR', position: 'Faculty Advisor', department: 'Asst. Prof.', yearClass: '' })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.memberCategory === 'FACULTY' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><Shield size={16} className="mx-auto mb-1 text-emerald-400" />Faculty Advisor</button>
                     <button type="button" onClick={() => setForm({ ...form, memberCategory: 'STUDENT', roleType: 'COORDINATOR', position: 'Student Coordinator', department: '', yearClass: form.yearClass || DEFAULT_STUDENT_CLASS })} className={`p-2.5 rounded-lg border text-center font-bold uppercase tracking-wider transition-all ${form.roleType === 'COORDINATOR' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-praxis-card border-praxis-border text-praxis-muted'}`}><GraduationCap size={16} className="mx-auto mb-1 text-cyan-400" />Student Coordinator</button>
                   </div>
 

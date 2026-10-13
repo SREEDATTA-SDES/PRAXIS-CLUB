@@ -167,8 +167,27 @@ export const GoldPortraitCard = ({ person, index = 0, theme = 'gold', size = 'md
           </span>
         )}
         {(() => {
-          const isStudentRole = ['PRAXIS_PRESIDENT', 'PRAXIS_VICE_PRESIDENT', 'TECHNICAL_LEAD', 'NON_TECHNICAL_LEAD', 'COORDINATOR', 'STUDENT_LEAD'].includes(person.roleType);
-          const displayDept = (isStudentRole && person.department?.includes('Governing Council')) ? null : person.department;
+          const isGovOrAcademic = ['MANAGEMENT', 'GOVERNING_BODY', 'CHAIRMAN', 'VICE_CHAIRMAN', 'MANAGING_DIRECTOR', 'ACADEMIC_LEAD', 'DEAN', 'PRINCIPAL', 'HOD'].includes(person.roleType) ||
+            person.collectionName === 'leaders_governing_council' ||
+            person.collectionName === 'leaders_academic_leadership';
+
+          const isFacultyRole = ['FACULTY_COORDINATOR', 'FACULTY_HEAD', 'FACULTY_ADVISOR', 'FACULTY'].includes(person.roleType) ||
+            person.collectionName === 'leaders_faculty';
+
+          let displayDept = person.department;
+
+          // 1. Remove "Governing Council, SDES" / "Governing Council" from Dean, Principal, Department Head, and Governing Council
+          if (isGovOrAcademic || displayDept?.includes('Governing Council') || displayDept?.includes('Academic Leadership')) {
+            displayDept = null;
+          }
+
+          // 2. For faculty coordinator, in place of "CSE-Allied", keep "Asst. Prof."
+          if (isFacultyRole) {
+            if (!displayDept || displayDept === 'CSE-Allied' || displayDept?.includes('CSE-Allied')) {
+              displayDept = 'Asst. Prof.';
+            }
+          }
+
           const details = [person.yearClass, person.section && `Sec: ${person.section}`, displayDept].filter(Boolean);
           if (details.length === 0) return null;
           return (
